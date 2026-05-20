@@ -1,15 +1,20 @@
 const Room = require('../models/Room');
 const Booking = require('../models/Booking');
 const { deleteFile } = require('../utils/fileHelper');
+const { uploadToCloudinary, deleteFromCloudinary, isCloudinaryUrl } = require('../utils/cloudinaryHelper');
 
 exports.createRoom = async (req, res) => {
     try {
         const { name, description, price, amenities, quantity, type, capacity, imageCategories } = req.body;
         
         const categories = imageCategories ? (typeof imageCategories === 'string' ? JSON.parse(imageCategories) : imageCategories) : [];
-        const images = req.files ? req.files.map((file, index) => ({
-            url: file.path,
-            category: categories[index] || 'General'
+        const images = req.files ? await Promise.all(req.files.map(async (file, index) => {
+            const uploaded = await uploadToCloudinary(file.path, 'hotel_booking/rooms');
+            deleteFile(file.path);
+            return {
+                url: uploaded.url,
+                category: categories[index] || 'General'
+            };
         })) : [];
         
         const newRoom = new Room({
@@ -55,14 +60,22 @@ exports.updateRoom = async (req, res) => {
 
         // Handle Image Updates
         if (req.files && req.files.length > 0) {
-            // Delete old images
             if (room.images && room.images.length > 0) {
-                room.images.forEach(img => deleteFile(img.url));
+                await Promise.all(room.images.map(async (img) => {
+                    if (img.url) {
+                        if (isCloudinaryUrl(img.url)) await deleteFromCloudinary(img.url);
+                        else deleteFile(img.url);
+                    }
+                }));
             }
             const categories = imageCategories ? (typeof imageCategories === 'string' ? JSON.parse(imageCategories) : imageCategories) : [];
-            req.body.images = req.files.map((file, index) => ({
-                url: file.path,
-                category: categories[index] || 'General'
+            req.body.images = await Promise.all(req.files.map(async (file, index) => {
+                const uploaded = await uploadToCloudinary(file.path, 'hotel_booking/rooms');
+                deleteFile(file.path);
+                return {
+                    url: uploaded.url,
+                    category: categories[index] || 'General'
+                };
             }));
         }
 
@@ -77,7 +90,12 @@ exports.deleteRoom = async (req, res) => {
     try {
         const room = await Room.findById(req.params.id);
         if (room && room.images) {
-            room.images.forEach(img => deleteFile(img.url));
+            await Promise.all(room.images.map(async (img) => {
+                if (img.url) {
+                    if (isCloudinaryUrl(img.url)) await deleteFromCloudinary(img.url);
+                    else deleteFile(img.url);
+                }
+            }));
         }
         await Room.findByIdAndDelete(req.params.id);
         res.json({ message: 'Room deleted' });

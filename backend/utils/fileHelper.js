@@ -3,6 +3,7 @@ const path = require('path');
 
 const deleteFile = (filePath) => {
     if (!filePath) return;
+    if (/^https?:\/\//i.test(filePath)) return;
 
     // Convert to absolute path if it's relative
     const absolutePath = path.isAbsolute(filePath)
