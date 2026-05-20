@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg-luxury: #0B1F1F;
+  --bg-deep: #0A1919;
+  --card-luxury: #132F2F;
+  --primary: #14B8A6;
+  --accent: #2DD4BF;
+  --text-primary: #E6F7F7;
+  --text-secondary: #9FBFBF;
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-primary: rgba(20, 184, 166, 0.2);
+  --bg-subtle: rgba(255, 255, 255, 0.02);
+  --bg-primary-subtle: rgba(20, 184, 166, 0.1);
+  --glass-bg: rgba(19, 47, 47, 0.8);
+  --shadow-inner: inset 0 0 20px rgba(20, 184, 166, 0.05), 0 8px 32px rgba(0,0,0,0.3);
+}
+
+[data-theme="light"] {
+  --bg-luxury: #F4F7F7;
+  --bg-deep: #E8EFEF;
+  --card-luxury: #FFFFFF;
+  --primary: #0D9488;
+  --accent: #14B8A6;
+  --text-primary: #132F2F;
+  --text-secondary: #3D5A5A;
+  --border-subtle: rgba(13, 148, 136, 0.15);
+  --border-primary: rgba(13, 148, 136, 0.3);
+  --bg-subtle: rgba(13, 148, 136, 0.05);
+  --bg-primary-subtle: rgba(13, 148, 136, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --shadow-inner: 0 4px 20px rgba(13, 148, 136, 0.12);
+}
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  
+  --color-bg-luxury: var(--bg-luxury);
+  --color-bg-deep: var(--bg-deep);
+  --color-card-luxury: var(--card-luxury);
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-primary-subtle: var(--border-primary);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-bg-primary-subtle: var(--bg-primary-subtle);
+
+  --radius-luxury: 16px;
+  
+  /* Strict 4px Grid tokens */
+  --spacing-gap-grid: 24px;
+  --spacing-p-section-y: 32px;
+  --spacing-p-section-x: 24px;
+  --spacing-p-card: 20px;
+
+  /* Custom Shadow for Inner Glow */
+  --shadow-inner-glow: var(--shadow-inner);
+}
+
+@layer base {
+  * {
+    border-color: var(--border-subtle);
+  }
+  body {
+    @apply bg-bg-luxury text-text-primary antialiased font-sans selection:bg-primary/30;
+    line-height: 1.5;
+    letter-spacing: 0.1px;
+  }
+}
+
+/* Custom Components & Utilities */
+@layer components {
+  .glass-card {
+    @apply bg-card-luxury border border-border-subtle rounded-luxury shadow-inner-glow;
+  }
+
+  .section-container {
+    padding: var(--spacing-p-section-y) var(--spacing-p-section-x);
+  }
+  
+  .card-padding {
+    padding: var(--spacing-p-card);
+  }
+
+  .active-teal-gradient {
+    background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%);
+  }
+
+  .premium-table {
+    @apply w-full text-left border-collapse;
+  }
+
+  .premium-table thead tr {
+    @apply bg-bg-subtle border-b border-border-subtle;
+  }
+
+  .premium-table th {
+    @apply px-8 py-5 text-[11px] font-bold text-text-secondary uppercase tracking-[0.15em] whitespace-nowrap;
+  }
+
+  .premium-table tbody tr {
+    @apply border-b border-border-subtle/50 transition-colors hover:bg-bg-subtle cursor-pointer;
+  }
+
+  .premium-table td {
+    @apply px-8 py-6 text-[14px] text-text-primary align-middle;
+  }
+
+  .premium-select {
+    @apply bg-card-luxury border border-border-subtle rounded-xl px-4 py-2.5 text-[13px] font-medium text-text-primary outline-none transition-all cursor-pointer shadow-sm appearance-none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2314B8A6' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+  }
+
+  .premium-select:focus {
+    @apply border-primary/50 ring-2 ring-primary/10 bg-card-luxury;
+  }
+
+  .premium-select option {
+    @apply bg-bg-luxury text-text-primary py-2;
+  }
+}
+
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(20, 184, 166, 0.15);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(20, 184, 166, 0.3);
+  }
+}
+

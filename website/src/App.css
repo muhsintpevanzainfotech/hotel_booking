@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  body {
+    @apply font-poppins bg-[#F8FAFA] text-[#1A1A1A] antialiased;
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply max-w-[1200px] mx-auto px-6;
+  }
+  
+  .section-padding {
+    @apply py-20;
+  }
+
+  .btn-primary {
+    @apply bg-[#0F4C4C] text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:bg-[#2E7D7D] hover:shadow-lg active:scale-95;
+  }
+
+  .btn-outline {
+    @apply border-2 border-[#0F4C4C] text-[#0F4C4C] px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:bg-[#0F4C4C] hover:text-white active:scale-95;
+  }
+  
+  .glass-effect {
+    @apply bg-white/80 backdrop-blur-md border border-white/20;
+  }
+}
+
+/* Custom Masonry/Pinterest Grid Fixes */
+.masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-auto-rows: 10px;
+  gap: 16px;
+}
+
+.masonry-item {
+  grid-row-end: span 20;
+}
+
+.masonry-item:nth-child(even) {
+  grid-row-end: span 25;
+}
+
+.masonry-item:nth-child(3n) {
+  grid-row-end: span 30;
+}
