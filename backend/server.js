@@ -32,6 +32,53 @@ app.use(session({
 // Routes
 app.use('/api', apiRoutes);
 
+app.get('/api/live', (req, res) => {
+  res.send(`
+    <html>
+      <head>
+        <title>Hotel Booking API</title>
+        <style>
+          body{
+            margin:0;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            background:#0f172a;
+            color:white;
+            font-family:Arial,sans-serif;
+          }
+
+          .card{
+            text-align:center;
+            padding:40px;
+            border-radius:20px;
+            background:#1e293b;
+            box-shadow:0 0 20px rgba(0,0,0,0.4);
+          }
+
+          h1{
+            color:#38bdf8;
+            margin-bottom:10px;
+          }
+
+          p{
+            color:#cbd5e1;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <h1>Welcome to Hotel Booking API</h1>
+          <p>API Server is Running Successfully 🚀</p>
+        </div>
+      </body>
+    </html>
+  `);
+});
+
+
+
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/hotel-booking';
 mongoose.connect(MONGODB_URI)
