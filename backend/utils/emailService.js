@@ -1,12 +1,27 @@
 const nodemailer = require('nodemailer');
 
-const transporter = nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE || 'gmail',
+const transportOptions = {
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     }
-});
+};
+
+if (process.env.EMAIL_SERVICE) {
+    transportOptions.service = process.env.EMAIL_SERVICE;
+}
+
+if (process.env.EMAIL_HOST) {
+    transportOptions.host = process.env.EMAIL_HOST;
+    transportOptions.port = process.env.EMAIL_PORT ? Number(process.env.EMAIL_PORT) : 587;
+    transportOptions.secure = process.env.EMAIL_SECURE === 'true';
+}
+
+if (process.env.EMAIL_TLS_REJECT_UNAUTHORIZED === 'false') {
+    transportOptions.tls = { rejectUnauthorized: false };
+}
+
+const transporter = nodemailer.createTransport(transportOptions);
 
 exports.sendOTP = async (email, otp, type = 'verification') => {
     const subjects = {
