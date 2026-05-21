@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { loginRequest, verifyOtpRequest, checkAuth, updateProfileSuccess } from './redux/slices/authSlice';
+import { loginRequest, checkAuth, updateProfileSuccess } from './redux/slices/authSlice';
 import { toggleTheme } from './redux/slices/themeSlice';
 import { fetchStatsRequest, fetchAnalyticsRequest } from './redux/slices/statsSlice';
 import { fetchRoomsRequest } from './redux/slices/roomSlice';
@@ -48,13 +48,12 @@ const AvailabilityManager = ({ apiBase }) => <AvailabilityCalendar apiBase={apiB
 
 function App() {
   const dispatch = useDispatch();
-  const { isAuthenticated, loading: authLoading, user, otpRequired, tempUser } = useSelector(state => state.auth);
+  const { isAuthenticated, loading: authLoading, user } = useSelector(state => state.auth);
   const { data: stats } = useSelector(state => state.stats);
   const { isDarkMode } = useSelector(state => state.theme);
   
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({ username: '', password: '' });
-  const [otp, setOtp] = useState('');
   const [isOpen, setIsOpen] = useState(window.innerWidth >= 1024);
   const location = useLocation();
   const activeTab = location.pathname.split('/')[1] || 'dashboard';
@@ -108,22 +107,12 @@ function App() {
     dispatch(loginRequest(loginData));
   };
 
-  const handleVerifyOtp = (e) => {
-    e.preventDefault();
-    dispatch(verifyOtpRequest({ username: tempUser?.username, otp }));
-  };
-
   if (authLoading && !isAuthenticated) return <LoadingScreen />;
   if (!isAuthenticated) return (
     <LoginView 
       loginData={loginData} 
       setLoginData={setLoginData} 
       handleLogin={handleLogin}
-      otpRequired={otpRequired}
-      otp={otp}
-      setOtp={setOtp}
-      handleVerifyOtp={handleVerifyOtp}
-      tempUser={tempUser}
     />
   );
 

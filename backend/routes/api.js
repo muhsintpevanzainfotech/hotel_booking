@@ -14,7 +14,6 @@ const notificationCtrl = require('../controllers/NotificationController');
 router.post('/login', authCtrl.login);
 router.post('/logout', authCtrl.logout);
 router.get('/auth-status', authCtrl.checkStatus);
-router.post('/verify-login-otp', authCtrl.verifyLoginOTP);
 router.post('/verify-otp', authCtrl.verifyOTP);
 router.post('/forgot-password', authCtrl.forgotPassword);
 router.post('/reset-password', authCtrl.resetPassword);

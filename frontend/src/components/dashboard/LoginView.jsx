@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, RefreshCw, Eye, EyeOff, ArrowLeft, Mail, ShieldCheck, KeyRound } from 'lucide-react';
+import { Lock, RefreshCw, Eye, EyeOff, ArrowLeft, Mail, KeyRound } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const LoginView = ({ loginData, setLoginData, handleLogin, otpRequired, otp, setOtp, handleVerifyOtp, tempUser }) => {
+const LoginView = ({ loginData, setLoginData, handleLogin }) => {
   const { error, loading } = useSelector(state => state.auth);
   const [showPassword, setShowPassword] = useState(false);
   const [view, setView] = useState('login'); // login, forgot, reset
@@ -72,8 +72,7 @@ const LoginView = ({ loginData, setLoginData, handleLogin, otpRequired, otp, set
             whileHover={{ scale: 1.05 }}
             className="bg-bg-primary-subtle p-4 rounded-2xl mb-6 border border-border-primary-subtle shadow-lg"
           >
-            {view === 'login' && !otpRequired && <Lock size={32} className="text-primary" />}
-            {view === 'login' && otpRequired && <ShieldCheck size={32} className="text-primary" />}
+            {view === 'login' && <Lock size={32} className="text-primary" />}
             {view === 'forgot' && <Mail size={32} className="text-primary" />}
             {view === 'reset' && <KeyRound size={32} className="text-primary" />}
           </motion.div>
@@ -81,17 +80,16 @@ const LoginView = ({ loginData, setLoginData, handleLogin, otpRequired, otp, set
             {view === 'forgot' ? 'Security Recovery' : view === 'reset' ? 'Password Reset' : 'Executive Access'}
           </h2>
           <p className="text-text-secondary font-semibold text-[10px] uppercase tracking-[0.3em] text-center">
-            {view === 'forgot' ? 'Request Authorization Code' : view === 'reset' ? 'Set New Encrypted Token' : otpRequired ? 'Multi-Factor Verification' : 'Identity Verification Required'}
+            {view === 'forgot' ? 'Request Authorization Code' : view === 'reset' ? 'Set New Encrypted Token' : 'Identity Verification Required'}
           </p>
         </div>
 
-        <form 
+        <form
             onSubmit={
                 view === 'forgot' ? handleForgotSubmit : 
                 view === 'reset' ? handleResetSubmit : 
-                otpRequired ? handleVerifyOtp : 
                 handleLogin
-            } 
+            }
             className="space-y-[20px] relative z-10"
         >
           {error && view === 'login' && (
@@ -100,12 +98,12 @@ const LoginView = ({ loginData, setLoginData, handleLogin, otpRequired, otp, set
               animate={{ opacity: 1, height: 'auto' }} 
               className="p-4 bg-red-500/10 text-red-400 text-[11px] font-bold uppercase tracking-widest rounded-xl text-center border border-red-500/20"
             >
-              {otpRequired ? 'Verification Error' : 'Access Denied'}: {error}
+              Access Denied: {error}
             </motion.div>
           )}
 
           <AnimatePresence mode="wait">
-            {view === 'login' && !otpRequired && (
+            {view === 'login' && (
               <motion.div 
                 key="login-fields"
                 initial={{ opacity: 0, x: 20 }}
@@ -161,33 +159,6 @@ const LoginView = ({ loginData, setLoginData, handleLogin, otpRequired, otp, set
               </motion.div>
             )}
 
-            {view === 'login' && otpRequired && (
-              <motion.div 
-                key="otp-fields"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-[16px]"
-              >
-                <div className="p-4 bg-primary/5 border border-border-primary-subtle rounded-xl text-center space-y-1">
-                  <p className="text-[10px] text-text-secondary uppercase tracking-widest font-black">MFA Code Sent To</p>
-                  <p className="text-[13px] text-primary font-bold">{tempUser?.email}</p>
-                </div>
-                <div className="space-y-[8px]">
-                  <label className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] ml-1">Verification Signal</label>
-                  <input 
-                    type="text" 
-                    placeholder="Enter 6-Digit OTP" 
-                    maxLength={6}
-                    className="w-full h-[60px] bg-black/40 px-5 rounded-xl outline-none border border-border-primary-subtle text-white transition-all text-2xl text-center font-black tracking-[0.6em] placeholder:text-text-secondary placeholder:tracking-normal placeholder:text-sm"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    required
-                    autoFocus
-                  />
-                </div>
-              </motion.div>
-            )}
 
             {view === 'forgot' && (
               <motion.div 
@@ -266,7 +237,6 @@ const LoginView = ({ loginData, setLoginData, handleLogin, otpRequired, otp, set
             ) : (
                 view === 'forgot' ? 'Request Clearance' : 
                 view === 'reset' ? 'Finalize Identity' :
-                otpRequired ? 'Authorize 2FA' : 
                 'Initialize Access'
             )}
           </button>

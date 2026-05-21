@@ -1,5 +1,5 @@
 import { call, put, takeEvery, all, select } from 'redux-saga/effects';
-import { loginRequest, loginOtpRequired, loginSuccess, loginFailure, verifyOtpRequest, checkAuth, logout } from '../slices/authSlice';
+import { loginRequest, loginSuccess, loginFailure, checkAuth, logout } from '../slices/authSlice';
 import { fetchRoomsRequest, fetchRoomsSuccess, fetchRoomsFailure } from '../slices/roomSlice';
 import { fetchStatsRequest, fetchStatsSuccess, fetchStatsFailure, fetchAnalyticsRequest, fetchAnalyticsSuccess, fetchAnalyticsFailure } from '../slices/statsSlice';
 import { 
@@ -31,31 +31,9 @@ function* handleLogin(action) {
     }));
     const data = yield response.json();
     if (response.ok) {
-      if (data.otpRequired) {
-        yield put(loginOtpRequired({ username: action.payload.username, email: data.email }));
-      } else {
-        yield put(loginSuccess({ user: data.user, token: data.token }));
-      }
-    } else {
-      yield put(loginFailure(data.message || 'Invalid credentials'));
-    }
-  } catch (e) {
-    yield put(loginFailure(e.message));
-  }
-}
-
-function* handleVerifyOtp(action) {
-  try {
-    const response = yield call(() => fetch(`${API_BASE}/verify-login-otp`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(action.payload)
-    }));
-    const data = yield response.json();
-    if (response.ok) {
       yield put(loginSuccess({ user: data.user, token: data.token }));
     } else {
-      yield put(loginFailure(data.message || 'Verification failed'));
+      yield put(loginFailure(data.message || 'Invalid credentials'));
     }
   } catch (e) {
     yield put(loginFailure(e.message));
@@ -257,7 +235,6 @@ function* handleMarkNotificationsRead() {
 // Watchers
 function* watchAuth() {
   yield takeEvery('auth/loginRequest', handleLogin);
-  yield takeEvery('auth/verifyOtpRequest', handleVerifyOtp);
   yield takeEvery('auth/checkAuth', handleCheckAuth);
 }
 

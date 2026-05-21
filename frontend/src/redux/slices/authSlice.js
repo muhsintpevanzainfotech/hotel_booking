@@ -7,25 +7,16 @@ const authSlice = createSlice({
     user: null,
     token: localStorage.getItem('token'),
     loading: false,
-    error: null,
-    otpRequired: false,
-    tempUser: null
+    error: null
   },
   reducers: {
     loginRequest: (state) => { 
       state.loading = true;
       state.error = null;
     },
-    loginOtpRequired: (state, action) => {
-      state.loading = false;
-      state.otpRequired = true;
-      state.tempUser = action.payload; // Contains username/email
-    },
     loginSuccess: (state, action) => {
       state.loading = false;
       state.isAuthenticated = true;
-      state.otpRequired = false;
-      state.tempUser = null;
       state.user = action.payload.user;
       state.token = action.payload.token;
       localStorage.setItem('token', action.payload.token);
@@ -33,9 +24,6 @@ const authSlice = createSlice({
     loginFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
-    },
-    verifyOtpRequest: (state) => {
-      state.loading = true;
     },
     checkAuth: (state) => { state.loading = true; },
     logout: (state) => {
@@ -52,10 +40,8 @@ const authSlice = createSlice({
 
 export const { 
   loginRequest, 
-  loginOtpRequired, 
   loginSuccess, 
   loginFailure, 
-  verifyOtpRequest, 
   checkAuth, 
   logout, 
   updateProfileSuccess 

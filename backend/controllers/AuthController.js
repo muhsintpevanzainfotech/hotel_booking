@@ -21,18 +21,25 @@ exports.login = async (req, res) => {
             return res.status(403).json({ message: 'Account is deactivated' });
         }
 
-        // Generate OTP for login
-        const otp = generateOTP();
-        user.otp = otp;
-        user.otpExpires = Date.now() + 10 * 60 * 1000; // 10 mins
+        const token = jwt.sign(
+            { id: user._id, username: user.username, role: user.role, permissions: user.permissions },
+            process.env.JWT_SECRET || 'hotel-management-jwt-secret',
+            { expiresIn: '7d' }
+        );
+
+        user.lastLogin = Date.now();
         await user.save();
 
-        await sendOTP(user.email, otp, 'login');
-
         res.json({
-            message: 'Credentials verified. OTP sent to your email.',
-            otpRequired: true,
-            email: user.email // To help the frontend know where it was sent
+            message: 'Login successful',
+            token,
+            user: { 
+                id: user._id,
+                username: user.username, 
+                role: user.role,
+                permissions: user.permissions,
+                notificationsEnabled: user.notificationsEnabled
+            }
         });
     } catch (err) {
         console.error('Login error:', err);
@@ -86,6 +93,10 @@ exports.register = async (req, res) => {
         const { username, email, password, role, permissions } = req.body;
         const currentUserRole = req.user.role;
         
+        if (!password) {
+            return res.status(400).json({ message: 'Password is required for registration' });
+        }
+
         // 1. Check if user already exists
         const existingUser = await User.findOne({ $or: [{ username }, { email }] });
         if (existingUser) {
@@ -106,26 +117,19 @@ exports.register = async (req, res) => {
             }
         }
 
-        const tempPassword = crypto.randomBytes(16).toString('hex');
         const newUser = new User({
             username,
             email,
-            password: tempPassword,
+            password,
             role: role || 'admin',
             permissions: permissions || [],
             isVerified: true
         });
 
-        // Generate OTP for initial password setup
-        const setupOTP = generateOTP();
-        newUser.resetPasswordOTP = setupOTP;
-        newUser.resetPasswordOTPExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours for first setup
-
         await newUser.save();
-        await sendWelcomeEmail(email, username, setupOTP);
 
         res.status(201).json({ 
-            message: 'User created. Initialization email sent.', 
+            message: 'User created successfully.', 
             user: newUser
         });
     } catch (err) {
