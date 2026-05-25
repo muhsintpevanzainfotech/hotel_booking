@@ -32,6 +32,7 @@ const Navbar = () => {
     { path: '/facilities', label: t('Facilities', 'सुविधाएं', 'സൗകര്യങ്ങൾ'), key: 'facility' },
     { path: '/gallery', label: t('Gallery', 'गैलरी', 'ഗാലറി'), key: 'gallery' },
     { path: '/about', label: t('About', 'हमारे बारे में', 'ഞങ്ങളെക്കുറിച്ച്'), key: 'about' },
+    { path: '/blog', label: t('Blog', 'ब्लॉग', 'ബ്ലോഗ്'), key: 'blog' },
     { path: '/contact', label: t('Contact', 'संपर्क', 'സമ്പർക്കം'), key: 'contact' }
   ];
 

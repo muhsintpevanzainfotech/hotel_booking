@@ -161,6 +161,114 @@ html {
 .masonry-item-even { grid-row-end: span 25; }
 .masonry-item-triple { grid-row-end: span 30; }
 
+.marquee-track {
+  animation: marquee 18s linear infinite;
+}
+
+.marquee-item {
+  padding-right: 1.5rem;
+}
+
+/* Pause marquee on hover and adjust speed for small screens */
+.marquee-track:hover { animation-play-state: paused; }
+
+@media (max-width: 768px) {
+  .marquee-track { animation-duration: 12s; }
+  .marquee-track { font-size: 0.85rem; }
+}
+
+/* Testimonials horizontal scroll on small screens */
+.testimonials-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+@media (max-width: 900px) {
+  .testimonials-row { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 8px; }
+  .testimonials-row > * { min-width: 260px; flex: 0 0 auto; }
+}
+
+/* Luxury full-width marquee */
+.luxury-marquee {
+  width: 100%;
+  background: #000000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  height: 120px;
+}
+
+.luxury-marquee__track {
+  display: flex;
+  width: 200%;
+  align-items: center;
+  will-change: transform;
+  animation: luxury-marquee 28s linear infinite;
+}
+
+.luxury-marquee__inner {
+  display: flex;
+  align-items: center;
+  gap: 3.5rem;
+  padding-left: 4rem;
+}
+
+.luxury-marquee__item {
+  color: #ffffff;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 48px;
+  letter-spacing: 0.25em;
+  white-space: nowrap;
+  font-family: Poppins, Outfit, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.luxury-marquee__sep {
+  margin-left: 0.5rem;
+  color: #ffffff;
+  opacity: 0.95;
+}
+
+.luxury-marquee__track:hover { animation-play-state: paused; }
+
+@keyframes luxury-marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (max-width: 1024px) {
+  .luxury-marquee { height: 110px; }
+  .luxury-marquee__item { font-size: 36px; letter-spacing: 0.18em; }
+  .luxury-marquee__inner { gap: 2.2rem; padding-left: 2rem; }
+  .luxury-marquee__track { animation-duration: 22s; }
+}
+
+@media (max-width: 480px) {
+  .luxury-marquee { height: 96px; }
+  .luxury-marquee__item { font-size: 22px; letter-spacing: 0.12em; }
+  .luxury-marquee__inner { gap: 1.4rem; padding-left: 1rem; }
+  .luxury-marquee__track { animation-duration: 18s; }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.date-input,
+.styled-select {
+  appearance: none;
+  background-image: none;
+}
+
+.date-input {
+  padding-left: 3.5rem;
+}
+
+.styled-select {
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%230F4C4C' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px 8px;
+  padding-right: 3rem;
+}
+
 /* Hide scrollbar */
 .no-scrollbar {
   scrollbar-width: none;

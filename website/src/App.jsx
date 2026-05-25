@@ -19,6 +19,8 @@ import BookingStatus from './pages/BookingStatus';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsConditions from './pages/TermsConditions';
 import Facilities from './pages/Facilities';
+import Blog from './pages/Blog';
+import Offers from './pages/Offers';
 
 // Components
 import Preloader from './components/common/Preloader';
@@ -54,6 +56,8 @@ function App() {
             <Route path="/booking-status" element={<BookingStatus />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-conditions" element={<TermsConditions />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/offers" element={<Offers />} />
           </Routes>
         </main>
         <Footer />
