@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
+import { getImageUrl } from '../../utils/imageHelper';
 
 const HeroRoomSlider = () => {
   const { items: rooms } = useSelector(state => state.rooms);
@@ -33,7 +34,7 @@ const HeroRoomSlider = () => {
           <SwiperSlide key={room._id || index}>
             <div className="hero-room-slide">
               <img 
-                src={`${import.meta.env.VITE_SERVER_URL}/${room.images?.[0]?.url || room.images?.[0]}`} 
+                src={getImageUrl(room.images?.[0]?.url || room.images?.[0])} 
                 alt={room.name} 
                 className="slide-bg"
               />

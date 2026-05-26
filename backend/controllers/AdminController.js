@@ -76,6 +76,18 @@ exports.getBlogs = async (req, res) => {
     catch (error) { res.status(500).json({ error: error.message }); }
 };
 
+exports.getBlogBySlug = async (req, res) => {
+    try {
+        const mongoose = require('mongoose');
+        let blog = await Blog.findOne({ slug: req.params.slug });
+        if (!blog && mongoose.Types.ObjectId.isValid(req.params.slug)) {
+            blog = await Blog.findById(req.params.slug);
+        }
+        if (!blog) return res.status(404).json({ message: 'Blog post not found' });
+        res.json(blog);
+    } catch (error) { res.status(500).json({ error: error.message }); }
+};
+
 exports.updateBlog = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
@@ -83,6 +95,14 @@ exports.updateBlog = async (req, res) => {
 
         if (req.body.title) {
             blog.slug = slugify(req.body.title, { lower: true, strict: true });
+        }
+
+        if (req.body.imageCleared === 'true') {
+            if (blog.image) {
+                if (isCloudinaryUrl(blog.image)) await deleteFromCloudinary(blog.image);
+                else deleteFile(blog.image);
+                blog.image = '';
+            }
         }
 
         if (req.file) {
@@ -137,6 +157,14 @@ exports.updateTestimonial = async (req, res) => {
     try {
         const testimonial = await Testimonial.findById(req.params.id);
         if (!testimonial) return res.status(404).json({ message: 'Testimonial not found' });
+
+        if (req.body.imageCleared === 'true') {
+            if (testimonial.image) {
+                if (isCloudinaryUrl(testimonial.image)) await deleteFromCloudinary(testimonial.image);
+                else deleteFile(testimonial.image);
+                testimonial.image = '';
+            }
+        }
 
         if (req.file) {
             if (testimonial.image) {
@@ -240,6 +268,21 @@ exports.updateFacility = async (req, res) => {
     try {
         const facility = await Facility.findById(req.params.id);
         if (!facility) return res.status(404).json({ message: 'Facility not found' });
+
+        if (req.body.imageCleared === 'true') {
+            if (facility.image) {
+                if (isCloudinaryUrl(facility.image)) await deleteFromCloudinary(facility.image);
+                else deleteFile(facility.image);
+                facility.image = '';
+            }
+        }
+        if (req.body.coverImageCleared === 'true') {
+            if (facility.coverImage) {
+                if (isCloudinaryUrl(facility.coverImage)) await deleteFromCloudinary(facility.coverImage);
+                else deleteFile(facility.coverImage);
+                facility.coverImage = '';
+            }
+        }
 
         if (req.files) {
             if (req.files.image) {
@@ -384,5 +427,13 @@ exports.deleteOffer = async (req, res) => {
     try {
         await Offer.findByIdAndDelete(req.params.id);
         res.json({ message: 'Offer removed' });
+    } catch (error) { res.status(500).json({ error: error.message }); }
+};
+
+// Enquiry Purge endpoint
+exports.deleteEnquiry = async (req, res) => {
+    try {
+        await Enquiry.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Enquiry deleted successfully' });
     } catch (error) { res.status(500).json({ error: error.message }); }
 };

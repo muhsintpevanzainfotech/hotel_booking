@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, PhoneCall, MapPin, Send, MessageSquare } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
 import useContact from '../hooks/useContact';
@@ -64,15 +65,34 @@ const Contact = () => {
   return (
     <div className="bg-[#F8FAFA] min-h-screen font-poppins">
       {/* Page Header */}
-      <section className="bg-[#0F4C4C] text-white py-16 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-teal-800 rounded-full -translate-y-1/2 translate-x-1/2 opacity-20 blur-3xl"></div>
-        <div className="max-w-[1200px] mx-auto px-6 relative z-10">
-          <div className="flex items-center gap-3 mb-4 opacity-60">
-             <MessageSquare size={20} />
-             <span className="text-xs font-bold uppercase tracking-[0.3em]">{t('Get in Touch', 'संपर्क करें')}</span>
+      <section className="px-4 py-4 md:px-8 md:py-6 bg-white w-full max-w-[1400px] mx-auto">
+        <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] overflow-hidden flex flex-col justify-center items-center text-center shadow-md">
+          {/* Background image & Overlay */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <img
+              src="/hero_bright.png"
+              alt="Contact Us Banner"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+            {/* Dark green gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0F4C4C]/90 via-[#0F4C4C]/80 to-teal-900/60 backdrop-blur-[1px]" />
           </div>
-          <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter">{t('Contact Us', 'हमसे जुड़ें')}</h1>
-          <p className="text-teal-100 text-lg max-w-xl font-light">{t('Have questions? We are here to help you plan your perfect Kerala getaway.', 'कोई प्रश्न हैं? हम आपकी सही केरल यात्रा की योजना बनाने में आपकी सहायता करने के लिए यहाँ हैं।')}</p>
+          
+          {/* Header Text Content */}
+          <div className="relative z-10 text-white space-y-3 px-4 sm:px-6">
+            <div className="flex items-center justify-center gap-2 text-teal-300 opacity-80">
+              <MessageSquare size={16} className="text-teal-300" />
+              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em]">{t('Get in Touch', 'संपर्क करें', 'ബന്ധപ്പെടുക')}</span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight leading-none text-white">
+              {t('Contact Us', 'हमसे जुड़ें', 'ബന്ധപ്പെടുക')}
+            </h1>
+            <div className="flex items-center justify-center gap-2 text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-widest text-teal-200">
+              <Link to="/" className="hover:text-white transition-colors">{t('Home', 'होम', 'ഹോം')}</Link>
+              <span>•</span>
+              <span className="text-white">{t('Contact', 'संपर्क', 'സമ്പർക്കം')}</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -110,7 +130,7 @@ const Contact = () => {
                <p className="text-teal-100/70 mb-8 leading-relaxed font-medium">{t('For faster response, chat with our local concierge team directly on WhatsApp.', 'तेजी से प्रतिक्रिया के लिए, व्हाट्सएप पर हमारी टीम के साथ सीधे चैट करें।')}</p>
                <a 
                   href={`https://wa.me/${(contact?.phone || '919876543210').replace(/\D/g, '')}`} 
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-[#25D366] text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:bg-[#20ba5a] active:scale-95 transition-all"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-[#25D366] text-white rounded-full font-black text-sm uppercase tracking-widest shadow-xl hover:bg-[#20ba5a] active:scale-95 transition-all"
                >
                   <PhoneCall size={18} />
                   {t('WhatsApp Us', 'व्हाट्सएप करें')}
@@ -179,7 +199,7 @@ const Contact = () => {
               <button 
                 type="submit" 
                 disabled={status.loading}
-                className="w-full bg-[#0F4C4C] text-white py-6 rounded-2xl font-black uppercase text-xs tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl hover:bg-[#2E7D7D] transition-all active:scale-95 disabled:opacity-50"
+                className="w-full bg-neutral-950 hover:bg-neutral-900 text-white py-5 rounded-full font-black uppercase text-xs tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl transition-all active:scale-95 disabled:opacity-50"
               >
                 {status.loading ? t('Sending...', 'भेजा जा रहा है...') : t('Send Message', 'संदेश भेजें')}
                 <Send size={18} />

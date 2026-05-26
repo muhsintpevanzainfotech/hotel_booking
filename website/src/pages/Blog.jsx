@@ -3,16 +3,50 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Calendar, User, ChevronLeft, ChevronRight, Play, X, ArrowRight, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { getImageUrl } from '../utils/imageHelper';
 
 const Blog = () => {
   const { t } = useLanguage();
   
+  // State for database blogs
+  const [dbPosts, setDbPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   // State for search and filtering
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedTag, setSelectedTag] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const [sliderIndex, setSliderIndex] = useState(0);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE}/blogs`);
+        if (response.ok) {
+          const data = await response.json();
+          const formattedDbBlogs = data.map(blog => ({
+            id: blog._id,
+            slug: blog.slug || blog._id,
+            type: 'standard',
+            image: blog.image,
+            author: blog.author || 'Admin',
+            date: new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+            title: blog.title,
+            description: blog.content,
+            category: blog.category || 'Holiday',
+            tags: ['Hotel', 'Vacation']
+          }));
+          setDbPosts(formattedDbBlogs);
+        }
+      } catch (error) {
+        console.error("Failed to fetch blogs", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlogs();
+  }, []);
   
   // Video Modal state
   const [videoOpen, setVideoOpen] = useState(false);
@@ -26,6 +60,7 @@ const Blog = () => {
   const initialPosts = [
     {
       id: 1,
+      slug: 'ultimate-guide-to-hassle-free-hotel-booking',
       type: 'standard',
       image: '/hero.jpg',
       author: 'Robert Fox',
@@ -37,6 +72,7 @@ const Blog = () => {
     },
     {
       id: 2,
+      slug: 'top-10-tips-to-find-perfect-hotel',
       type: 'slider',
       images: [
         '/room_family.png',
@@ -52,6 +88,7 @@ const Blog = () => {
     },
     {
       id: 3,
+      slug: 'wonderful-17-places-in-paris',
       type: 'video',
       image: '/sustainable_luxury_garden_1778950196361.png',
       videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // Placeholder video
@@ -64,53 +101,25 @@ const Blog = () => {
     },
     {
       id: 4,
+      slug: 'offers-exclusive-services-and-facilities',
       type: 'standard',
       image: '/hero_bright.png',
       author: 'Robert Fox',
       date: 'Sep 23, 2026',
-      title: 'Offers Exclusive Services & Facilities to Guests',
-      description: 'Lorem ipsum dolor sit amet consectetur. Felis velit congue ac aliquam nunc vulputate id. Morbi rutrum aliquet nec malesuada commodo turpis. Integer semper adipiscing nunc eu tempor. Faucibus platea id rhoncus sem varius dui nibh tortor dui amet.',
-      category: 'Events',
-      tags: ['Room', 'Destination', 'Vacation']
+      title: 'Offers Exclusive Services & Facilities to Guests'
     }
   ];
 
   // Sidebar Mock Data
-  const categories = [
-    { name: 'Holiday', count: 23 },
-    { name: 'Hotel Booking', count: 8 },
-    { name: 'Destination', count: 18 },
-    { name: 'Vacation', count: 14 },
-    { name: 'Tour', count: 2 },
-    { name: 'Events', count: 14 }
-  ];
+  const displayPosts = dbPosts;
 
-  const recentPosts = [
-    {
-      id: 1,
-      title: 'Top 6 Hotel Trends to Watch',
-      date: 'Nov 25, 2026',
-      image: '/room_deluxe.png'
-    },
-    {
-      id: 2,
-      title: 'Booking Your Family vacation in Japan',
-      date: 'Nov 17, 2026',
-      image: '/room_family.png'
-    },
-    {
-      id: 3,
-      title: 'Exclusive Services & Season\'s Offers',
-      date: 'Nov 09, 2026',
-      image: '/room1.jpg'
-    },
-    {
-      id: 4,
-      title: 'Merging Nature with Luxury Hotel',
-      date: 'Nov 02, 2026',
-      image: '/sustainable_luxury_garden_1778950196361.png'
-    }
-  ];
+  const availableCategories = ['Holiday', 'Hotel Booking', 'Destination', 'Vacation', 'Tour', 'Events'];
+  const categories = availableCategories.map(catName => {
+    const count = displayPosts.filter(p => p.category === catName).length;
+    return { name: catName, count };
+  });
+
+  const displayRecentPosts = dbPosts.slice(0, 4);
 
   const tags = [
     'Restaurant', 'Road Trip', 'Planning', 'Hotel', 'Vacation',
@@ -118,7 +127,7 @@ const Blog = () => {
   ];
 
   // Filter Logic
-  const filteredPosts = initialPosts.filter(post => {
+  const filteredPosts = displayPosts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           post.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory;
@@ -146,8 +155,8 @@ const Blog = () => {
     <div className="bg-[#F8FAFA] min-h-screen">
       
       {/* 1. HERO HEADER CARD */}
-      <section className="px-4 py-4 md:px-8 md:py-6 bg-white">
-        <div className="relative h-[200px] sm:h-[250px] md:h-[350px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] overflow-hidden flex flex-col justify-center items-center text-center shadow-md">
+      <section className="px-4 py-4 md:px-8 md:py-6 bg-white w-full max-w-[1400px] mx-auto">
+        <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] overflow-hidden flex flex-col justify-center items-center text-center shadow-md">
           {/* Background image & Overlay */}
           <div className="absolute inset-0 z-0 pointer-events-none">
             <img
@@ -155,12 +164,17 @@ const Blog = () => {
               alt="Latest News Banner"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
-            <div className="absolute inset-0 bg-[#0F4C4C]/75 backdrop-blur-[2px]" />
+            {/* Dark green gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0F4C4C]/90 via-[#0F4C4C]/80 to-teal-900/60 backdrop-blur-[1px]" />
           </div>
           
           {/* Header Text Content */}
           <div className="relative z-10 text-white space-y-3 px-4 sm:px-6">
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight">
+            <div className="flex items-center justify-center gap-2 text-teal-300 opacity-80">
+              <BookOpen size={16} className="text-teal-300" />
+              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em]">{t('Latest News', 'नवीनतम समाचार')}</span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight leading-none text-white">
               {t('Latest News', 'नवीनतम समाचार')}
             </h1>
             <div className="flex items-center justify-center gap-2 text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-widest text-teal-200">
@@ -195,7 +209,7 @@ const Blog = () => {
                     {post.type === 'slider' ? (
                       <div className="relative w-full h-full">
                         <img
-                          src={post.images[sliderIndex]}
+                          src={getImageUrl(post.images[sliderIndex])}
                           alt={post.title}
                           className="w-full h-full object-cover transition-all duration-700"
                         />
@@ -217,7 +231,7 @@ const Blog = () => {
                     ) : post.type === 'video' ? (
                       <div className="relative w-full h-full cursor-pointer" onClick={() => setVideoOpen(true)}>
                         <img
-                          src={post.image}
+                          src={getImageUrl(post.image)}
                           alt={post.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                         />
@@ -231,7 +245,7 @@ const Blog = () => {
                     ) : (
                       // Standard / Default Image Post
                       <img
-                        src={post.image}
+                        src={getImageUrl(post.image)}
                         alt={post.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.2s]"
                       />
@@ -253,9 +267,11 @@ const Blog = () => {
                     </div>
 
                     {/* Title */}
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 leading-snug group-hover:text-[#0F4C4C] transition-colors cursor-pointer">
-                      {post.title}
-                    </h2>
+                    <Link to={`/blog/${post.slug || post.id}`}>
+                      <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 leading-snug group-hover:text-[#0F4C4C] transition-colors cursor-pointer">
+                        {post.title}
+                      </h2>
+                    </Link>
 
                     {/* Excerpt */}
                     <p className="text-gray-500 text-xs sm:text-sm leading-relaxed max-w-3xl">
@@ -263,14 +279,14 @@ const Blog = () => {
                     </p>
 
                     {/* Read More link */}
-                    <div className="pt-1">
-                      <Link 
-                        to="#"
-                        onClick={(e) => e.preventDefault()}
-                        className="inline-block text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-[#0f4c4c] hover:text-[#0f4c4c]/70 transition-colors border-b-2 border-[#0f4c4c] pb-0.5"
-                      >
-                        {t('Read More.', 'और पढ़ें।')}
-                      </Link>
+                    <div className="pt-2">
+                       <Link 
+                         to={`/blog/${post.slug || post.id}`}
+                         className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0f4c4c] text-white hover:bg-neutral-900 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md transition-all active:scale-95 group/btn"
+                       >
+                         <span>{t('Read More', 'और पढ़ें')}</span>
+                         <ArrowRight size={12} className="transform group-hover/btn:translate-x-1 transition-transform" />
+                       </Link>
                     </div>
                   </div>
                 </motion.article>
@@ -299,9 +315,9 @@ const Blog = () => {
                   <button
                     key={i}
                     onClick={() => setCurrentPage(i + 1)}
-                    className={`w-10 h-10 font-black text-xs uppercase transition-all duration-200 border rounded flex items-center justify-center cursor-pointer ${
+                    className={`w-10 h-10 font-black text-xs uppercase transition-all duration-200 border rounded-full flex items-center justify-center cursor-pointer ${
                       currentPage === i + 1
-                        ? 'bg-black text-white border-black shadow-md'
+                        ? 'bg-neutral-950 text-white border-neutral-950 shadow-md'
                         : 'bg-white text-slate-700 border-gray-200 hover:bg-slate-50'
                     }`}
                   >
@@ -312,7 +328,7 @@ const Blog = () => {
                 {currentPage < totalPages && (
                   <button
                     onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                    className="w-10 h-10 font-black text-xs border border-gray-200 bg-white text-slate-700 rounded flex items-center justify-center hover:bg-slate-50 transition-all cursor-pointer"
+                    className="w-10 h-10 font-black text-xs border border-gray-200 bg-white text-slate-700 rounded-full flex items-center justify-center hover:bg-slate-50 transition-all cursor-pointer"
                   >
                     &gt;
                   </button>
@@ -338,7 +354,7 @@ const Blog = () => {
                   placeholder="Search Post..."
                   className="w-full px-5 py-3.5 text-xs font-semibold text-slate-800 placeholder-slate-400 bg-transparent border-none focus:outline-none focus:ring-0"
                 />
-                <button className="bg-black text-white px-5 flex items-center justify-center hover:bg-slate-900 active:scale-95 transition-all">
+                <button className="bg-neutral-950 hover:bg-neutral-900 text-white px-5 flex items-center justify-center active:scale-95 transition-all">
                   <Search size={16} />
                 </button>
               </div>
@@ -385,12 +401,12 @@ const Blog = () => {
             <div className="bg-white p-8 rounded-[24px] border border-gray-100 shadow-sm space-y-6">
               <h3 className="text-lg font-black text-slate-900 border-b border-gray-100 pb-3">{t('Recent Post', 'हालिया पोस्ट')}</h3>
               <div className="space-y-5">
-                {recentPosts.map((post) => (
-                  <div key={post.id} className="flex gap-4 items-center group cursor-pointer">
+                {displayRecentPosts.map((post) => (
+                  <Link key={post.id} to={`/blog/${post.slug || post.id}`} className="flex gap-4 items-center group cursor-pointer">
                     {/* Small thumbnail */}
                     <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 border border-gray-100 shrink-0 shadow-sm relative">
                       <img
-                        src={post.image}
+                        src={getImageUrl(post.image)}
                         alt={post.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
@@ -404,7 +420,7 @@ const Blog = () => {
                         {post.date}
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -430,9 +446,9 @@ const Blog = () => {
                       setSelectedTag(tag);
                       setCurrentPage(1);
                     }}
-                    className={`px-4 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg border transition-all ${
+                    className={`px-4 py-2 text-[10px] font-bold uppercase tracking-wider rounded-full border transition-all ${
                       selectedTag === tag
-                        ? 'bg-black text-white border-black shadow-md scale-95'
+                        ? 'bg-neutral-950 text-white border-neutral-950 shadow-md scale-95'
                         : 'bg-white text-slate-500 border-gray-200 hover:border-slate-400 hover:text-slate-800 hover:bg-slate-50'
                     }`}
                   >

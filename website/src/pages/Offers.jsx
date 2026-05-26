@@ -38,22 +38,35 @@ const Offers = () => {
 
   return (
     <div className="bg-[#F8FAFA] min-h-screen font-poppins pb-24">
-      {/* Hero Header */}
-      <section className="bg-[#0F4C4C] text-white py-32 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-teal-800 rounded-full -translate-y-1/2 translate-x-1/2 opacity-20 blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-teal-900 rounded-full translate-y-1/3 -translate-x-1/3 opacity-30 blur-3xl"></div>
-        <div className="max-w-[1200px] mx-auto px-6 relative z-10 text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 rounded-3xl mb-8 backdrop-blur-xl border border-white/10">
-              <Gift size={40} className="text-teal-400" />
+      {/* Page Header */}
+      <section className="px-4 py-4 md:px-8 md:py-6 bg-white w-full max-w-[1400px] mx-auto">
+        <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] overflow-hidden flex flex-col justify-center items-center text-center shadow-md">
+          {/* Background image & Overlay */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <img
+              src="/room_deluxe.png"
+              alt="Offers Banner"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+            {/* Dark green gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0F4C4C]/90 via-[#0F4C4C]/80 to-teal-900/60 backdrop-blur-[1px]" />
+          </div>
+          
+          {/* Header Text Content */}
+          <div className="relative z-10 text-white space-y-3 px-4 sm:px-6">
+            <div className="flex items-center justify-center gap-2 text-teal-300 opacity-80">
+              <Gift size={16} className="text-teal-300" />
+              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em]">{t('Exclusive Offers', 'विशेष ऑफर', 'പ്രത്യേക ഓഫറുകൾ')}</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter">
-              {t('Exclusive Offers', 'विशेष ऑफर')}
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight leading-none text-white">
+              {t('Exclusive Offers', 'विशेष ऑफर', 'പ്രത്യേക ഓഫറുകൾ')}
             </h1>
-            <p className="text-teal-100 text-lg opacity-80 max-w-2xl mx-auto">
-              {t('Unlock luxury for less. Explore our curated seasonal deals, packages, and limited-time promocodes.', 'कम में लक्जरी अनलॉक करें। हमारे विशेष मौसमी सौदों और सीमित समय के प्रोमो कोड का पता लगाएं।')}
-            </p>
-          </motion.div>
+            <div className="flex items-center justify-center gap-2 text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-widest text-teal-200">
+              <Link to="/" className="hover:text-white transition-colors">{t('Home', 'होम', 'ഹോം')}</Link>
+              <span>•</span>
+              <span className="text-white">{t('Offers', 'ऑफर', 'ഓഫറുകൾ')}</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -131,9 +144,9 @@ const Offers = () => {
 
                   <button
                     onClick={() => window.location.href = `/rooms?code=${offer.code}`}
-                    className="w-full py-4 bg-[#0F4C4C] hover:bg-[#2E7D7D] text-white rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all duration-200 active:scale-[0.98] shadow-md shadow-teal-900/10 cursor-pointer text-center"
+                    className="w-full py-3.5 bg-neutral-950 hover:bg-neutral-900 text-white rounded-full font-black uppercase text-[10px] tracking-widest transition-all duration-200 active:scale-[0.98] shadow-md cursor-pointer text-center"
                   >
-                    {t('Book with Offer', 'ऑफर के साथ बुक करें')}
+                    {t('Book with Offer', 'ऑफर के साथ बुक करें', 'ഓഫറോടെ ബുക്ക് ചെയ്യുക')}
                   </button>
                 </div>
               </motion.div>

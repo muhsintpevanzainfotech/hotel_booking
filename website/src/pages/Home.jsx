@@ -2,9 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRoomsRequest } from '../redux/slices/roomSlice';
 import { Link, useNavigate } from 'react-router-dom';
-import { Star, Heart, MapPin, Waves, Users, Zap, Shield, Check, Phone, MessageCircle, Home as HomeIcon, Layout, CreditCard, Sparkles, Coffee, Utensils, Wifi, Wind, Car, Camera, Quote, CalendarDays, Bed, User, Baby, Key } from 'lucide-react';
+import { Star, Heart, MapPin, Waves, Users, Zap, Shield, Check, Phone, MessageCircle, Home as HomeIcon, Layout, CreditCard, Sparkles, Coffee, Utensils, Wifi, Wind, Car, Camera, Quote, CalendarDays, Bed, User, Baby, Key, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
+import { getImageUrl } from '../utils/imageHelper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -20,6 +21,7 @@ const Home = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [galleryItems, setGalleryItems] = useState([]);
   const [banners, setBanners] = useState([]);
+  const [blogs, setBlogs] = useState([]);
   const [loadingContent, setLoadingContent] = useState(true);
 
   useEffect(() => {
@@ -27,11 +29,12 @@ const Home = () => {
 
     const fetchContent = async () => {
       try {
-        const [facRes, testRes, galRes, banRes] = await Promise.all([
+        const [facRes, testRes, galRes, banRes, blogRes] = await Promise.all([
           fetch(`${import.meta.env.VITE_API_BASE}/facilities`),
           fetch(`${import.meta.env.VITE_API_BASE}/testimonials`),
           fetch(`${import.meta.env.VITE_API_BASE}/gallery`),
-          fetch(`${import.meta.env.VITE_API_BASE}/banners`)
+          fetch(`${import.meta.env.VITE_API_BASE}/banners`),
+          fetch(`${import.meta.env.VITE_API_BASE}/blogs`)
         ]);
 
         if (facRes.ok) setFacilities(await facRes.json());
@@ -41,6 +44,7 @@ const Home = () => {
           setGalleryItems(gallery.slice(0, 6));
         }
         if (banRes.ok) setBanners(await banRes.json());
+        if (blogRes && blogRes.ok) setBlogs(await blogRes.json());
       } catch (error) {
         console.error("Failed to fetch home content", error);
       } finally {
@@ -149,6 +153,51 @@ const Home = () => {
     { name: 'Budget', icon: <CreditCard size={24} />, key: 'budget' },
     { name: 'Premium', icon: <Sparkles size={24} />, key: 'premium' },
   ];
+
+  const defaultMockBlogs = [
+    {
+      id: 1,
+      slug: 'ultimate-guide-to-hassle-free-hotel-booking',
+      image: '/hero.jpg',
+      author: 'Robert Fox',
+      date: 'Sep 09, 2026',
+      title: t('The Ultimate Guide to Hassle Free Hotel Booking', 'हॉस्टल फ्री होटल बुकिंग के लिए अंतिम गाइड'),
+      desc: 'Lorem ipsum dolor sit amet consectetur. Felis velit congue ac aliquam nunc vulputate id. Morbi rutrum aliquet nec malesuada commodo...',
+    },
+    {
+      id: 2,
+      slug: 'top-10-tips-to-find-perfect-hotel',
+      image: '/room_family.png',
+      author: 'Robert Fox',
+      date: 'Sep 12, 2026',
+      title: t('Top 10 Tips to Find the Perfect Hotel for Your Next Trip', 'आपकी अगली यात्रा के लिए सही होटल खोजने के लिए शीर्ष 10 युक्तियाँ'),
+      desc: 'Lorem ipsum dolor sit amet consectetur. Felis velit congue ac aliquam nunc vulputate id. Morbi rutrum aliquet nec malesuada commodo...',
+    },
+    {
+      id: 3,
+      slug: 'wonderful-17-places-in-paris',
+      image: '/sustainable_luxury_garden_1778950196361.png',
+      author: 'Robert Fox',
+      date: 'Sep 18, 2026',
+      title: t('Wonderful 17 places you cannot ignore in Paris', 'पेरिस में अद्भुत 17 स्थान जिन्हें आप अनदेखा नहीं कर सकते'),
+      desc: 'Lorem ipsum dolor sit amet consectetur. Felis velit congue ac aliquam nunc vulputate id. Morbi rutrum aliquet nec malesuada commodo...',
+    }
+  ];
+
+  const displayBlogs = blogs.length > 0
+    ? [
+        ...blogs.map(b => ({
+          id: b._id,
+          slug: b.slug || b._id,
+          image: b.image,
+          author: b.author || 'Admin',
+          date: new Date(b.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+          title: b.title,
+          desc: b.content
+        })),
+        ...defaultMockBlogs
+      ].slice(0, 3)
+    : defaultMockBlogs;
 
   return (
     <div className="bg-[#F8FAFA] min-h-screen font-poppins pb-24 md:pb-0">
@@ -413,7 +462,7 @@ const Home = () => {
                 >
                   <div>
                     <div className="relative aspect-[4/5] rounded-[24px] overflow-hidden mb-5 shadow-inner border border-white">
-                      <img src={room.images?.[0]?.url ? `${import.meta.env.VITE_SERVER_URL}/${room.images[0].url}` : '/room_deluxe.png'} alt={room.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                      <img src={room.images?.[0]?.url ? getImageUrl(room.images[0].url) : '/room_deluxe.png'} alt={room.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                       <div className="absolute top-5 left-5 px-3 py-1.5 bg-white/90 backdrop-blur-md rounded-xl text-[8px] font-black uppercase tracking-widest text-[#0F4C4C] shadow-lg">
                         {room.type}
                       </div>
@@ -481,7 +530,7 @@ const Home = () => {
                 map: MapPin, location: MapPin, sparkles: Sparkles
               };
               const IconComponent = IconMap[fac.icon?.toLowerCase()] || Sparkles;
-              const coverImg = fac.coverImage ? `${import.meta.env.VITE_SERVER_URL}/${fac.coverImage}` : null;
+              const coverImg = fac.coverImage ? getImageUrl(fac.coverImage) : null;
 
               return (
                 <motion.div key={i} whileHover={{ y: -8 }} className={`relative p-10 rounded-[32px] border ${coverImg ? 'border-none' : 'border-gray-50'} group hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col ${coverImg ? '' : 'bg-[#F8FAFA] hover:bg-[#0F4C4C]'}`}>
@@ -494,7 +543,7 @@ const Home = () => {
                   <div className="relative z-10 flex-1 transition-colors duration-500">
                     <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-105 transition-transform overflow-hidden relative ${coverImg ? 'bg-white/20 backdrop-blur-md text-white border border-white/20' : 'bg-white text-[#0F4C4C]'}`}>
                       {fac.image ? (
-                        <img src={`${import.meta.env.VITE_SERVER_URL}/${fac.image}`} alt={fac.title} className="w-full h-full object-cover" />
+                        <img src={getImageUrl(fac.image)} alt={fac.title} className="w-full h-full object-cover" />
                       ) : (
                         <IconComponent size={28} />
                       )}
@@ -526,7 +575,7 @@ const Home = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
             {galleryItems.length > 0 ? galleryItems.map((item, i) => (
               <motion.div key={i} whileHover={{ scale: 1.02 }} className="aspect-square rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-xl relative group border border-white">
-                <img src={`${import.meta.env.VITE_SERVER_URL}/${item.image}`} alt="Gallery" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                <img src={getImageUrl(item.image)} alt="Gallery" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <Sparkles className="text-white" size={24} />
                 </div>
@@ -615,7 +664,7 @@ const Home = () => {
                   </div>
                   <div className="flex items-center gap-4 border-t border-gray-100 pt-6 mt-2">
                     {test.image ? (
-                      <img src={`${import.meta.env.VITE_SERVER_URL}/${test.image}`} alt={test.name} className="w-12 h-12 rounded-full object-cover shadow-md border border-white" />
+                      <img src={getImageUrl(test.image)} alt={test.name} className="w-12 h-12 rounded-full object-cover shadow-md border border-white" />
                     ) : (
                       <div className="w-12 h-12 rounded-full bg-teal-50 border border-white flex items-center justify-center text-[#0F4C4C] font-bold text-sm">
                         {test.name?.[0]}
@@ -650,7 +699,7 @@ const Home = () => {
             return (
               <div className="max-w-[1400px] mx-auto relative h-[400px] rounded-[48px] overflow-hidden shadow-2xl group">
                 <img
-                  src={activeBanner.image ? `${import.meta.env.VITE_SERVER_URL}/${activeBanner.image}` : "/hero_bright.png"}
+                  src={activeBanner.image ? getImageUrl(activeBanner.image) : "/hero_bright.png"}
                   alt="Promotion"
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                 />
@@ -742,33 +791,8 @@ const Home = () => {
             }}
             className="w-full"
           >
-            {[
-              {
-                id: 1,
-                image: '/hero.jpg',
-                author: 'Robert Fox',
-                date: 'Sep 09, 2026',
-                title: t('The Ultimate Guide to Hassle Free Hotel Booking', 'हॉस्टल फ्री होटल बुकिंग के लिए अंतिम गाइड'),
-                desc: 'Lorem ipsum dolor sit amet consectetur. Felis velit congue ac aliquam nunc vulputate id. Morbi rutrum aliquet nec malesuada commodo...',
-              },
-              {
-                id: 2,
-                image: '/room_family.png',
-                author: 'Robert Fox',
-                date: 'Sep 12, 2026',
-                title: t('Top 10 Tips to Find the Perfect Hotel for Your Next Trip', 'आपकी अगली यात्रा के लिए सही होटल खोजने के लिए शीर्ष 10 युक्तियाँ'),
-                desc: 'Lorem ipsum dolor sit amet consectetur. Felis velit congue ac aliquam nunc vulputate id. Morbi rutrum aliquet nec malesuada commodo...',
-              },
-              {
-                id: 3,
-                image: '/sustainable_luxury_garden_1778950196361.png',
-                author: 'Robert Fox',
-                date: 'Sep 18, 2026',
-                title: t('Wonderful 17 places you cannot ignore in Paris', 'पेरिस में अद्भुत 17 स्थान जिन्हें आप अनदेखा नहीं कर सकते'),
-                desc: 'Lorem ipsum dolor sit amet consectetur. Felis velit congue ac aliquam nunc vulputate id. Morbi rutrum aliquet nec malesuada commodo...',
-              }
-            ].map((post, i) => (
-              <SwiperSlide key={post.id} className="h-auto">
+            {displayBlogs.map((post, i) => (
+              <SwiperSlide key={post.slug || post.id} className="h-auto">
                 <motion.article
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -777,21 +801,25 @@ const Home = () => {
                   className="group flex flex-col justify-between h-full bg-white rounded-[24px] sm:rounded-[32px] p-5 sm:p-6 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 w-full"
                 >
                 <div>
-                  <div className="relative aspect-[16/10] rounded-[18px] sm:rounded-[24px] overflow-hidden mb-5 sm:mb-6 bg-gray-50">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  </div>
+                  <Link to={`/blog/${post.slug || post.id}`}>
+                    <div className="relative aspect-[16/10] rounded-[18px] sm:rounded-[24px] overflow-hidden mb-5 sm:mb-6 bg-gray-50">
+                      <img
+                        src={post.image ? getImageUrl(post.image) : '/hero.jpg'}
+                        alt={post.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
+                  </Link>
                   <div className="space-y-3">
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[10px] font-black uppercase tracking-wider text-gray-400">
                       <span className="flex items-center gap-1.5"><User size={12} className="text-teal-600" /> By {post.author}</span>
                       <span className="flex items-center gap-1.5"><CalendarDays size={12} className="text-teal-600" /> {post.date}</span>
                     </div>
-                    <h3 className="text-base sm:text-lg font-bold text-[#0F4C4C] leading-snug group-hover:text-teal-700 transition-colors line-clamp-2">
-                      {post.title}
-                    </h3>
+                    <Link to={`/blog/${post.slug || post.id}`}>
+                      <h3 className="text-base sm:text-lg font-bold text-[#0F4C4C] leading-snug group-hover:text-teal-700 transition-colors line-clamp-2">
+                        {post.title}
+                      </h3>
+                    </Link>
                     <p className="text-gray-500 text-xs leading-relaxed line-clamp-3">
                       {post.desc}
                     </p>
@@ -799,10 +827,11 @@ const Home = () => {
                 </div>
                 <div className="pt-5 sm:pt-6 mt-5 sm:mt-6 border-t border-gray-50">
                   <Link
-                    to="/blog"
-                    className="inline-block text-[10px] font-black uppercase tracking-widest text-[#0F4C4C] hover:text-teal-700 transition-colors border-b-2 border-[#0F4C4C] pb-0.5"
+                    to={`/blog/${post.slug || post.id}`}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0f4c4c] text-white hover:bg-neutral-900 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md transition-all active:scale-95 group/btn"
                   >
-                    {t('Read More.', 'और पढ़ें।')}
+                    <span>{t('Read More', 'और पढ़ें')}</span>
+                    <ArrowRight size={12} className="transform group-hover/btn:translate-x-1 transition-transform" />
                   </Link>
                 </div>
               </motion.article>
@@ -815,7 +844,15 @@ const Home = () => {
       {/* 6. CTA SECTION - MORE COMPACT */}
       <section className="py-16 px-4">
         <div className="max-w-[1400px] mx-auto bg-[#0F4C4C] rounded-[48px] p-12 md:p-20 text-center text-white relative overflow-hidden shadow-xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-teal-900 via-transparent to-black/30"></div>
+          {/* Background Image and Overlay */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <img 
+              src="https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=1920&auto=format&fit=crop" 
+              alt="Reserve Paradise background" 
+              className="absolute inset-0 w-full h-full object-cover opacity-35 mix-blend-overlay"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-teal-900/80 via-transparent to-black/60"></div>
+          </div>
           <div className="relative z-10 space-y-10">
             <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-none">{t('Reserve Your Paradise', 'अपना स्वर्ग आरक्षित करें')}</h2>
             <p className="text-lg md:text-xl font-light text-teal-100 max-w-xl mx-auto opacity-80">{t('Direct bookings on WhatsApp enjoy priority upgrades and exclusive estate amenities.', 'सीधी बुकिंग पर प्राथमिकता अपग्रेड का आनंद लें।')}</p>

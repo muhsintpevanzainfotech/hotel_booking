@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
 import { Image as ImageIcon, Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { getImageUrl } from '../utils/imageHelper';
 
 const Gallery = () => {
   const [items, setItems] = useState([]);
@@ -38,15 +40,34 @@ const Gallery = () => {
   return (
     <div className="bg-[#F8FAFA] min-h-screen">
       {/* Page Header */}
-      <section className="bg-[#0F4C4C] text-white py-16 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-teal-800 rounded-full -translate-y-1/2 translate-x-1/2 opacity-20"></div>
-        <div className="max-w-[1200px] mx-auto px-6 relative z-10">
-          <div className="flex items-center gap-3 mb-4 opacity-60">
-             <ImageIcon size={20} />
-             <span className="text-xs font-bold uppercase tracking-[0.3em]">{t('Visual Journey', 'दृश्य यात्रा')}</span>
+      <section className="px-4 py-4 md:px-8 md:py-6 bg-white w-full max-w-[1400px] mx-auto">
+        <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] overflow-hidden flex flex-col justify-center items-center text-center shadow-md">
+          {/* Background image & Overlay */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <img
+              src="/sustainable_luxury_garden_1778950196361.png"
+              alt="Gallery Banner"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+            {/* Dark green gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0F4C4C]/90 via-[#0F4C4C]/80 to-teal-900/60 backdrop-blur-[1px]" />
           </div>
-          <h1 className="text-5xl font-black mb-4 tracking-tight">{t('Photo Gallery', 'फोटो गैलरी')}</h1>
-          <p className="text-teal-100 text-lg max-w-xl">{t('Explore the serene beauty and architectural elegance of Lake Breeze Resorts through our lens.', 'हमारे लेंस के माध्यम से लेक ब्रीज रिसॉर्ट्स की शांत सुंदरता और वास्तुशिल्प लालित्य का अन्वेषण करें।')}</p>
+          
+          {/* Header Text Content */}
+          <div className="relative z-10 text-white space-y-3 px-4 sm:px-6">
+            <div className="flex items-center justify-center gap-2 text-teal-300 opacity-80">
+              <ImageIcon size={16} className="text-teal-300" />
+              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em]">{t('Visual Journey', 'दृश्य यात्रा', 'കാഴ്ച')}</span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight leading-none text-white">
+              {t('Photo Gallery', 'फोटो गैलरी', 'ഗാലറി')}
+            </h1>
+            <div className="flex items-center justify-center gap-2 text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-widest text-teal-200">
+              <Link to="/" className="hover:text-white transition-colors">{t('Home', 'होम', 'ഹോം')}</Link>
+              <span>•</span>
+              <span className="text-white">{t('Gallery', 'ഗാലറി', 'ഗാലറി')}</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -61,7 +82,7 @@ const Gallery = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {displayItems.map((item, i) => {
                 const isString = typeof item === 'string';
-                const imgSrc = isString ? item : `${import.meta.env.VITE_SERVER_URL}/${item.image}`;
+                const imgSrc = isString ? item : getImageUrl(item.image);
                 
                 return (
                   <motion.div 
@@ -89,9 +110,9 @@ const Gallery = () => {
               <div className="flex justify-center">
                 <button 
                   onClick={handleLoadMore}
-                  className="px-12 py-5 bg-[#0F4C4C] text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl hover:bg-teal-700 hover:scale-105 active:scale-95 transition-all"
+                  className="px-10 py-4 bg-neutral-950 hover:bg-neutral-900 text-white rounded-full font-black uppercase text-[10px] tracking-widest shadow-xl transition-all duration-200 active:scale-95"
                 >
-                  {t('View More Images', 'अधिक चित्र देखें')}
+                  {t('View More Images', 'अधिक चित्र देखें', 'കൂടുതൽ ചിത്രങ്ങൾ')}
                 </button>
               </div>
             )}

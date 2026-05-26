@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Calendar, User, Mail, Phone, Users, MessageSquare, AlertCircle, MapPin, Hash, DollarSign, BookmarkCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { useLanguage } from '../context/LanguageContext';
@@ -35,15 +36,34 @@ const BookingStatus = () => {
     return (
         <div className="bg-[#F8FAFA] min-h-screen">
             {/* Page Header */}
-            <section className="bg-[#0F4C4C] text-white py-24 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-teal-800 rounded-full -translate-y-1/2 translate-x-1/2 opacity-20"></div>
-                <div className="max-w-[1200px] mx-auto px-6 relative z-10 text-center md:text-left">
-                    <div className="flex items-center justify-center md:justify-start gap-3 mb-4 opacity-60">
-                        <BookmarkCheck size={20} />
-                        <span className="text-xs font-bold uppercase tracking-[0.3em]">{t('Track Stay', 'ट्रैक स्टे')}</span>
+            <section className="px-4 py-4 md:px-8 md:py-6 bg-white w-full max-w-[1400px] mx-auto">
+                <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] overflow-hidden flex flex-col justify-center items-center text-center shadow-md">
+                    {/* Background image & Overlay */}
+                    <div className="absolute inset-0 z-0 pointer-events-none">
+                        <img
+                            src="/hero_bright.png"
+                            alt="Booking Status Banner"
+                            className="absolute inset-0 w-full h-full object-cover object-center"
+                        />
+                        {/* Dark green gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-[#0F4C4C]/90 via-[#0F4C4C]/80 to-teal-900/60 backdrop-blur-[1px]" />
                     </div>
-                    <h1 className="text-5xl font-black mb-4 tracking-tight">{t('Booking Status', 'बुकिंग की स्थिति')}</h1>
-                    <p className="text-teal-100 text-lg max-w-xl mx-auto md:mx-0">{t('Retrieve your reservation details using your unique booking reference ID.', 'अपनी विशिष्ट बुकिंग संदर्भ आईडी का उपयोग करके अपने आरक्षण विवरण प्राप्त करें।')}</p>
+                    
+                    {/* Header Text Content */}
+                    <div className="relative z-10 text-white space-y-3 px-4 sm:px-6">
+                        <div className="flex items-center justify-center gap-2 text-teal-300 opacity-80">
+                            <BookmarkCheck size={16} className="text-teal-300" />
+                            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em]">{t('Track Stay', 'ट्रैक स्टे', 'ട്രാക്ക് സ്റ്റേ')}</span>
+                        </div>
+                        <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight leading-none text-white">
+                            {t('Booking Status', 'बुकिंग की स्थिति', 'ബുക്കിംഗ് സ്റ്റാറ്റസ്')}
+                        </h1>
+                        <div className="flex items-center justify-center gap-2 text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-widest text-teal-200">
+                            <Link to="/" className="hover:text-white transition-colors">{t('Home', 'होम', 'ഹോം')}</Link>
+                            <span>•</span>
+                            <span className="text-white">{t('Booking Status', 'बुकिंग की स्थिति', 'ബുക്കിംഗ് സ്റ്റാറ്റസ്')}</span>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -67,7 +87,7 @@ const BookingStatus = () => {
                             <button 
                                 type="submit"
                                 disabled={loading}
-                                className="absolute right-3 top-3 bottom-3 px-10 bg-primary text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg hover:bg-secondary active:scale-95 transition-all disabled:opacity-50"
+                                className="absolute right-3 top-3 bottom-3 px-10 bg-neutral-950 text-white rounded-full font-black uppercase text-xs tracking-widest shadow-lg hover:bg-neutral-900 active:scale-95 transition-all disabled:opacity-50"
                             >
                                 {loading ? t('Searching...', 'खोज हो रही है...') : t('Check Status', 'स्थिति देखें')}
                             </button>

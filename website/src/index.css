@@ -418,3 +418,14 @@ html {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* React Datepicker styling fixes */
+.react-datepicker-wrapper {
+  display: block;
+  width: 100%;
+}
+
+.react-datepicker__input-container {
+  display: block;
+  width: 100%;
+}

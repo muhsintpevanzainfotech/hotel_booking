@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Modal, Button } from '../common/UIComponents';
 import toast from 'react-hot-toast';
+import { getImageUrl } from '../../utils/imageHelper';
 
 const GalleryManager = ({ apiBase }) => {
   const [images, setImages] = useState([]);
@@ -126,7 +127,7 @@ const GalleryManager = ({ apiBase }) => {
                         key={img._id} 
                         className="group relative aspect-square rounded-[24px] overflow-hidden border border-border-subtle bg-bg-subtle cursor-pointer"
                     >
-                        <img src={`${apiBase.replace('/api', '')}/${img.image}`} alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                        <img src={getImageUrl(img.image, apiBase)} alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-3 backdrop-blur-sm">
                             <button 
                                 onClick={() => setViewModal({ open: true, img: img })}
@@ -183,7 +184,7 @@ const GalleryManager = ({ apiBase }) => {
             <div className="space-y-6">
                 <div className="w-full rounded-[32px] overflow-hidden border border-border-subtle bg-bg-subtle aspect-video md:aspect-auto">
                     <img 
-                        src={`${apiBase.replace('/api', '')}/${viewModal.img.image}`} 
+                        src={getImageUrl(viewModal.img.image, apiBase)} 
                         className="w-full h-auto object-contain max-h-[70vh]" 
                         alt="inspection" 
                     />

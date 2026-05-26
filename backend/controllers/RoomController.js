@@ -58,18 +58,32 @@ exports.updateRoom = async (req, res) => {
             req.body.facilities = typeof facilities === 'string' ? JSON.parse(facilities) : facilities;
         }
 
-        // Handle Image Updates
+        // Parse existing images sent from frontend
+        let existingImages = [];
+        if (req.body.existingImages) {
+            existingImages = typeof req.body.existingImages === 'string' 
+                ? JSON.parse(req.body.existingImages) 
+                : req.body.existingImages;
+        }
+
+        // Identify which images were removed, so we can delete them from Cloudinary
+        if (room.images && room.images.length > 0) {
+            const keptUrls = new Set(existingImages.map(img => img.url));
+            const removedImages = room.images.filter(img => !keptUrls.has(img.url));
+            
+            await Promise.all(removedImages.map(async (img) => {
+                if (img.url) {
+                    if (isCloudinaryUrl(img.url)) await deleteFromCloudinary(img.url);
+                    else deleteFile(img.url);
+                }
+            }));
+        }
+
+        // Upload any new images
+        let newImages = [];
         if (req.files && req.files.length > 0) {
-            if (room.images && room.images.length > 0) {
-                await Promise.all(room.images.map(async (img) => {
-                    if (img.url) {
-                        if (isCloudinaryUrl(img.url)) await deleteFromCloudinary(img.url);
-                        else deleteFile(img.url);
-                    }
-                }));
-            }
             const categories = imageCategories ? (typeof imageCategories === 'string' ? JSON.parse(imageCategories) : imageCategories) : [];
-            req.body.images = await Promise.all(req.files.map(async (file, index) => {
+            newImages = await Promise.all(req.files.map(async (file, index) => {
                 const uploaded = await uploadToCloudinary(file.path, 'hotel_booking/rooms');
                 deleteFile(file.path);
                 return {
@@ -78,6 +92,9 @@ exports.updateRoom = async (req, res) => {
                 };
             }));
         }
+
+        // Set the final images list
+        req.body.images = [...existingImages, ...newImages];
 
         const updatedRoom = await Room.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate('facilities');
         res.json(updatedRoom);

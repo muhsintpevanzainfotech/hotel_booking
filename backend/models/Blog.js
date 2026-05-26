@@ -5,7 +5,8 @@ const blogSchema = new mongoose.Schema({
     slug: { type: String, required: true, unique: true },
     content: { type: String, required: true },
     image: { type: String },
-    author: { type: String, default: 'Admin' }
+    author: { type: String, default: 'Admin' },
+    category: { type: String, default: 'Holiday' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Blog', blogSchema);

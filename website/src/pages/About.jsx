@@ -1,118 +1,143 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Star, ShieldCheck, Heart, History, Leaf, MapPin, Users, Award } from 'lucide-react';
+import { Star, ShieldCheck, Heart, History, Leaf, MapPin, Users, Award, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const About = () => {
   const { t } = useLanguage();
 
   const milestones = [
-    { year: '1994', title: t('The Vision', 'दृष्टिकोण'), desc: t('Founded with just 4 traditional cottages.', 'सिर्फ 4 पारंपरिक कॉटेज के साथ स्थापना।') },
-    { year: '2005', title: t('Expansion', 'विस्तार'), desc: t('Added the Infinity Pool and Ayurvedic Spa.', 'इन्फिनिटी पूल और आयुर्वेदिक स्पा जोड़ा गया।') },
-    { year: '2015', title: t('Green Initiative', 'हरित पहल'), desc: t('Transitioned to 60% solar energy usage.', '60% सौर ऊर्जा उपयोग में परिवर्तित।') },
-    { year: '2023', title: t('Excellence Award', 'उत्कृष्टता पुरस्कार'), desc: t('Voted #1 Resort in Kerala for three years.', 'तीन वर्षों के लिए केरल में #1 रिज़ॉर्ट चुना गया।') },
+    { year: '2018', title: t('The Vision', 'दृष्टिकोण', 'കാഴ്ചപ്പാട്'), desc: t('Founded in Wayanad and Calicut with a focus on immersive hospitality.', 'शानदार आतिथ्य पर ध्यान देने के साथ वायनाड और कोझिकोड में स्थापना।', 'വയനാട്ടിലും കോഴിക്കോട്ടും സമാനതകളില്ലാത്ത ഹോസ്പിറ്റാലിറ്റിയോടെ തുടക്കം കുറിച്ചു.') },
+    { year: '2020', title: t('Expansion', 'विस्तार', 'വ്യാപനം'), desc: t('Added luxurious accommodations and expanded to premium cottages.', 'शानदार आवास जोड़े और प्रीमियम कॉटेज का विस्तार किया।', 'ആഡംബര താമസസൗകര്യങ്ങളും പ്രീമിയം കോട്ടേജുകളും കൂട്ടിച്ചേർത്തു.') },
+    { year: '2023', title: t('Excellence Award', 'उत्कृष्टता पुरस्कार', 'അംഗീകാരം'), desc: t('Voted #1 Resort in the region for connection and well-being.', 'जुड़ाव और कल्याण के लिए क्षेत्र में #1 रिज़ॉर्ट चुना गया।', 'പ്രാദേശിക തലത്തിൽ ഏറ്റവും മികച്ച റിസോർട്ടായി തിരഞ്ഞെടുക്കപ്പെട്ടു.') },
+    { year: '2026', title: t('Timeless Escapes', 'कालातीत पलायन', 'ശാശ്വത അനുഭവങ്ങൾ'), desc: t('Continuing our unwavering commitment to extraordinary experiences.', 'असाधारण अनुभवों के प्रति हमारी अटूट प्रतिबद्धता को जारी रखना।', 'അസാധാരണമായ അനുഭവങ്ങളോടുള്ള ഞങ്ങളുടെ പ്രതിജ്ഞാബദ്ധത തുടരുന്നു.') },
   ];
 
   return (
     <div className="bg-[#F8FAFA] min-h-screen">
       {/* Page Header */}
-      <section className="bg-[#0F4C4C] text-white py-12 md:py-20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-teal-800 rounded-full -translate-y-1/2 translate-x-1/2 opacity-20"></div>
-        <div className="max-w-[1200px] mx-auto px-6 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-3 mb-4 opacity-60"
-          >
-             <History size={20} />
-             <span className="text-xs font-bold uppercase tracking-[0.3em]">{t('Our Heritage', 'हमारी विरासत')}</span>
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-7xl font-black mb-6 tracking-tight leading-tight"
-          >
-            {t('Defining Luxury Since 1994', '1994 से विलासिता को परिभाषित कर रहे हैं')}
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-teal-100 text-lg md:text-2xl max-w-2xl leading-relaxed"
-          >
-            {t('Lake Breeze Resorts was founded on the principle that true luxury is found in the intersection of nature and craftsmanship.', 'लेक ब्रीज रिसॉर्ट्स की स्थापना इस सिद्धांत पर की गई थी कि वास्तविक विलासिता प्रकृति और शिल्प कौशल के संगम में पाई जाती है।')}
-          </motion.p>
+      <section className="px-4 py-4 md:px-8 md:py-6 bg-white w-full max-w-[1400px] mx-auto">
+        <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] overflow-hidden flex flex-col justify-center items-center text-center shadow-md">
+          {/* Background image & Overlay */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <img
+              src="/hero_bright.png"
+              alt="About Us Banner"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+            {/* Dark green gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0F4C4C]/90 via-[#0F4C4C]/80 to-teal-900/60 backdrop-blur-[1px]" />
+          </div>
+          
+          {/* Header Text Content */}
+          <div className="relative z-10 text-white space-y-3 px-4 sm:px-6">
+            <div className="flex items-center justify-center gap-2 text-teal-300 opacity-80">
+              <History size={16} className="text-teal-300" />
+              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em]">{t('Our Story', 'हमारी कहानी', 'ഞങ്ങളുടെ കഥ')}</span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight leading-none text-white">
+              {t('About Us', 'हमारे बारे में', 'ഞങ്ങളെക്കുറിച്ച്')}
+            </h1>
+            <div className="flex items-center justify-center gap-2 text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-widest text-teal-200">
+              <Link to="/" className="hover:text-white transition-colors">{t('Home', 'होम', 'ഹോം')}</Link>
+              <span>•</span>
+              <span className="text-white">{t('About Us', 'हमारे बारे में', 'ഞങ്ങളെക്കുറിച്ച്')}</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Main Content - Our Story */}
-      <section className="py-16 md:py-16 max-w-[1200px] mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-12 md:gap-24 items-center">
+      {/* Main Content - Our Story & Mockup Layout */}
+      <section className="py-16 md:py-24 max-w-[1400px] mx-auto px-6 bg-transparent">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-stretch">
+          
+          {/* Left Column - Tall rounded image */}
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="space-y-8"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold text-[#0F4C4C] tracking-tight leading-tight">
-              {t('A Legacy of Unrivaled Excellence', 'बेजोड़ उत्कृष्टता की विरासत')}
-            </h2>
-            <p className="text-gray-500 text-base md:text-lg leading-relaxed">
-              {t('For over three decades, we have served as a sanctuary for those who seek the extraordinary. Our Kerala retreat is more than a destination; it is a visual and sensory journal of moments refined by time. We do not just provide shelter; we curate a legacy of presence.', 'तीन दशकों से अधिक समय से, हमने उन लोगों के लिए एक अभयारण्य के रूप में सेवा की है जो असाधारण की तलाश करते हैं। हमारी केरल रिट्रीट सिर्फ एक गंतव्य से अधिक है; यह समय के साथ परिष्कृत क्षणों की एक दृश्य और संवेदी डायरी है। हम केवल आश्रय प्रदान नहीं करते हैं; हम उपस्थिति की एक विरासत को संजोते हैं।')}
-            </p>
-            <div className="p-8 md:p-10 bg-white rounded-[32px] border border-gray-100 shadow-sm relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-2 h-full bg-[#0F4C4C] group-hover:w-4 transition-all"></div>
-              <p className="italic text-lg md:text-xl text-[#0F4C4C] font-medium leading-relaxed mb-6">
-                "{t('The horizon is not a boundary, but a call to the extraordinary. We invite you to experience the true essence of Kumarakom.', 'क्षितिज एक सीमा नहीं है, बल्कि असाधारण के लिए एक आह्वान है। हम आपको कुमारकोम के वास्तविक सार का अनुभव करने के लिए आमंत्रित करते हैं।')}"
-              </p>
-              <div className="flex items-center gap-4">
-                 <div className="w-10 h-[1px] bg-gray-200"></div>
-                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Lake Breeze Founding Family</p>
-              </div>
-            </div>
-          </motion.div>
-          
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="relative"
+            className="lg:col-span-4"
           >
             <img 
               src="/kerala_architecture_resort_1778950177084.png" 
-              alt="Our Heritage Architecture" 
-              className="w-full h-[400px] md:h-[600px] object-cover rounded-[48px] shadow-2xl" 
+              alt="Lake Breeze Resort Architecture" 
+              className="w-full h-full min-h-[400px] lg:min-h-[550px] object-cover rounded-[32px] shadow-xl" 
             />
-            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl -z-10"></div>
+          </motion.div>
+
+          {/* Middle Column - Heading, texts and CTA */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="lg:col-span-5 flex flex-col justify-center space-y-6 md:space-y-8"
+          >
+            <h2 className="text-3xl md:text-5xl font-black text-[#0F4C4C] tracking-tight leading-tight">
+              {t('A Symphony of Serenity Crafting Timeless Escapes', 'शांति का एक राग: कालातीत पलायन का निर्माण', 'ശാന്തതയുടെ സമന്വയം: ശാശ്വതമായ അനുഭവങ്ങളുടെ ആവിഷ്കാരം')}
+            </h2>
             
-            <div className="hidden md:flex absolute bottom-10 -right-10 flex-col gap-6 bg-white p-10 rounded-[32px] shadow-2xl border border-gray-50">
-               <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-teal-50 text-[#0F4C4C] rounded-xl flex items-center justify-center">
-                    <History size={24} />
-                  </div>
-                  <div>
-                    <p className="text-3xl font-black text-[#0F4C4C] tracking-tighter">30+</p>
-                    <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">{t('Years of Story', 'कहानी के वर्ष')}</p>
-                  </div>
-               </div>
-               <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-teal-50 text-[#0F4C4C] rounded-xl flex items-center justify-center">
-                    <Star size={24} />
-                  </div>
-                  <div>
-                    <p className="text-3xl font-black text-[#0F4C4C] tracking-tighter">4.9</p>
-                    <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">{t('Guest Rating', 'अतिथि रेटिंग')}</p>
-                  </div>
-               </div>
+            <p className="text-gray-500 text-sm md:text-base leading-relaxed font-medium">
+              {t(
+                "In the heart of Wayanad and Calicut, Lake Breeze Resorts has unfurled a tapestry of tranquillity since 2018. Nestled in nature's embrace, our retreats offer an unparalleled blend of luxury and authenticity, creating spaces where every moment becomes a cherished memory. Immerse yourself in a haven designed to awaken the senses and rejuvenate the soul.",
+                "वायनाड और कोझिकोड के केंद्र में, लेक ब्रीज रिसॉर्ट्स ने 2018 से शांति की एक सुंदर शुरुआत की है। प्रकृति की गोद में बसे, हमारे रिसॉर्ट्स विलासिता और प्रामाणिकता का एक अनूठा मिश्रण पेश करते हैं, जिससे ऐसे स्थान बनते हैं जहां हर पल एक सुखद याद बन जाता है। इंद्रियों को जगाने और आत्मा को तरोताजा करने के लिए डिज़ाइन किए गए स्वर्ग में खुद को विसर्जित करें।",
+                "വയനാടിന്റെയും കോഴിക്കോടിന്റെയും ഹൃദയഭാഗത്ത്, ലേക്ക് ബ്രീസ് റിസോർട്ടുകൾ 2018 മുതൽ സമാധാനത്തിന്റെ ഒരു പുതിയ ലോകം തുറന്നുതരുന്നു. പ്രകൃതിയുടെ മടിത്തട്ടിൽ സ്ഥിതി ചെയ്യുന്ന ഞങ്ങളുടെ റിസോർട്ടുകൾ ആഡംബരത്തിന്റെയും തനിമയുടെയും സമാനതകളില്ലാത്ത സങ്കലനം വാഗ്ദാനം ചെയ്യുന്നു."
+              )}
+            </p>
+            
+            <p className="text-gray-400 text-xs md:text-sm leading-relaxed">
+              {t(
+                "Lake Breeze Resorts, a sanctuary established in 2018, is more than a destination; it's a testament to the art of immersive hospitality. Our commitment to crafting timeless escapes is woven into every detail, from the luxurious accommodations to the lush surroundings, ensuring a harmonious retreat where nature and elegance dance in perfect balance. Embark on a journey beyond conventional retreats, where Lake Breeze Resorts embodies an unwavering commitment to excellence. Our ethos transcends the ordinary, creating havens that inspire connection, relaxation, and a profound sense of well-being. Discover the essence of hospitality redefined amid the breathtaking landscapes of Wayanad and Calicut.",
+                "2018 में स्थापित एक अभयारण्य, लेक ब्रीज रिसॉर्ट्स एक गंतव्य से कहीं अधिक है; यह शानदार आतिथ्य की कला का एक प्रमाण है। कालातीत पलायन को तैयार करने की हमारी प्रतिबद्धता हर विवरण में बुनी गई है, शानदार आवासों से लेकर हरे-भरे परिवेश तक, एक सामंजस्यपूर्ण वापसी सुनिश्चित करती है जहां प्रकृति और लालित्य सही संतुलन में नृत्य करते हैं। पारंपरिक विश्राम स्थलों से परे एक यात्रा शुरू करें, जहां लेक ब्रीज रिसॉर्ट्स उत्कृष्टता के प्रति अटूट प्रतिबद्धता का प्रतीक है। हमारा लोकाचार साधारण से परे है, जो ऐसे आश्रय स्थल बनाता है जो जुड़ाव, विश्राम और कल्याण की गहरी भावना को प्रेरित करते हैं। वायनाड और कोझिकोड के लुभावने परिदृश्यों के बीच आतिथ्य के पुनर्परिभाषित सार की खोज करें।",
+                "2018-ൽ സ്ഥാപിതമായ ലേക്ക് ബ്രീസ് റിസോർട്ടുകൾ വെറുമൊരു ലക്ഷ്യസ്ഥാനമല്ല, മറിച്ച് സമാനതകളില്ലാത്ത ഹോസ്പിറ്റാലിറ്റിയുടെ തെളിവാണ്. പ്രകൃതിയും ചാരുതയും സമന്വയിക്കുന്ന ഞങ്ങളുടെ കോട്ടേജുകൾ നിങ്ങളുടെ യാത്രയെ അവിസ്മരണീയമാക്കുന്നു."
+              )}
+            </p>
+
+            <Link 
+              to="/rooms" 
+              className="inline-flex items-center justify-between gap-6 bg-neutral-950 hover:bg-neutral-900 text-white pl-8 pr-2 py-2 rounded-full w-fit shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 font-bold uppercase tracking-widest text-[10px] group"
+            >
+              <span>{t('Explore Our Rooms', 'कमरों की खोज करें', 'മുറികൾ കാണുക')}</span>
+              <span className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1">
+                <ArrowRight size={14} className="stroke-[3]" />
+              </span>
+            </Link>
+          </motion.div>
+
+          {/* Right Column - Stats and small rounded image */}
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="lg:col-span-3 flex flex-col justify-between gap-8"
+          >
+            {/* 8. Years of Experience */}
+            <div className="flex items-center gap-4 py-4 md:py-6 border-b border-gray-100 lg:border-none">
+              <span className="text-7xl md:text-8xl font-black text-[#0F4C4C] tracking-tighter leading-none">8.</span>
+              <div className="flex flex-col text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 leading-tight">
+                <span>{t('Years Of', 'वर्षों का', 'വർഷത്തെ')}</span>
+                <span>{t('Experience', 'अनुभव', 'പ്രവൃത്തിപരിചയം')}</span>
+              </div>
+            </div>
+            
+            {/* Small rounded card image */}
+            <div className="relative overflow-hidden rounded-[28px] shadow-lg flex-1 min-h-[220px]">
+              <img 
+                src="/room_deluxe.png" 
+                alt="Lake Breeze Deluxe Experience" 
+                className="w-full h-full object-cover absolute inset-0 hover:scale-105 transition-transform duration-700" 
+              />
             </div>
           </motion.div>
+
         </div>
       </section>
 
-      {/* The Architecture Section */}
-      <section className="py-16 md:py-16 bg-white">
-        <div className="max-w-[1200px] mx-auto px-6">
+      {/* Commitment Section */}
+      <section className="py-16 md:py-24 bg-white">
+        <div className="max-w-[1400px] mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center gap-12 md:gap-20">
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
@@ -122,7 +147,7 @@ const About = () => {
             >
               <img 
                 src="/hero_bright.png" 
-                alt="Architecture Details" 
+                alt="Extraordinary Experiences" 
                 className="w-full h-[300px] md:h-[500px] object-cover rounded-[40px] shadow-xl"
               />
             </motion.div>
@@ -133,23 +158,27 @@ const About = () => {
               className="w-full md:w-1/2 space-y-6 order-1 md:order-2"
             >
               <div className="flex items-center gap-3 opacity-60">
-                <MapPin size={18} className="text-[#0F4C4C]" />
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0F4C4C]">{t('Authentic Design', 'प्रामाणिक डिजाइन')}</span>
+                <Star size={18} className="text-[#0F4C4C]" />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0F4C4C]">{t('Our Promise', 'हमारा वादा', 'ഞങ്ങളുടെ വാഗ്ദാനം')}</span>
               </div>
-              <h3 className="text-3xl md:text-4xl font-bold text-[#0F4C4C]">
-                {t('Crafted with Soul', 'आत्मा के साथ तैयार')}
+              <h3 className="text-3xl md:text-4xl font-bold text-[#0F4C4C] tracking-tight leading-tight">
+                {t('Our Commitment to Extraordinary Experiences', 'असाधारण अनुभवों के प्रति हमारी प्रतिबद्धता', 'അസാധാരണമായ അനുഭവങ്ങളോടുള്ള ഞങ്ങളുടെ പ്രതിജ്ഞാബദ്ധത')}
               </h3>
-              <p className="text-gray-500 leading-relaxed">
-                {t('Our architecture is a tribute to the "Nalukettu" style of Kerala. Every beam of teakwood and every clay tile has been sourced locally to ensure that we breathe the same spirit as the land we sit upon. We believe in building spaces that do not just stand on the earth, but belong to it.', 'हमारी वास्तुकला केरल की "नालुकट्टु" शैली को एक श्रद्धांजलि है। टीकवुड का हर शहतीर और मिट्टी की हर टाइल स्थानीय रूप से प्राप्त की गई है ताकि यह सुनिश्चित हो सके कि हम उसी भावना को महसूस करें जिस भूमि पर हम बैठे हैं।')}
+              <p className="text-gray-500 leading-relaxed font-medium">
+                {t(
+                  "At Lake Breeze Resorts, our ethos goes beyond providing a place to stay; it's about curating experiences that resonate with the soul. We believe in the transformative power of hospitality, where every guest becomes part of a narrative that celebrates the beauty of connection and the joy found in moments shared. In Wayanad and Calicut, we invite you to go beyond boundaries and immerse yourself in the extraordinary.",
+                  "लेक ब्रीज रिसॉर्ट्स में, हमारा लोकाचार ठहरने की जगह प्रदान करने से कहीं आगे जाता है; यह उन अनुभवों को संजोने के बारे में है जो आत्मा को छूते हैं। हम आतिथ्य की परिवर्तनकारी शक्ति में विश्वास करते हैं, जहां हर अतिथि एक ऐसी कहानी का हिस्सा बन जाता है जो जुड़ाव की सुंदरता और साझा किए गए क्षणों में मिलने वाली खुशी का जश्न बनाती है। वायनाड और कोझिकोड में, हम आपको सीमाओं से परे जाने और असाधारण में खुद को विसर्जित करने के लिए आमंत्रित करते हैं।",
+                  "ലേക്ക് ബ്രീസ് റിസോർട്ടിൽ, ഞങ്ങളുടെ തത്വശാസ്ത്രം വെറുമൊരു താമസസ്ഥലം ഒരുക്കുന്നതിനും അപ്പുറമാണ്; അത് ആത്മാവിനെ സ്പർശിക്കുന്ന അനുഭവങ്ങൾ സമ്മാനിക്കുന്നതിനെക്കുറിച്ചാണ്. പരസ്പര ബന്ധത്തിന്റെ ഭംഗിയും സന്തോഷവും ആഘോഷിക്കുന്ന ഒരു യാത്രയിലേക്ക് ഞങ്ങൾ നിങ്ങളെ സ്വാഗതം ചെയ്യുന്നു."
+                )}
               </p>
               <div className="grid grid-cols-2 gap-6 pt-6">
                  <div className="space-y-2">
                     <p className="text-[#0F4C4C] font-bold">100%</p>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-widest">{t('Local Materials', 'स्थानीय सामग्री')}</p>
+                    <p className="text-[10px] text-gray-400 uppercase tracking-widest">{t('Guest Satisfaction', 'अतिथि संतुष्टि', 'അതിഥി സംതൃപ്തി')}</p>
                  </div>
                  <div className="space-y-2">
-                    <p className="text-[#0F4C4C] font-bold">500+</p>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-widest">{t('Handmade Tiles', 'हाथ से बनी टाइलें')}</p>
+                    <p className="text-[#0F4C4C] font-bold">24/7</p>
+                    <p className="text-[10px] text-gray-400 uppercase tracking-widest">{t('Immersive Service', 'इमर्सिव सेवा', 'സേവനം')}</p>
                  </div>
               </div>
             </motion.div>
@@ -159,7 +188,7 @@ const About = () => {
 
       {/* Sustainable Luxury Section */}
       <section className="py-16 md:py-16 bg-[#0F4C4C] text-white overflow-hidden relative">
-        <div className="max-w-[1200px] mx-auto px-6 relative z-10">
+        <div className="max-w-[1400px] mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 md:gap-20 items-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -207,7 +236,7 @@ const About = () => {
 
       {/* Values Section */}
       <section className="py-16 md:py-16 bg-white">
-        <div className="max-w-[1200px] mx-auto px-6">
+        <div className="max-w-[1400px] mx-auto px-6">
           <div className="text-center mb-16 md:mb-20">
             <h2 className="text-3xl md:text-5xl font-bold text-[#0F4C4C] mb-6">{t('The Pillars of Our Soul', 'हमारी आत्मा के स्तंभ')}</h2>
             <div className="w-24 h-1 bg-[#0F4C4C] mx-auto"></div>
@@ -237,7 +266,7 @@ const About = () => {
 
       {/* Timeline Section */}
       <section className="py-16 md:py-16 bg-[#F8FAFA]">
-        <div className="max-w-[1000px] mx-auto px-6">
+        <div className="max-w-[1200px] mx-auto px-6">
           <div className="space-y-12">
             {milestones.map((m, idx) => (
               <motion.div 

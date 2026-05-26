@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Globe, Phone, Mail, MapPin } from 'lucide-react';
+import { Menu, X, Globe, Phone, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 import useContact from '../../hooks/useContact';
@@ -52,18 +52,8 @@ const Navbar = () => {
             </a>
           </div>
           <div className="flex gap-8 items-center">
-            <a 
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact?.address || 'Lake Breeze Resort Kumarakom Kerala')}`} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 hidden lg:flex hover:text-teal-400 transition-colors"
-            >
-              <MapPin size={12} className="text-teal-400" /> 
-              {contact?.address || 'Kumarakom, Kerala'}
-            </a>
-            
             {/* Language Selection in Topbar */}
-            <div className="relative ml-4 border-l border-white/10 pl-8 h-10 flex items-center" onMouseLeave={() => setLangOpen(false)}>
+            <div className="relative h-10 flex items-center" onMouseLeave={() => setLangOpen(false)}>
               <button 
                 onClick={() => setLangOpen(!langOpen)}
                 onMouseEnter={() => setLangOpen(true)}
@@ -132,7 +122,7 @@ const Navbar = () => {
               ))}
             </ul>
             <div className="flex items-center gap-4">
-              <Link to="/rooms" className={`bg-[#0F4C4C] text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg hover:bg-teal-700 transition-all active:scale-95 ${isSticky ? 'px-6 py-2.5' : 'px-8 py-3'}`}>
+              <Link to="/rooms" className={`bg-neutral-950 text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] shadow-lg hover:bg-neutral-900 transition-all active:scale-95 ${isSticky ? 'px-6 py-2.5' : 'px-8 py-3'}`}>
                 {t('Book Now', 'अभी बुक करें', 'ഇപ്പോൾ ബുക്ക് ചെയ്യുക')}
               </Link>
             </div>
@@ -168,7 +158,7 @@ const Navbar = () => {
              ))}
           </div>
           <div className="pt-10 space-y-6">
-             <Link to="/rooms" onClick={() => setMenuOpen(false)} className="w-full py-6 bg-[#0F4C4C] text-white rounded-2xl font-black text-xl flex items-center justify-center gap-3">
+             <Link to="/rooms" onClick={() => setMenuOpen(false)} className="w-full py-5 bg-neutral-950 text-white rounded-full font-black text-xl flex items-center justify-center gap-3 active:scale-95 transition-all">
                {t('Book Your Stay', 'अभी बुक करें', 'ഇപ്പോൾ ബുക്ക് ചെയ്യുക')}
              </Link>
              <div className="grid grid-cols-3 gap-4">

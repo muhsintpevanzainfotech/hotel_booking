@@ -42,6 +42,7 @@ router.get('/rooms/:roomId/bookings', bookingCtrl.getRoomBookings);
 // Content (Public)
 router.get('/contact', adminCtrl.getContact);
 router.get('/blogs', adminCtrl.getBlogs);
+router.get('/blogs/:slug', adminCtrl.getBlogBySlug);
 router.get('/testimonials', adminCtrl.getTestimonials);
 router.get('/gallery', adminCtrl.getGallery);
 router.get('/banners', adminCtrl.getBanners);
@@ -57,6 +58,7 @@ router.get('/bookings', auth, checkRole(['super_admin', 'admin']), bookingCtrl.g
 router.patch('/bookings/:id', auth, checkRole(['super_admin', 'admin']), bookingCtrl.updateBookingStatus);
 
 router.get('/enquiries', auth, checkRole(['super_admin', 'admin']), adminCtrl.getEnquiries);
+router.delete('/enquiries/:id', auth, checkRole(['super_admin', 'admin']), adminCtrl.deleteEnquiry);
 router.put('/contact', auth, checkRole(['super_admin']), adminCtrl.updateContact);
 
 router.post('/blogs', auth, checkRole(['super_admin', 'admin']), upload.single('image'), adminCtrl.createBlog);

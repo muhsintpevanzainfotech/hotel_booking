@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { Badge, Button, Modal, CustomSelect } from '../common/UIComponents';
+import { getImageUrl } from '../../utils/imageHelper';
 import { 
   Trash2, 
   Plus, 
@@ -36,7 +37,7 @@ const ContentItemManager = ({ type, apiBase }) => {
   const [addModal, setAddModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentItemId, setCurrentItemId] = useState(null);
-  const [formData, setFormData] = useState({ rating: 5, icon: '' });
+  const [formData, setFormData] = useState({ rating: 5, icon: '', author: '', category: 'Holiday' });
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedCoverFile, setSelectedCoverFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -45,6 +46,11 @@ const ContentItemManager = ({ type, apiBase }) => {
   const [dragActiveCover, setDragActiveCover] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { token } = useSelector(state => state.auth);
+  
+  const [imageCleared, setImageCleared] = useState(false);
+  const [coverImageCleared, setCoverImageCleared] = useState(false);
+  const [ratingFilter, setRatingFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
   
   const config = {
     blogs: { title: 'Blog Engine', icon: FileText, endpoint: '/blogs' },
@@ -66,6 +72,8 @@ const ContentItemManager = ({ type, apiBase }) => {
 
   useEffect(() => {
     fetchItems();
+    setRatingFilter('All');
+    setStatusFilter('All');
   }, [type]);
 
   useEffect(() => {
@@ -117,15 +125,19 @@ const ContentItemManager = ({ type, apiBase }) => {
         link: item.link || '',
         discount: item.discount || '',
         code: item.code || '',
-        color: item.color || 'text-primary'
+        color: item.color || 'text-primary',
+        author: item.author || 'Admin',
+        category: item.category || 'Holiday'
     });
+    setImageCleared(false);
+    setCoverImageCleared(false);
     if (item.image) {
-        setPreviewUrl(`${apiBase.replace('/api', '')}/${item.image}`);
+        setPreviewUrl(getImageUrl(item.image, apiBase));
     } else {
         setPreviewUrl(null);
     }
     if (item.coverImage) {
-        setCoverPreviewUrl(`${apiBase.replace('/api', '')}/${item.coverImage}`);
+        setCoverPreviewUrl(getImageUrl(item.coverImage, apiBase));
     } else {
         setCoverPreviewUrl(null);
     }
@@ -136,11 +148,13 @@ const ContentItemManager = ({ type, apiBase }) => {
     setAddModal(false);
     setIsEditing(false);
     setCurrentItemId(null);
-    setFormData({ rating: 5, icon: '', subtitle: '', link: '', discount: '', code: '', color: 'text-primary' });
+    setFormData({ rating: 5, icon: '', subtitle: '', link: '', discount: '', code: '', color: 'text-primary', author: '', category: 'Holiday' });
     setSelectedFile(null);
     setSelectedCoverFile(null);
     setPreviewUrl(null);
     setCoverPreviewUrl(null);
+    setImageCleared(false);
+    setCoverImageCleared(false);
   };
 
   const handlePublish = async () => {
@@ -154,6 +168,8 @@ const ContentItemManager = ({ type, apiBase }) => {
         });
         if (selectedFile) fd.append('image', selectedFile);
         if (selectedCoverFile) fd.append('coverImage', selectedCoverFile);
+        if (imageCleared) fd.append('imageCleared', 'true');
+        if (coverImageCleared) fd.append('coverImageCleared', 'true');
 
         const url = isEditing 
             ? `${apiBase}${active.endpoint}/${currentItemId}` 
@@ -205,9 +221,14 @@ const ContentItemManager = ({ type, apiBase }) => {
     return items.filter(item => {
       const titleMatch = (item.title || item.name || '').toLowerCase().includes(searchTerm.toLowerCase());
       const contentMatch = (item.content || item.description || '').toLowerCase().includes(searchTerm.toLowerCase());
-      return titleMatch || contentMatch;
+      const matchesSearch = titleMatch || contentMatch;
+      
+      const matchesRating = ratingFilter === 'All' || item.rating === Number(ratingFilter);
+      const matchesStatus = statusFilter === 'All' || item.status === statusFilter;
+      
+      return matchesSearch && matchesRating && matchesStatus;
     });
-  }, [items, searchTerm]);
+  }, [items, searchTerm, ratingFilter, statusFilter]);
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const paginatedData = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -232,8 +253,8 @@ const ContentItemManager = ({ type, apiBase }) => {
         </div>
 
         {/* Filter Section */}
-        <div className="flex flex-col md:flex-row gap-4 items-center">
-          <div className="relative group flex-1 max-md:w-full">
+        <div className="flex flex-col md:flex-row gap-4 items-center w-full">
+          <div className="relative group flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors" size={16} />
             <input 
               type="text" 
@@ -243,6 +264,39 @@ const ContentItemManager = ({ type, apiBase }) => {
               className="w-full bg-bg-subtle border border-border-subtle rounded-2xl py-3 pl-12 pr-4 text-[13px] outline-none focus:bg-bg-subtle focus:border-border-primary-subtle text-text-primary font-medium transition-all"
             />
           </div>
+          {type === 'testimonials' && (
+            <div className="flex items-center gap-2 shrink-0 max-md:w-full">
+              <span className="text-[11px] font-bold text-text-secondary uppercase">Rating:</span>
+              <CustomSelect 
+                value={ratingFilter}
+                onChange={setRatingFilter}
+                options={[
+                  { value: 'All', label: 'All Ratings' },
+                  { value: '5', label: '5 Stars' },
+                  { value: '4', label: '4 Stars' },
+                  { value: '3', label: '3 Stars' },
+                  { value: '2', label: '2 Stars' },
+                  { value: '1', label: '1 Star' }
+                ]}
+                className="w-[140px] max-md:w-full"
+              />
+            </div>
+          )}
+          {type === 'offers' && (
+            <div className="flex items-center gap-2 shrink-0 max-md:w-full">
+              <span className="text-[11px] font-bold text-text-secondary uppercase">Status:</span>
+              <CustomSelect 
+                value={statusFilter}
+                onChange={setStatusFilter}
+                options={[
+                  { value: 'All', label: 'All Status' },
+                  { value: 'Live', label: 'Live' },
+                  { value: 'Paused', label: 'Paused' }
+                ]}
+                className="w-[140px] max-md:w-full"
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -272,7 +326,7 @@ const ContentItemManager = ({ type, apiBase }) => {
                   <td className="pl-8">
                     <div className="flex items-center gap-4">
                       {item.image ? (
-                        <img src={`${apiBase.replace('/api', '')}/${item.image}`} alt="" className="w-10 h-10 rounded-xl object-cover border border-border-subtle" />
+                        <img src={getImageUrl(item.image, apiBase)} alt="" className="w-10 h-10 rounded-xl object-cover border border-border-subtle" />
                       ) : (
                         <div className="w-10 h-10 rounded-xl bg-bg-subtle border border-border-subtle flex items-center justify-center text-text-secondary">
                           <active.icon size={16} />
@@ -399,7 +453,7 @@ const ContentItemManager = ({ type, apiBase }) => {
             <div className="space-y-6">
                 {viewModal.item.image && (
                     <div className="w-full h-64 rounded-3xl overflow-hidden border border-border-subtle relative group">
-                        <img src={`${apiBase.replace('/api', '')}/${viewModal.item.image}`} className="w-full h-full object-cover" alt="intelligence" />
+                        <img src={getImageUrl(viewModal.item.image, apiBase)} className="w-full h-full object-cover" alt="intelligence" />
                         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/80 to-transparent" />
                         <div className="absolute bottom-6 left-6 right-6">
                             <Badge status="success">Operational Asset</Badge>
@@ -415,6 +469,12 @@ const ContentItemManager = ({ type, apiBase }) => {
                         {viewModal.item.role && (
                             <p className="text-[11px] text-primary font-black uppercase tracking-[0.2em]">{viewModal.item.role}</p>
                         )}
+                        {type === 'blogs' && (
+                            <div className="flex gap-4">
+                                <p className="text-[11px] text-primary font-black uppercase tracking-[0.2em]">By {viewModal.item.author || 'Admin'}</p>
+                                <p className="text-[11px] text-cyan-400 font-black uppercase tracking-[0.2em]">Category: {viewModal.item.category || 'Holiday'}</p>
+                            </div>
+                        )}
                     </div>
 
                     {type === 'testimonials' && (
@@ -427,7 +487,9 @@ const ContentItemManager = ({ type, apiBase }) => {
                     )}
 
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Payload Content</label>
+                        <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">
+                            {type === 'blogs' ? 'Blog Content' : 'Payload Content'}
+                        </label>
                         <div className="bg-bg-subtle border border-border-subtle rounded-2xl p-5 text-sm text-text-primary leading-relaxed italic">
                             "{viewModal.item.content || viewModal.item.description}"
                         </div>
@@ -499,7 +561,8 @@ const ContentItemManager = ({ type, apiBase }) => {
                                         </div>
                                         <div className="absolute inset-0 bg-bg-primary-subtle blur-2xl rounded-full animate-pulse" />
                                         <button 
-                                            onClick={(e) => { e.preventDefault(); setSelectedFile(null); if (isEditing) setPreviewUrl(null); }}
+                                            type="button"
+                                            onClick={(e) => { e.preventDefault(); setSelectedFile(null); if (isEditing) { setPreviewUrl(null); setImageCleared(true); } }}
                                             className="absolute -top-2 -right-2 bg-rose-500 text-white p-1.5 rounded-full z-20 shadow-lg hover:scale-110 transition-transform"
                                         >
                                             <X size={14} />
@@ -610,7 +673,8 @@ const ContentItemManager = ({ type, apiBase }) => {
                                     <div className="relative w-full px-6">
                                         <img src={previewUrl} className="w-full h-48 object-cover rounded-2xl border border-border-subtle" alt="preview" />
                                         <button 
-                                            onClick={(e) => { e.preventDefault(); setSelectedFile(null); if (isEditing) setPreviewUrl(null); }}
+                                            type="button"
+                                            onClick={(e) => { e.preventDefault(); setSelectedFile(null); if (isEditing) { setPreviewUrl(null); setImageCleared(true); } }}
                                             className="absolute top-4 right-10 bg-rose-500 text-white p-2 rounded-full shadow-xl hover:scale-110 transition-all"
                                         >
                                             <X size={16} />
@@ -633,11 +697,13 @@ const ContentItemManager = ({ type, apiBase }) => {
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Domain Heading</label>
+                                    <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">
+                                        {type === 'blogs' ? 'Article Title' : 'Domain Heading'}
+                                    </label>
                                     <input 
                                         type="text" 
                                         className="w-full bg-bg-subtle border border-border-subtle rounded-2xl p-4 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all" 
-                                        placeholder="Enter subject..." 
+                                        placeholder={type === 'blogs' ? 'Enter blog title...' : 'Enter subject...'}
                                         value={formData.title || ''}
                                         onChange={e => setFormData({...formData, title: e.target.value})}
                                     />
@@ -654,7 +720,39 @@ const ContentItemManager = ({ type, apiBase }) => {
                                         />
                                     </div>
                                 )}
+                                {type === 'blogs' && (
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Author</label>
+                                        <input 
+                                            type="text" 
+                                            className="w-full bg-bg-subtle border border-border-subtle rounded-2xl p-4 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all" 
+                                            placeholder="Enter author name..." 
+                                            value={formData.author || ''}
+                                            onChange={e => setFormData({...formData, author: e.target.value})}
+                                        />
+                                    </div>
+                                )}
                             </div>
+
+                            {type === 'blogs' && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Category</label>
+                                        <CustomSelect 
+                                            value={formData.category || 'Holiday'}
+                                            onChange={(val) => setFormData({...formData, category: val})}
+                                            options={[
+                                                { value: 'Holiday', label: 'Holiday' },
+                                                { value: 'Hotel Booking', label: 'Hotel Booking' },
+                                                { value: 'Destination', label: 'Destination' },
+                                                { value: 'Vacation', label: 'Vacation' },
+                                                { value: 'Tour', label: 'Tour' },
+                                                { value: 'Events', label: 'Events' }
+                                            ]}
+                                        />
+                                    </div>
+                                </div>
+                            )}
 
                             {type === 'facilities' && (
                                 <div className="space-y-3">
@@ -681,7 +779,8 @@ const ContentItemManager = ({ type, apiBase }) => {
                                                 <div className="relative w-full px-6">
                                                     <img src={coverPreviewUrl} className="w-full h-32 object-cover rounded-2xl border border-border-subtle" alt="preview" />
                                                     <button 
-                                                        onClick={(e) => { e.preventDefault(); setSelectedCoverFile(null); if (isEditing) setCoverPreviewUrl(null); }}
+                                                        type="button"
+                                                        onClick={(e) => { e.preventDefault(); setSelectedCoverFile(null); if (isEditing) { setCoverPreviewUrl(null); setCoverImageCleared(true); } }}
                                                         className="absolute top-2 right-8 bg-rose-500 text-white p-1.5 rounded-full shadow-xl hover:scale-110 transition-all"
                                                     >
                                                         <X size={14} />
@@ -699,10 +798,12 @@ const ContentItemManager = ({ type, apiBase }) => {
                             )}
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Payload Content</label>
+                                <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">
+                                    {type === 'blogs' ? 'Blog Content' : 'Payload Content'}
+                                </label>
                                 <textarea 
                                     className="w-full bg-bg-subtle border border-border-subtle rounded-[24px] p-5 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all h-32 resize-none leading-relaxed" 
-                                    placeholder="Enter full intelligence payload..." 
+                                    placeholder={type === 'blogs' ? 'Enter full blog content...' : 'Enter full intelligence payload...'}
                                     value={formData.content || formData.description || ''}
                                     onChange={e => setFormData({...formData, content: e.target.value, description: e.target.value})}
                                 />

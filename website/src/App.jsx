@@ -20,11 +20,13 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsConditions from './pages/TermsConditions';
 import Facilities from './pages/Facilities';
 import Blog from './pages/Blog';
+import BlogDetails from './pages/BlogDetails';
 import Offers from './pages/Offers';
 
 // Components
 import Preloader from './components/common/Preloader';
 import useContact from './hooks/useContact';
+import Chatbot from './components/common/Chatbot';
 
 // Scroll Management
 const ScrollToTop = () => {
@@ -57,10 +59,12 @@ function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-conditions" element={<TermsConditions />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogDetails />} />
             <Route path="/offers" element={<Offers />} />
           </Routes>
         </main>
         <Footer />
+        <Chatbot />
         
         {/* Floating Action Buttons (Right Side) */}
         <div className="fixed bottom-24 right-8 z-[1500] flex flex-col gap-4">

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Waves, Wind, Coffee, Utensils, Wifi, Car, Camera, MapPin } from 'lucide-react';
+import { Sparkles, Waves, Wind, Coffee, Utensils, Wifi, Car, Camera, MapPin, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { getImageUrl } from '../utils/imageHelper';
 
 const Facilities = () => {
     const [facilities, setFacilities] = useState([]);
@@ -80,20 +82,36 @@ const Facilities = () => {
     return (
         <div className="bg-[#0A3333] min-h-screen font-poppins">
             {/* Page Header */}
-            <header className="py-16 px-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-teal-900/30 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
-                <div className="max-w-[1200px] mx-auto relative z-10 text-center">
-                    <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="space-y-4"
-                    >
-                        <span className="text-teal-400 text-[10px] font-black uppercase tracking-[0.5em]">{t('Exquisite Amenities', 'उत्कृष्ट सुविधाएं')}</span>
-                        <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter">{t('Resort Facilities', 'रिसॉर्ट सुविधाएं')}</h1>
-                        <div className="w-24 h-1 bg-teal-500 mx-auto rounded-full"></div>
-                    </motion.div>
+            <section className="px-4 py-4 md:px-8 md:py-6 bg-[#0A3333] w-full max-w-[1400px] mx-auto">
+              <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-[24px] sm:rounded-[32px] md:rounded-[40px] overflow-hidden flex flex-col justify-center items-center text-center shadow-md border border-white/5">
+                {/* Background image & Overlay */}
+                <div className="absolute inset-0 z-0 pointer-events-none">
+                  <img
+                    src="/room_family.png"
+                    alt="Facilities Banner"
+                    className="absolute inset-0 w-full h-full object-cover object-center"
+                  />
+                  {/* Dark green gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#0F4C4C]/90 via-[#0F4C4C]/80 to-teal-900/60 backdrop-blur-[1px]" />
                 </div>
-            </header>
+                
+                {/* Header Text Content */}
+                <div className="relative z-10 text-white space-y-3 px-4 sm:px-6">
+                  <div className="flex items-center justify-center gap-2 text-teal-300 opacity-80">
+                    <Sparkles size={16} className="text-teal-300" />
+                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em]">{t('Exquisite Amenities', 'उत्कृष्ट सुविधाएं', 'അത്യാധുനിക സൗകര്യങ്ങൾ')}</span>
+                  </div>
+                  <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight leading-none text-white">
+                    {t('Resort Facilities', 'रिसॉर्ट सुविधाएं', 'റിസോർട്ട് സൗകര്യങ്ങൾ')}
+                  </h1>
+                  <div className="flex items-center justify-center gap-2 text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-widest text-teal-200">
+                    <Link to="/" className="hover:text-white transition-colors">{t('Home', 'होम', 'ഹോം')}</Link>
+                    <span>•</span>
+                    <span className="text-white">{t('Facilities', 'सुविधाएं', 'സൗകര്യങ്ങൾ')}</span>
+                  </div>
+                </div>
+              </div>
+            </section>
 
             {/* Alternating Facilities Section */}
             <section className="pb-32 px-6">
@@ -101,8 +119,8 @@ const Facilities = () => {
                     {displayFacilities.map((fac, i) => {
                         const isEven = i % 2 === 0;
                         const IconComponent = IconMap[fac.icon?.toLowerCase()] || Sparkles;
-                        const mainImg = fac.coverImage ? `${import.meta.env.VITE_SERVER_URL}/${fac.coverImage}` : fac.image?.startsWith('/') ? fac.image : `${import.meta.env.VITE_SERVER_URL}/${fac.image}`;
-                        const iconImg = fac.image && !fac.image.startsWith('/') ? `${import.meta.env.VITE_SERVER_URL}/${fac.image}` : null;
+                        const mainImg = getImageUrl(fac.coverImage || fac.image);
+                        const iconImg = fac.coverImage && fac.image ? getImageUrl(fac.image) : null;
 
                         return (
                             <motion.div 
@@ -173,9 +191,12 @@ const Facilities = () => {
                     </p>
                     <button 
                         onClick={() => window.location.href = '/rooms'}
-                        className="px-12 py-6 bg-teal-500 text-[#0A3333] rounded-2xl font-black uppercase text-xs tracking-[0.3em] shadow-2xl hover:bg-teal-400 hover:scale-105 active:scale-95 transition-all"
+                        className="inline-flex items-center justify-between gap-6 bg-neutral-950 hover:bg-neutral-900 text-white pl-8 pr-2 py-2 rounded-full w-fit shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 font-bold uppercase tracking-widest text-[10px] group mx-auto"
                     >
-                        {t('Reserve Your Stay', 'अपना प्रवास सुरक्षित करें')}
+                        <span>{t('Reserve Your Stay', 'अपना प्रवास सुरक्षित करें', 'താമസം ബുക്ക് ചെയ്യുക')}</span>
+                        <span className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1">
+                            <ArrowRight size={14} className="stroke-[3]" />
+                        </span>
                     </button>
                 </div>
             </section>

@@ -23,6 +23,7 @@ import AvailabilityCalendar from './components/dashboard/AvailabilityCalendar';
 import PriorityActionHub from './components/dashboard/PriorityActionHub';
 import { Badge, Button, Modal, CustomSelect, Switch } from './components/common/UIComponents';
 import { Toaster } from 'react-hot-toast';
+import { getImageUrl } from './utils/imageHelper';
 import { 
   Briefcase, 
   CalendarCheck,
@@ -388,7 +389,7 @@ const BannerSection = ({ banners }) => {
           <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl animate-pulse" />
           <div className="relative w-32 h-32 rounded-[32px] active-teal-gradient rotate-12 flex items-center justify-center shadow-2xl group-hover:rotate-0 transition-transform duration-500 overflow-hidden">
             {activeBanner?.image ? (
-              <img src={`${API_BASE.replace('/api', '')}/${activeBanner.image}`} alt="" className="w-full h-full object-cover" />
+              <img src={getImageUrl(activeBanner.image, API_BASE)} alt="" className="w-full h-full object-cover" />
             ) : (
               <DollarSign size={48} className="text-white drop-shadow-lg" />
             )}

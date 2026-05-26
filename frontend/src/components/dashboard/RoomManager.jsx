@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import { Badge, Button, Modal, CustomSelect } from '../common/UIComponents';
+import { getImageUrl } from '../../utils/imageHelper';
 import { 
   Plus, 
   Trash2, 
@@ -40,10 +41,10 @@ const RoomManager = ({ apiBase }) => {
     amenities: [],
     facilities: []
   });
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [imageCategories, setImageCategories] = useState([]);
-  const [previewUrls, setPreviewUrls] = useState([]);
+  const [imagesState, setImagesState] = useState([]); // Array of { file, url, category, isExisting }
   const [isSaving, setIsSaving] = useState(false);
+  const [typeFilter, setTypeFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
 
   const CATEGORIES = ["General", "Bedroom", "Bathroom", "Living Room", "Exterior", "Other"];
   const FACILITIES = [
@@ -98,8 +99,11 @@ const RoomManager = ({ apiBase }) => {
       amenities: Array.isArray(room.amenities) ? room.amenities : [],
       facilities: room.facilities?.map(f => typeof f === 'object' ? f._id : f) || []
     });
-    setPreviewUrls(room.images.map(img => `${apiBase.replace('/api', '')}/${img.url}`));
-    setImageCategories(room.images.map(img => img.category || 'General'));
+    setImagesState(room.images.map(img => ({
+      url: img.url,
+      category: img.category || 'General',
+      isExisting: true
+    })));
     setIsModalOpen(true);
   };
 
@@ -108,20 +112,18 @@ const RoomManager = ({ apiBase }) => {
     setIsEditing(false);
     setCurrentRoomId(null);
     setFormData({ name: '', description: '', price: '', quantity: 1, type: 'Standard', capacity: 2, amenities: [], facilities: [] });
-    setSelectedFiles([]);
-    setImageCategories([]);
-    setPreviewUrls([]);
+    setImagesState([]);
   };
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setSelectedFiles(prev => [...prev, ...files]);
-    
-    const newCategories = files.map(() => 'General');
-    setImageCategories(prev => [...prev, ...newCategories]);
-    
-    const urls = files.map(file => URL.createObjectURL(file));
-    setPreviewUrls(prev => [...prev, ...urls]);
+    const newImages = files.map(file => ({
+      file,
+      url: URL.createObjectURL(file),
+      category: 'General',
+      isExisting: false
+    }));
+    setImagesState(prev => [...prev, ...newImages]);
   };
 
   const handleSave = async () => {
@@ -138,8 +140,17 @@ const RoomManager = ({ apiBase }) => {
         }
       });
       
-      selectedFiles.forEach(file => fd.append('images', file));
-      fd.append('imageCategories', JSON.stringify(imageCategories));
+      const existingImages = imagesState.filter(img => img.isExisting).map(img => ({
+        url: img.url,
+        category: img.category
+      }));
+      fd.append('existingImages', JSON.stringify(existingImages));
+
+      const newImages = imagesState.filter(img => !img.isExisting);
+      newImages.forEach(img => fd.append('images', img.file));
+      
+      const newImageCategories = newImages.map(img => img.category);
+      fd.append('imageCategories', JSON.stringify(newImageCategories));
 
       const url = isEditing ? `${apiBase}/rooms/${currentRoomId}` : `${apiBase}/rooms`;
       const method = isEditing ? 'PATCH' : 'POST';
@@ -184,11 +195,21 @@ const RoomManager = ({ apiBase }) => {
   };
 
   const filteredRooms = useMemo(() => {
-    return rooms.filter(room => 
-      room.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      room.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [rooms, searchTerm]);
+    return rooms.filter(room => {
+      const matchesSearch = 
+        room.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        room.description.toLowerCase().includes(searchTerm.toLowerCase());
+        
+      const matchesType = typeFilter === 'All' || room.type === typeFilter;
+      
+      const matchesStatus = 
+        statusFilter === 'All' || 
+        (statusFilter === 'Available' && room.quantity > 0) || 
+        (statusFilter === 'Sold Out' && room.quantity === 0);
+        
+      return matchesSearch && matchesType && matchesStatus;
+    });
+  }, [rooms, searchTerm, typeFilter, statusFilter]);
 
   const totalPages = Math.ceil(filteredRooms.length / itemsPerPage);
   const paginatedData = filteredRooms.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -213,8 +234,8 @@ const RoomManager = ({ apiBase }) => {
         </div>
 
         {/* Filter Section */}
-        <div className="flex flex-col md:flex-row gap-4 items-center">
-          <div className="relative group flex-1 max-w-md">
+        <div className="flex flex-col md:flex-row gap-4 items-center w-full">
+          <div className="relative group flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors" size={16} />
             <input 
               type="text" 
@@ -223,6 +244,38 @@ const RoomManager = ({ apiBase }) => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-bg-subtle border border-border-subtle rounded-2xl py-3 pl-12 pr-4 text-[13px] outline-none focus:bg-bg-subtle focus:border-border-primary-subtle text-text-primary font-medium transition-all"
             />
+          </div>
+          
+          <div className="flex gap-3 shrink-0 max-md:w-full">
+            <div className="flex items-center gap-2 max-md:flex-1">
+              <span className="text-[11px] font-bold text-text-secondary uppercase">Type:</span>
+              <CustomSelect 
+                value={typeFilter}
+                onChange={setTypeFilter}
+                options={[
+                  { value: 'All', label: 'All Types' },
+                  { value: 'Standard', label: 'Standard' },
+                  { value: 'Deluxe', label: 'Deluxe' },
+                  { value: 'Luxury', label: 'Luxury' },
+                  { value: 'Suite', label: 'Suite' }
+                ]}
+                className="w-[140px] max-md:w-full"
+              />
+            </div>
+            
+            <div className="flex items-center gap-2 max-md:flex-1">
+              <span className="text-[11px] font-bold text-text-secondary uppercase">Status:</span>
+              <CustomSelect 
+                value={statusFilter}
+                onChange={setStatusFilter}
+                options={[
+                  { value: 'All', label: 'All Status' },
+                  { value: 'Available', label: 'Available' },
+                  { value: 'Sold Out', label: 'Sold Out' }
+                ]}
+                className="w-[145px] max-md:w-full"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -253,7 +306,7 @@ const RoomManager = ({ apiBase }) => {
                     <div className="flex items-center gap-4">
                       <div className="w-[42px] h-[42px] rounded-xl bg-bg-subtle overflow-hidden flex items-center justify-center border border-border-subtle group-hover:border-border-primary-subtle transition-all shrink-0">
                         {room.images && room.images.length > 0 ? (
-                            <img src={`${apiBase.replace('/api', '')}/${room.images[0].url || room.images[0]}`} className="w-full h-full object-cover" alt="" />
+                            <img src={getImageUrl(room.images[0].url || room.images[0], apiBase)} className="w-full h-full object-cover" alt="" />
                         ) : (
                             <ImageIcon size={18} className="text-text-secondary group-hover:text-primary transition-all" />
                         )}
@@ -354,7 +407,7 @@ const RoomManager = ({ apiBase }) => {
                 {viewModal.room.images && viewModal.room.images.length > 0 && (
                     <div className="grid grid-cols-2 gap-3">
                         <div className="col-span-2 h-64 rounded-3xl overflow-hidden border border-border-subtle relative">
-                            <img src={`${apiBase.replace('/api', '')}/${viewModal.room.images[0].url || viewModal.room.images[0]}`} className="w-full h-full object-cover" alt="" />
+                            <img src={getImageUrl(viewModal.room.images[0].url || viewModal.room.images[0], apiBase)} className="w-full h-full object-cover" alt="" />
                             <div className="absolute top-4 right-4 flex gap-2">
                                 <Badge status="primary">{viewModal.room.images[0].category}</Badge>
                                 <Badge status="success">{viewModal.room.type}</Badge>
@@ -362,7 +415,7 @@ const RoomManager = ({ apiBase }) => {
                         </div>
                         {viewModal.room.images.slice(1, 3).map((img, i) => (
                             <div key={i} className="h-32 rounded-2xl overflow-hidden border border-border-subtle relative">
-                                <img src={`${apiBase.replace('/api', '')}/${img.url || img}`} className="w-full h-full object-cover" alt="" />
+                                <img src={getImageUrl(img.url || img, apiBase)} className="w-full h-full object-cover" alt="" />
                                 <div className="absolute top-2 right-2">
                                     <Badge status="primary" className="text-[8px] px-1.5 py-0.5">{img.category}</Badge>
                                 </div>
@@ -417,7 +470,7 @@ const RoomManager = ({ apiBase }) => {
                             ))}
                             {viewModal.room.facilities?.map((f, i) => (
                                 <span key={f._id || i} className="px-3 py-1.5 bg-cyan-500/5 text-cyan-400 text-[10px] font-black rounded-lg border border-cyan-500/20 uppercase tracking-widest flex items-center gap-2">
-                                    {f.image && <img src={`${apiBase.replace('/api', '')}/${f.image}`} className="w-3 h-3 object-contain" alt="" />}
+                                    {f.image && <img src={getImageUrl(f.image, apiBase)} className="w-3 h-3 object-contain" alt="" />}
                                     {f.title}
                                 </span>
                             ))}
@@ -447,26 +500,22 @@ const RoomManager = ({ apiBase }) => {
             <div className="space-y-3">
                 <label className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] ml-1">Suite Visual Assets</label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {previewUrls.map((url, i) => (
+                    {imagesState.map((img, i) => (
                         <div key={i} className="space-y-2">
                             <div className="relative aspect-square rounded-2xl overflow-hidden border border-border-subtle group/img">
-                                <img src={url} className="w-full h-full object-cover" alt="" />
+                                <img src={getImageUrl(img.url, apiBase)} className="w-full h-full object-cover" alt="" />
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
-                                    <button onClick={() => {
-                                        setPreviewUrls(prev => prev.filter((_, idx) => idx !== i));
-                                        setSelectedFiles(prev => prev.filter((_, idx) => idx !== i));
-                                        setImageCategories(prev => prev.filter((_, idx) => idx !== i));
+                                    <button type="button" onClick={() => {
+                                        setImagesState(prev => prev.filter((_, idx) => idx !== i));
                                     }} className="p-1.5 bg-rose-500 text-white rounded-lg scale-75 group-hover/img:scale-100 transition-transform">
                                         <Trash2 size={14} />
                                     </button>
                                 </div>
                             </div>
                             <CustomSelect 
-                                value={imageCategories[i]}
+                                value={img.category}
                                 onChange={val => {
-                                    const newCats = [...imageCategories];
-                                    newCats[i] = val;
-                                    setImageCategories(newCats);
+                                    setImagesState(prev => prev.map((item, idx) => idx === i ? { ...item, category: val } : item));
                                 }}
                                 options={CATEGORIES.map(c => ({ value: c, label: c }))}
                                 className="w-full"
@@ -474,7 +523,7 @@ const RoomManager = ({ apiBase }) => {
                             />
                         </div>
                     ))}
-                    {previewUrls.length < 30 && (
+                    {imagesState.length < 30 && (
                         <label className="aspect-square rounded-2xl border-2 border-dashed border-border-subtle flex flex-col items-center justify-center text-text-secondary hover:border-primary hover:text-primary cursor-pointer transition-all">
                             <Plus size={24} />
                             <span className="text-[9px] font-bold uppercase mt-1">Upload</span>
@@ -564,7 +613,7 @@ const RoomManager = ({ apiBase }) => {
                                         : "bg-bg-subtle border-border-subtle text-text-secondary hover:border-border-primary-subtle"
                                 )}
                             >
-                                {facility.image && <img src={`${apiBase.replace('/api', '')}/${facility.image}`} className="w-4 h-4 object-contain opacity-70" alt="" />}
+                                {facility.image && <img src={getImageUrl(facility.image, apiBase)} className="w-4 h-4 object-contain opacity-70" alt="" />}
                                 {facility.title}
                             </button>
                         );
