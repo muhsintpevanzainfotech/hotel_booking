@@ -4,6 +4,15 @@ import { Sparkles, Waves, Wind, Coffee, Utensils, Wifi, Car, Camera, MapPin, Arr
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { getImageUrl } from '../utils/imageHelper';
+import bathroomImg from '../assets/images/bathroom.jpeg';
+import coupleImg from '../assets/images/couple.jpeg';
+import familyImg from '../assets/images/family.jpeg';
+import familyroomImg from '../assets/images/familyroom.jpeg';
+import masterImg from '../assets/images/master.jpeg';
+import masterbedroomImg from '../assets/images/masterbedroom.jpeg';
+import roomImg from '../assets/images/room.jpeg';
+import roomsImg from '../assets/images/rooms.jpeg';
+import sitoutImg from '../assets/images/sitout.jpeg';
 
 const Facilities = () => {
     const [facilities, setFacilities] = useState([]);
@@ -31,32 +40,32 @@ const Facilities = () => {
         { 
             title: t('Infinity Pool', 'इन्फिनिटी पूल'), 
             description: t('Swim with a view of the backwaters.', 'बैकवाटर्स के दृश्य के साथ तैरें।'),
-            image: '/hero_bright.png'
+            image: roomsImg
         },
         { 
             title: t('Lakeside Dining', 'लेकसाइड डाइनिंग'), 
             description: t('Authentic Kerala cuisine under the stars.', 'तारों के नीचे प्रामाणिक केरल व्यंजन।'),
-            image: '/room_deluxe.png'
+            image: roomImg
         },
         { 
             title: t('Ayurvedic Spa', 'आयुर्वेदिक स्पा'), 
             description: t('Traditional healing and relaxation.', 'पारंपरिक उपचार और विश्राम।'),
-            image: '/room_family.png'
+            image: familyroomImg
         },
         { 
             title: t('High-Speed WiFi', 'हाई-स्पीड वाईफाई'), 
             description: t('Stay connected even in nature.', 'प्रकृति में भी जुड़े रहें।'),
-            image: '/room1.jpg'
+            image: masterbedroomImg
         },
         { 
             title: t('Travel Desk', 'ट्रैवल डेस्क'), 
             description: t('Curated local tours and transport.', 'क्यूरेटेड स्थानीय परिवहन।'),
-            image: '/hero_bright.png'
+            image: sitoutImg
         },
         { 
             title: t('Photography', 'फोटोग्राफी'), 
             description: t('Capture the beauty of Kumarakom.', 'कुमारकोम की सुंदरता को कैद करें।'),
-            image: '/room_deluxe.png'
+            image: bathroomImg
         }
     ];
 
@@ -87,7 +96,7 @@ const Facilities = () => {
                 {/* Background image & Overlay */}
                 <div className="absolute inset-0 z-0 pointer-events-none">
                   <img
-                    src="/room_family.png"
+                    src={familyImg}
                     alt="Facilities Banner"
                     className="absolute inset-0 w-full h-full object-cover object-center"
                   />

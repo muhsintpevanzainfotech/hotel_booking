@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { useLanguage } from '../context/LanguageContext';
+import sitoutImg from '../assets/images/sitout.jpeg';
 
 const BookingStatus = () => {
     const [reference, setReference] = useState('');
@@ -41,7 +42,7 @@ const BookingStatus = () => {
                     {/* Background image & Overlay */}
                     <div className="absolute inset-0 z-0 pointer-events-none">
                         <img
-                            src="/hero_bright.png"
+                            src={sitoutImg}
                             alt="Booking Status Banner"
                             className="absolute inset-0 w-full h-full object-cover object-center"
                         />

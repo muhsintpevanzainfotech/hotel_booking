@@ -2,13 +2,26 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRoomsRequest } from '../redux/slices/roomSlice';
 import { Link, useNavigate } from 'react-router-dom';
-import { Star, Heart, MapPin, Waves, Users, Zap, Shield, Check, Phone, MessageCircle, Home as HomeIcon, Layout, CreditCard, Sparkles, Coffee, Utensils, Wifi, Wind, Car, Camera, Quote, CalendarDays, Bed, User, Baby, Key, ArrowRight, Flag } from 'lucide-react';
+import { Star, Heart, MapPin, Waves, Users, Zap, Shield, Check, Phone, MessageCircle, Home as HomeIcon, Layout, CreditCard, Sparkles, Coffee, Utensils, Wifi, Wind, Car, Camera, Quote, CalendarDays, Bed, User, Baby, Key, ArrowRight, Flag, Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
 import { getImageUrl } from '../utils/imageHelper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
+import heroVideo from '../assets/images/hero.mp4';
+import bathroomImg from '../assets/images/bathroom.jpeg';
+import bgImg from '../assets/images/bg.jpeg';
+import coupleImg from '../assets/images/couple.jpeg';
+import familyImg from '../assets/images/family.jpeg';
+import familyroomImg from '../assets/images/familyroom.jpeg';
+import maeterImg from '../assets/images/maeter.jpeg';
+import masterImg from '../assets/images/master.jpeg';
+import masterbedroomImg from '../assets/images/masterbedroom.jpeg';
+import masterbedroom2Img from '../assets/images/masterbedroom2.jpeg';
+import roomImg from '../assets/images/room.jpeg';
+import roomsImg from '../assets/images/rooms.jpeg';
+import sitoutImg from '../assets/images/sitout.jpeg';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -157,6 +170,33 @@ const Home = () => {
   const [children, setChildren] = useState(2);
   const [roomsCount, setRoomsCount] = useState(1);
 
+  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
+  const [isVideoMuted, setIsVideoMuted] = useState(true);
+  const videoRef = useRef(null);
+
+  const handlePlayPause = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play().then(() => {
+          setIsVideoPlaying(true);
+        }).catch(err => {
+          console.error("Playback failed", err);
+        });
+      } else {
+        videoRef.current.pause();
+        setIsVideoPlaying(false);
+      }
+    }
+  };
+
+  const handleMuteUnmute = () => {
+    if (videoRef.current) {
+      const newMuted = !isVideoMuted;
+      videoRef.current.muted = newMuted;
+      setIsVideoMuted(newMuted);
+    }
+  };
+
   const handleBookingSubmit = () => {
     const params = new URLSearchParams({
       checkIn,
@@ -181,7 +221,7 @@ const Home = () => {
     {
       id: 1,
       slug: 'ultimate-guide-to-hassle-free-hotel-booking',
-      image: '/hero.jpg',
+      image: masterbedroomImg,
       author: 'Robert Fox',
       date: 'Sep 09, 2026',
       title: t('The Ultimate Guide to Hassle Free Hotel Booking', 'हॉस्टल फ्री होटल बुकिंग के लिए अंतिम गाइड'),
@@ -190,7 +230,7 @@ const Home = () => {
     {
       id: 2,
       slug: 'top-10-tips-to-find-perfect-hotel',
-      image: '/room_family.png',
+      image: familyroomImg,
       author: 'Robert Fox',
       date: 'Sep 12, 2026',
       title: t('Top 10 Tips to Find the Perfect Hotel for Your Next Trip', 'आपकी अगली यात्रा के लिए सही होटल खोजने के लिए शीर्ष 10 युक्तियाँ'),
@@ -199,7 +239,7 @@ const Home = () => {
     {
       id: 3,
       slug: 'wonderful-17-places-in-paris',
-      image: '/sustainable_luxury_garden_1778950196361.png',
+      image: bathroomImg,
       author: 'Robert Fox',
       date: 'Sep 18, 2026',
       title: t('Wonderful 17 places you cannot ignore in Paris', 'पेरिस में अद्भुत 17 स्थान जिन्हें आप अनदेखा नहीं कर सकते'),
@@ -231,7 +271,7 @@ const Home = () => {
           {/* Clip container for background image and overlays */}
           <div className="absolute inset-0 rounded-[48px] overflow-hidden z-0 pointer-events-none">
             <img
-              src="/hero.jpg"
+              src={bgImg}
               alt="Luxury villa resort"
               className="absolute inset-0 w-full h-full object-cover object-bottom mix-blend-normal z-0"
             />
@@ -485,7 +525,7 @@ const Home = () => {
                 >
                   <div>
                     <div className="relative aspect-[4/5] rounded-[24px] overflow-hidden mb-5 shadow-inner border border-white">
-                      <img src={room.images?.[0]?.url ? getImageUrl(room.images[0].url) : '/room_deluxe.png'} alt={room.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                      <img src={room.images?.[0]?.url ? getImageUrl(room.images[0].url) : roomImg} alt={room.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                       <div className="absolute top-5 left-5 px-3 py-1.5 bg-white/90 backdrop-blur-md rounded-xl text-[8px] font-black uppercase tracking-widest text-[#0F4C4C] shadow-lg">
                         {room.type}
                       </div>
@@ -557,10 +597,7 @@ const Home = () => {
               </div>
               <div className="relative aspect-[4/3] sm:aspect-[3/4] lg:aspect-[4/5] rounded-[32px] overflow-hidden shadow-lg border border-neutral-100">
                 <img
-                  src="/signature_experience.png"
-                  onError={(e) => {
-                    e.target.src = '/kerala_architecture_resort_1778950177084.png';
-                  }}
+                  src={coupleImg}
                   alt="Our Signature Experience"
                   className="w-full h-full object-cover"
                 />
@@ -681,7 +718,7 @@ const Home = () => {
                 </div>
               </motion.div>
             )) : (
-              ['/hero_bright.png', '/room_deluxe.png', '/room_family.png', '/room1.jpg', '/hero_bright.png', '/room_deluxe.png'].map((img, i) => (
+              [masterbedroom2Img, masterImg, maeterImg, familyImg, roomsImg, bathroomImg].map((img, i) => (
                 <motion.div key={i} whileHover={{ scale: 1.02 }} className="aspect-square rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-xl relative group border border-white">
                   <img src={img} alt="Gallery" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -705,14 +742,61 @@ const Home = () => {
       {/* 5. VIDEO SECTION */}
       <section className="py-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-4">
-          <div className="relative overflow-hidden rounded-[36px] shadow-2xl aspect-[16/9] bg-black">
-            <img src="/hero_bright.png" alt="Resort video preview" className="absolute inset-0 w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-black/35" />
-            <button className="absolute inset-x-0 top-1/2 left-1/2 z-10 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-white/15 text-white transition hover:scale-105">
-              <svg viewBox="0 0 24 24" className="w-10 h-10 fill-white">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </button>
+          <div className="relative overflow-hidden rounded-[36px] shadow-2xl h-[300px] md:h-[480px] bg-black group/video">
+            <video
+              ref={videoRef}
+              src={heroVideo}
+              autoPlay
+              loop
+              muted={isVideoMuted}
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            {/* Subtle gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
+
+            {/* Custom Premium Controls Overlay */}
+            <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-8 opacity-0 group-hover/video:opacity-100 transition-opacity duration-300">
+              
+              {/* Top Bar: Title / Info */}
+              <div className="flex justify-between items-start">
+                <span className="px-4 py-2 bg-black/40 backdrop-blur-md text-white/95 rounded-full text-xs font-semibold tracking-wider flex items-center gap-2">
+                  <Sparkles size={14} className="text-teal-400 animate-pulse" />
+                  {t('Experience Luxury', 'लक्जरी का अनुभव करें')}
+                </span>
+              </div>
+
+              {/* Center Play/Pause button for direct focus */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <button
+                  onClick={handlePlayPause}
+                  className="flex h-20 w-20 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white transition-all duration-300 hover:scale-110 hover:bg-white/25 active:scale-95 shadow-lg cursor-pointer"
+                  aria-label={isVideoPlaying ? 'Pause video' : 'Play video'}
+                >
+                  {isVideoPlaying ? (
+                    <Pause size={32} className="fill-white text-white" />
+                  ) : (
+                    <Play size={32} className="fill-white text-white translate-x-0.5" />
+                  )}
+                </button>
+              </div>
+
+              {/* Bottom Bar: Action buttons */}
+              <div className="flex justify-end gap-3 z-10">
+                <button
+                  onClick={handleMuteUnmute}
+                  className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/40 backdrop-blur-md text-white transition hover:scale-105 hover:bg-black/60 active:scale-95 cursor-pointer"
+                  aria-label={isVideoMuted ? 'Unmute video' : 'Mute video'}
+                >
+                  {isVideoMuted ? (
+                    <VolumeX size={20} />
+                  ) : (
+                    <Volume2 size={20} />
+                  )}
+                </button>
+              </div>
+
+            </div>
           </div>
         </div>
       </section>
@@ -799,7 +883,7 @@ const Home = () => {
             return (
               <div className="max-w-[1400px] mx-auto relative h-[400px] rounded-[48px] overflow-hidden shadow-2xl group">
                 <img
-                  src={activeBanner.image ? getImageUrl(activeBanner.image) : "/hero_bright.png"}
+                  src={activeBanner.image ? getImageUrl(activeBanner.image) : sitoutImg}
                   alt="Promotion"
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                 />
@@ -830,7 +914,7 @@ const Home = () => {
         ) : (
           <div className="max-w-[1400px] mx-auto relative h-[400px] rounded-[48px] overflow-hidden shadow-2xl group">
             <img
-              src="/hero_bright.png"
+              src={sitoutImg}
               alt="Promotion"
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
             />
@@ -904,7 +988,7 @@ const Home = () => {
                   <Link to={`/blog/${post.slug || post.id}`}>
                     <div className="relative aspect-[16/10] rounded-[18px] sm:rounded-[24px] overflow-hidden mb-5 sm:mb-6 bg-gray-50">
                       <img
-                        src={post.image ? getImageUrl(post.image) : '/hero.jpg'}
+                        src={post.image ? getImageUrl(post.image) : masterbedroomImg}
                         alt={post.title}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />

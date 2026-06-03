@@ -4,6 +4,18 @@ import { motion } from 'framer-motion';
 import { Image as ImageIcon, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../utils/imageHelper';
+import bathroomImg from '../assets/images/bathroom.jpeg';
+import bgImg from '../assets/images/bg.jpeg';
+import coupleImg from '../assets/images/couple.jpeg';
+import familyImg from '../assets/images/family.jpeg';
+import familyroomImg from '../assets/images/familyroom.jpeg';
+import maeterImg from '../assets/images/maeter.jpeg';
+import masterImg from '../assets/images/master.jpeg';
+import masterbedroomImg from '../assets/images/masterbedroom.jpeg';
+import masterbedroom2Img from '../assets/images/masterbedroom2.jpeg';
+import roomImg from '../assets/images/room.jpeg';
+import roomsImg from '../assets/images/rooms.jpeg';
+import sitoutImg from '../assets/images/sitout.jpeg';
 
 const Gallery = () => {
   const [items, setItems] = useState([]);
@@ -32,7 +44,7 @@ const Gallery = () => {
     setDisplayLimit(prev => prev + 6);
   };
 
-  const fallbackImages = ['/hero_bright.png', '/room_deluxe.png', '/room_family.png', '/room1.jpg', '/hero_bright.png', '/room_deluxe.png', '/room_family.png', '/room1.jpg', '/hero_bright.png'];
+  const fallbackImages = [masterbedroom2Img, masterImg, maeterImg, familyImg, roomsImg, bathroomImg, familyroomImg, masterbedroomImg, roomImg];
 
   const displayItems = items.length > 0 ? items.slice(0, displayLimit) : fallbackImages.slice(0, displayLimit);
   const hasMore = items.length > displayLimit || (items.length === 0 && fallbackImages.length > displayLimit);
@@ -45,7 +57,7 @@ const Gallery = () => {
           {/* Background image & Overlay */}
           <div className="absolute inset-0 z-0 pointer-events-none">
             <img
-              src="/sustainable_luxury_garden_1778950196361.png"
+              src={bgImg}
               alt="Gallery Banner"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />

@@ -4,6 +4,14 @@ import { motion } from 'framer-motion';
 import { Calendar, User, ArrowLeft, BookOpen, Star, Clock, Sparkles } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { getImageUrl } from '../utils/imageHelper';
+import bathroomImg from '../assets/images/bathroom.jpeg';
+import bgImg from '../assets/images/bg.jpeg';
+import familyImg from '../assets/images/family.jpeg';
+import familyroomImg from '../assets/images/familyroom.jpeg';
+import masterImg from '../assets/images/master.jpeg';
+import masterbedroomImg from '../assets/images/masterbedroom.jpeg';
+import roomImg from '../assets/images/room.jpeg';
+import sitoutImg from '../assets/images/sitout.jpeg';
 
 // Define the comprehensive list of mock posts with details
 const MOCK_POSTS = {
@@ -24,7 +32,7 @@ const MOCK_POSTS = {
     Many travelers make the mistake of using third-party sites without checking the hotel's direct website. Booking directly with the resort often unlocks exclusive deals, priority room upgrades, flexible cancellation terms, and complimentary amenities (such as a sunset cruise or guided nature walks).
     
     At Lake Breeze Resorts, direct bookings via WhatsApp or our official website enjoy special discounts and priority check-in options. Make sure to explore active campaign vouchers before making your reservation.`,
-    image: '/hero.jpg',
+    image: masterbedroomImg,
     author: 'Robert Fox',
     date: 'Sep 09, 2026',
     category: 'Hotel Booking',
@@ -46,7 +54,7 @@ const MOCK_POSTS = {
     8. Check Loyalty Programs: Join loyalty networks or direct booking clubs to enjoy immediate rewards.
     9. Review Cancellation Policies: Travel plans can change. Choose refundable or flexible options whenever possible.
     10. Call the Hotel Directly: If you have special requests or want to negotiate custom packages, calling the resort manager directly can yield incredible results.`,
-    image: '/room_family.png',
+    image: familyroomImg,
     author: 'Robert Fox',
     date: 'Sep 12, 2026',
     category: 'Holiday',
@@ -61,7 +69,7 @@ const MOCK_POSTS = {
     From the artistic streets of Montmartre to the majestic halls of the Louvre, this guide explores 17 places you cannot ignore. Learn where to grab the best croissants, find quiet parks with stunning views, and experience the local side of Paris.
     
     Additionally, we cover how to plan your stays, handle local transportation, and enjoy the city at a relaxed, leisurely pace. Make sure to add these to your travel bucket list!`,
-    image: '/sustainable_luxury_garden_1778950196361.png',
+    image: bgImg,
     author: 'Robert Fox',
     date: 'Sep 18, 2026',
     category: 'Destination',
@@ -80,7 +88,7 @@ const MOCK_POSTS = {
     - 24/7 Butler Service for Luxury Suites
     
     Discover how we merge nature and modern luxury to construct a tranquil sanctuary for mind, body, and soul.`,
-    image: '/hero_bright.png',
+    image: sitoutImg,
     author: 'Robert Fox',
     date: 'Sep 23, 2026',
     category: 'Events',
@@ -98,7 +106,7 @@ const MOCK_POSTS = {
     4. Bleisure Travel: Combining business with leisure, requiring high-speed connectivity and functional workspaces in rooms.
     5. Hyper-Local Dining: Menus showcasing local cultural culinary heritage and ingredients sourced within a 10-mile radius.
     6. Immersive Local Tours: Guided activities designed to connect travelers with native communities and history.`,
-    image: '/room_deluxe.png',
+    image: roomImg,
     author: 'Robert Fox',
     date: 'Nov 25, 2026',
     category: 'Holiday',
@@ -111,7 +119,7 @@ const MOCK_POSTS = {
     content: `Japan is an incredible family destination, offering a perfect blend of ancient heritage and futuristic sights. However, planning a family trip with children requires careful scheduling.
 
     In this article, we outline best practices for booking accommodations in Tokyo, Kyoto, and Osaka, navigating bullet trains with luggage, finding kid-friendly dining options, and reserving spots at popular attractions (like theme parks and museums) ahead of time.`,
-    image: '/room_family.png',
+    image: familyImg,
     author: 'Robert Fox',
     date: 'Nov 17, 2026',
     category: 'Vacation',
@@ -124,7 +132,7 @@ const MOCK_POSTS = {
     content: `Modern travelers seek connection with the environment without compromising on comfort. This has birthed a new standard in resort architecture: merging nature with luxury.
 
     At Lake Breeze, we utilize biophilic layouts, open-air lobbies, indigenous spice gardens, and natural wooden furnishings. This aesthetic brings the peacefulness of nature directly into your room, helping you de-stress and rejuvenate completely.`,
-    image: '/sustainable_luxury_garden_1778950196361.png',
+    image: bathroomImg,
     author: 'Robert Fox',
     date: 'Nov 02, 2026',
     category: 'Destination',
@@ -271,7 +279,7 @@ const BlogDetails = () => {
           {/* Background image & Overlay */}
           <div className="absolute inset-0 z-0 pointer-events-none">
             <img
-              src={post.image ? getImageUrl(post.image) : '/hero.jpg'}
+              src={post.image ? getImageUrl(post.image) : bgImg}
               alt={post.title}
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
@@ -316,7 +324,7 @@ const BlogDetails = () => {
             {/* Featured Image */}
             <div className="relative rounded-[24px] overflow-hidden bg-gray-100 shadow-sm aspect-[16/9]">
               <img
-                src={post.image ? getImageUrl(post.image) : '/hero.jpg'}
+                src={post.image ? getImageUrl(post.image) : bgImg}
                 alt={post.title}
                 className="w-full h-full object-cover"
               />
@@ -400,7 +408,7 @@ const BlogDetails = () => {
                     {/* Small thumbnail */}
                     <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 border border-gray-100 shrink-0 shadow-sm relative">
                       <img
-                        src={rPost.image ? getImageUrl(rPost.image) : '/hero.jpg'}
+                        src={rPost.image ? getImageUrl(rPost.image) : bgImg}
                         alt={rPost.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />

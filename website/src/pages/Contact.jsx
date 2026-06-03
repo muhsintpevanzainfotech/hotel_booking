@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
 import useContact from '../hooks/useContact';
+import sitoutImg from '../assets/images/sitout.jpeg';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -70,7 +71,7 @@ const Contact = () => {
           {/* Background image & Overlay */}
           <div className="absolute inset-0 z-0 pointer-events-none">
             <img
-              src="/hero_bright.png"
+              src={sitoutImg}
               alt="Contact Us Banner"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />

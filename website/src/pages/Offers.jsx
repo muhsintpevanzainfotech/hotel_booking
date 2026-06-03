@@ -4,6 +4,7 @@ import { Zap, ChevronLeft, Gift, Tag, Calendar, Copy, Check } from 'lucide-react
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import toast from 'react-hot-toast';
+import sitoutImg from '../assets/images/sitout.jpeg';
 
 const Offers = () => {
   const { t } = useLanguage();
@@ -44,7 +45,7 @@ const Offers = () => {
           {/* Background image & Overlay */}
           <div className="absolute inset-0 z-0 pointer-events-none">
             <img
-              src="/room_deluxe.png"
+              src={sitoutImg}
               alt="Offers Banner"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />

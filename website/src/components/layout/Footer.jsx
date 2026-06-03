@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Twitter, Phone, Mail, MapPin, Award, Check } from 'lucide-react';
+import { Instagram, Facebook, Twitter, Linkedin, Phone, Mail, MapPin, Award, Check } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import useContact from '../../hooks/useContact';
 
@@ -22,11 +22,26 @@ const Footer = () => {
               {t('Providing architectural sanctuaries where the horizon meets unrivaled luxury. Perfect for families and couples seeking peace.', 'एक वास्तुशिल्प अभयारण्य जहाँ क्षितिज बेजोड़ विलासिता से मिलता है।')}
             </p>
             <div className="flex gap-4">
-              {[Instagram, Facebook, Twitter].map((Icon, i) => (
-                <a key={i} href="#" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-teal-100 hover:bg-primary hover:text-white transition-all shadow-lg active:scale-95">
-                  <Icon size={20} />
-                </a>
-              ))}
+              {[
+                { Icon: Instagram, key: 'instagram', label: 'Instagram' },
+                { Icon: Facebook, key: 'facebook', label: 'Facebook' },
+                { Icon: Twitter, key: 'twitter', label: 'X (Twitter)' },
+                { Icon: Linkedin, key: 'linkedin', label: 'LinkedIn' }
+              ].map(({ Icon, key, label }) => {
+                const url = contact?.socialLinks?.[key];
+                return (
+                  <a
+                    key={key}
+                    href={url || '#'}
+                    target={url ? '_blank' : undefined}
+                    rel={url ? 'noopener noreferrer' : undefined}
+                    title={label}
+                    className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-teal-100 hover:bg-primary hover:text-white transition-all shadow-lg active:scale-95"
+                  >
+                    <Icon size={20} />
+                  </a>
+                );
+              })}
             </div>
           </div>
 

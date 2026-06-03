@@ -8,6 +8,9 @@ import RoomDetailsModal from '../components/rooms/RoomDetailsModal';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
 import { getImageUrl } from '../utils/imageHelper';
+import roomImg from '../assets/images/room.jpeg';
+import roomsImg from '../assets/images/rooms.jpeg';
+import masterbedroomImg from '../assets/images/masterbedroom.jpeg';
 
 const Rooms = () => {
     const dispatch = useDispatch();
@@ -45,7 +48,7 @@ const Rooms = () => {
                     {/* Background image & Overlay */}
                     <div className="absolute inset-0 z-0 pointer-events-none">
                         <img
-                            src="/room1.jpg"
+                            src={roomsImg}
                             alt="Rooms Banner"
                             className="absolute inset-0 w-full h-full object-cover object-center"
                         />
@@ -112,7 +115,7 @@ const Rooms = () => {
                              >
                                 <div className="relative aspect-[4/3] overflow-hidden cursor-pointer" onClick={() => handleViewClick(room)}>
                                     <img 
-                                        src={room.images?.[0]?.url ? getImageUrl(room.images[0].url) : '/room_deluxe.png'} 
+                                        src={room.images?.[0]?.url ? getImageUrl(room.images[0].url) : roomImg} 
                                         alt={room.name} 
                                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                                     />

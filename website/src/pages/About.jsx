@@ -3,6 +3,13 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, ShieldCheck, Heart, History, Leaf, MapPin, Users, Award, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import bathroomImg from '../assets/images/bathroom.jpeg';
+import bgImg from '../assets/images/bg.jpeg';
+import coupleImg from '../assets/images/couple.jpeg';
+import masterImg from '../assets/images/master.jpeg';
+import roomImg from '../assets/images/room.jpeg';
+import roomsImg from '../assets/images/rooms.jpeg';
+import sitoutImg from '../assets/images/sitout.jpeg';
 
 const About = () => {
   const { t } = useLanguage();
@@ -22,7 +29,7 @@ const About = () => {
           {/* Background image & Overlay */}
           <div className="absolute inset-0 z-0 pointer-events-none">
             <img
-              src="/hero_bright.png"
+              src={sitoutImg}
               alt="About Us Banner"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
@@ -60,7 +67,7 @@ const About = () => {
             className="lg:col-span-4"
           >
             <img 
-              src="/kerala_architecture_resort_1778950177084.png" 
+              src={masterImg} 
               alt="Lake Breeze Resort Architecture" 
               className="w-full h-full min-h-[400px] lg:min-h-[550px] object-cover rounded-[32px] shadow-xl" 
             />
@@ -125,7 +132,7 @@ const About = () => {
             {/* Small rounded card image */}
             <div className="relative overflow-hidden rounded-[28px] shadow-lg flex-1 min-h-[220px]">
               <img 
-                src="/room_deluxe.png" 
+                src={roomImg} 
                 alt="Lake Breeze Deluxe Experience" 
                 className="w-full h-full object-cover absolute inset-0 hover:scale-105 transition-transform duration-700" 
               />
@@ -146,9 +153,9 @@ const About = () => {
               className="w-full md:w-1/2 order-2 md:order-1"
             >
               <img 
-                src="/hero_bright.png" 
+                src={roomsImg} 
                 alt="Extraordinary Experiences" 
-                className="w-full h-[300px] md:h-[500px] object-cover rounded-[40px] shadow-xl"
+                className="w-full h-full-[300px] md:h-[500px] object-cover rounded-[40px] shadow-xl"
               />
             </motion.div>
             <motion.div 
@@ -225,7 +232,7 @@ const About = () => {
               className="relative"
             >
               <img 
-                src="/sustainable_luxury_garden_1778950196361.png" 
+                src={bathroomImg} 
                 alt="Sustainable Garden" 
                 className="w-full h-[300px] md:h-[500px] object-cover rounded-[40px] shadow-2xl grayscale-[20%] hover:grayscale-0 transition-all duration-700"
               />

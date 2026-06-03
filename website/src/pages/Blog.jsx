@@ -4,6 +4,13 @@ import { Search, Calendar, User, ChevronLeft, ChevronRight, Play, X, ArrowRight,
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { getImageUrl } from '../utils/imageHelper';
+import bathroomImg from '../assets/images/bathroom.jpeg';
+import bgImg from '../assets/images/bg.jpeg';
+import familyroomImg from '../assets/images/familyroom.jpeg';
+import masterbedroomImg from '../assets/images/masterbedroom.jpeg';
+import roomImg from '../assets/images/room.jpeg';
+import roomsImg from '../assets/images/rooms.jpeg';
+import sitoutImg from '../assets/images/sitout.jpeg';
 
 const Blog = () => {
   const { t } = useLanguage();
@@ -62,7 +69,7 @@ const Blog = () => {
       id: 1,
       slug: 'ultimate-guide-to-hassle-free-hotel-booking',
       type: 'standard',
-      image: '/hero.jpg',
+      image: masterbedroomImg,
       author: 'Robert Fox',
       date: 'Sep 09, 2026',
       title: 'The Ultimate Guide to Hassle Free Hotel Booking',
@@ -75,9 +82,9 @@ const Blog = () => {
       slug: 'top-10-tips-to-find-perfect-hotel',
       type: 'slider',
       images: [
-        '/room_family.png',
-        '/room_deluxe.png',
-        '/room1.jpg'
+        familyroomImg,
+        roomImg,
+        roomsImg
       ],
       author: 'Robert Fox',
       date: 'Sep 12, 2026',
@@ -90,7 +97,7 @@ const Blog = () => {
       id: 3,
       slug: 'wonderful-17-places-in-paris',
       type: 'video',
-      image: '/sustainable_luxury_garden_1778950196361.png',
+      image: bathroomImg,
       videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // Placeholder video
       author: 'Robert Fox',
       date: 'Sep 18, 2026',
@@ -103,7 +110,7 @@ const Blog = () => {
       id: 4,
       slug: 'offers-exclusive-services-and-facilities',
       type: 'standard',
-      image: '/hero_bright.png',
+      image: sitoutImg,
       author: 'Robert Fox',
       date: 'Sep 23, 2026',
       title: 'Offers Exclusive Services & Facilities to Guests'
@@ -160,7 +167,7 @@ const Blog = () => {
           {/* Background image & Overlay */}
           <div className="absolute inset-0 z-0 pointer-events-none">
             <img
-              src="/hero.jpg"
+              src={bgImg}
               alt="Latest News Banner"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
