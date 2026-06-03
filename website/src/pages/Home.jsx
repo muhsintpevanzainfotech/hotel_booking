@@ -22,6 +22,7 @@ import masterbedroom2Img from '../assets/images/masterbedroom2.jpeg';
 import roomImg from '../assets/images/room.jpeg';
 import roomsImg from '../assets/images/rooms.jpeg';
 import sitoutImg from '../assets/images/sitout.jpeg';
+import BookingModal from '../components/rooms/BookingModal';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -173,6 +174,14 @@ const Home = () => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(true);
   const [isVideoMuted, setIsVideoMuted] = useState(true);
   const videoRef = useRef(null);
+
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleBookClick = (room) => {
+    setSelectedRoom(room);
+    setIsModalOpen(true);
+  };
 
   const handlePlayPause = () => {
     if (videoRef.current) {
@@ -547,7 +556,7 @@ const Home = () => {
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-4">
                     <p className="text-lg sm:text-xl font-black text-[#0F4C4C] tracking-tighter">₹{room.price} <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">/ night</span></p>
                     <button
-                      onClick={() => window.location.href = '/rooms'}
+                      onClick={() => handleBookClick(room)}
                       className="px-5 py-3 bg-[#0F4C4C] text-white rounded-xl font-black uppercase text-[8px] tracking-widest shadow-lg hover:bg-[#2E7D7D] transition-all active:scale-95 cursor-pointer"
                     >
                       {t('Book Now', 'अभी बुक करें')}
@@ -1052,6 +1061,12 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      <BookingModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        room={selectedRoom} 
+      />
     </div>
   );
 };
