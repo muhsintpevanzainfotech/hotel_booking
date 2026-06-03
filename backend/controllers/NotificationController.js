@@ -13,8 +13,14 @@ exports.getNotifications = async (req, res) => {
 
 exports.markAsRead = async (req, res) => {
     try {
-        await Notification.updateMany({ isRead: false }, { $set: { isRead: true } });
-        res.json({ message: 'All notifications marked as read' });
+        const { id } = req.body;
+        if (id) {
+            await Notification.findByIdAndUpdate(id, { $set: { isRead: true } });
+            res.json({ message: 'Notification marked as read' });
+        } else {
+            await Notification.updateMany({ isRead: false }, { $set: { isRead: true } });
+            res.json({ message: 'All notifications marked as read' });
+        }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

@@ -17,9 +17,25 @@ const notificationSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    markNotificationsReadRequest: (state) => {},
-    markNotificationsReadSuccess: (state) => {
-      state.list = state.list.map(n => ({ ...n, isRead: true }));
+    markNotificationsReadRequest: (state, action) => {},
+    markNotificationsReadSuccess: (state, action) => {
+      const id = action.payload;
+      if (id) {
+        state.list = state.list.map(n => n._id === id ? { ...n, isRead: true } : n);
+      } else {
+        state.list = state.list.map(n => ({ ...n, isRead: true }));
+      }
+    },
+    deleteNotificationRequest: (state, action) => {
+      state.loading = true;
+    },
+    deleteNotificationSuccess: (state, action) => {
+      state.loading = false;
+      state.list = state.list.filter(n => n._id !== action.payload);
+    },
+    deleteNotificationFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
@@ -29,7 +45,10 @@ export const {
   fetchNotificationsSuccess, 
   fetchNotificationsFailure,
   markNotificationsReadRequest,
-  markNotificationsReadSuccess
+  markNotificationsReadSuccess,
+  deleteNotificationRequest,
+  deleteNotificationSuccess,
+  deleteNotificationFailure
 } = notificationSlice.actions;
 
 export default notificationSlice.reducer;

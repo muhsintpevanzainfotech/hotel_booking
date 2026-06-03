@@ -13,7 +13,10 @@ import {
   fetchNotificationsSuccess,
   fetchNotificationsFailure,
   markNotificationsReadRequest,
-  markNotificationsReadSuccess
+  markNotificationsReadSuccess,
+  deleteNotificationRequest,
+  deleteNotificationSuccess,
+  deleteNotificationFailure
 } from '../slices/notificationSlice';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
@@ -219,17 +222,41 @@ function* handleFetchNotifications() {
   }
 }
 
-function* handleMarkNotificationsRead() {
+function* handleMarkNotificationsRead(action) {
   try {
+    const id = action.payload;
     const token = yield select(getToken);
     const response = yield call(() => fetch(`${API_BASE}/notifications/read`, {
       method: 'PUT',
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: id ? JSON.stringify({ id }) : undefined
+    }));
+    if (response.ok) {
+      yield put(markNotificationsReadSuccess(id));
+    }
+  } catch (e) {}
+}
+
+function* handleDeleteNotification(action) {
+  try {
+    const id = action.payload;
+    const token = yield select(getToken);
+    const response = yield call(() => fetch(`${API_BASE}/notifications/${id}`, {
+      method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     }));
     if (response.ok) {
-      yield put(markNotificationsReadSuccess());
+      yield put(deleteNotificationSuccess(id));
+    } else {
+      const data = yield response.json();
+      yield put(deleteNotificationFailure(data.message));
     }
-  } catch (e) {}
+  } catch (e) {
+    yield put(deleteNotificationFailure(e.message));
+  }
 }
 
 // Watchers
@@ -238,6 +265,7 @@ function* watchAuth() {
   yield takeEvery('auth/checkAuth', handleCheckAuth);
 }
 
+// Watchers
 function* watchRooms() {
   yield takeEvery('rooms/fetchRoomsRequest', handleFetchRooms);
 }
@@ -257,6 +285,7 @@ function* watchUsers() {
 function* watchNotifications() {
   yield takeEvery('notifications/fetchNotificationsRequest', handleFetchNotifications);
   yield takeEvery('notifications/markNotificationsReadRequest', handleMarkNotificationsRead);
+  yield takeEvery('notifications/deleteNotificationRequest', handleDeleteNotification);
 }
 
 export default function* rootSaga() {
