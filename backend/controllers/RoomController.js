@@ -66,15 +66,26 @@ exports.updateRoom = async (req, res) => {
                 : req.body.existingImages;
         }
 
+        // Normalize existingImages to always be objects with url
+        existingImages = existingImages.map(img => {
+            if (typeof img === 'string') return { url: img, category: 'General' };
+            if (img && typeof img === 'object') return { url: img.url, category: img.category || 'General' };
+            return null;
+        }).filter(Boolean);
+
         // Identify which images were removed, so we can delete them from Cloudinary
         if (room.images && room.images.length > 0) {
-            const keptUrls = new Set(existingImages.map(img => img.url));
-            const removedImages = room.images.filter(img => !keptUrls.has(img.url));
+            const keptUrls = new Set(existingImages.map(img => img.url).filter(Boolean));
+            const removedImages = room.images.filter(img => {
+                const url = (img && typeof img === 'object') ? img.url : img;
+                return url && !keptUrls.has(url);
+            });
             
             await Promise.all(removedImages.map(async (img) => {
-                if (img.url) {
-                    if (isCloudinaryUrl(img.url)) await deleteFromCloudinary(img.url);
-                    else deleteFile(img.url);
+                const url = (img && typeof img === 'object') ? img.url : img;
+                if (url && typeof url === 'string') {
+                    if (isCloudinaryUrl(url)) await deleteFromCloudinary(url);
+                    else deleteFile(url);
                 }
             }));
         }
@@ -108,9 +119,10 @@ exports.deleteRoom = async (req, res) => {
         const room = await Room.findById(req.params.id);
         if (room && room.images) {
             await Promise.all(room.images.map(async (img) => {
-                if (img.url) {
-                    if (isCloudinaryUrl(img.url)) await deleteFromCloudinary(img.url);
-                    else deleteFile(img.url);
+                const url = (img && typeof img === 'object') ? img.url : img;
+                if (url && typeof url === 'string') {
+                    if (isCloudinaryUrl(url)) await deleteFromCloudinary(url);
+                    else deleteFile(url);
                 }
             }));
         }

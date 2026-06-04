@@ -160,16 +160,25 @@ const ContentItemManager = ({ type, apiBase }) => {
   const handlePublish = async () => {
     setIsSaving(true);
     try {
-        const fd = new FormData();
-        Object.keys(formData).forEach(key => {
-            if (formData[key] !== undefined && formData[key] !== null) {
-                fd.append(key, formData[key]);
-            }
-        });
-        if (selectedFile) fd.append('image', selectedFile);
-        if (selectedCoverFile) fd.append('coverImage', selectedCoverFile);
-        if (imageCleared) fd.append('imageCleared', 'true');
-        if (coverImageCleared) fd.append('coverImageCleared', 'true');
+        let body;
+        const headers = { 'Authorization': `Bearer ${token}` };
+
+        if (type === 'offers') {
+            headers['Content-Type'] = 'application/json';
+            body = JSON.stringify(formData);
+        } else {
+            const fd = new FormData();
+            Object.keys(formData).forEach(key => {
+                if (formData[key] !== undefined && formData[key] !== null) {
+                    fd.append(key, formData[key]);
+                }
+            });
+            if (selectedFile) fd.append('image', selectedFile);
+            if (selectedCoverFile) fd.append('coverImage', selectedCoverFile);
+            if (imageCleared) fd.append('imageCleared', 'true');
+            if (coverImageCleared) fd.append('coverImageCleared', 'true');
+            body = fd;
+        }
 
         const url = isEditing 
             ? `${apiBase}${active.endpoint}/${currentItemId}` 
@@ -179,8 +188,8 @@ const ContentItemManager = ({ type, apiBase }) => {
 
         const res = await fetch(url, {
             method,
-            headers: { 'Authorization': `Bearer ${token}` },
-            body: fd
+            headers,
+            body
         });
 
         if (res.ok) {
@@ -651,88 +660,92 @@ const ContentItemManager = ({ type, apiBase }) => {
                 <>
                     {/* Standard Layout for Blogs/Services */}
                     <div className="space-y-6">
-                        <div 
-                            className={`relative group transition-all duration-500 ${dragActive ? 'scale-[1.01]' : ''}`}
-                            onDragEnter={handleDrag}
-                            onDragLeave={handleDrag}
-                            onDragOver={handleDrag}
-                            onDrop={handleDrop}
-                        >
-                            <input 
-                                type="file" 
-                                className="hidden" 
-                                id="blog-image"
-                                onChange={e => setSelectedFile(e.target.files[0])}
-                            />
-                            <label htmlFor="blog-image" className={`flex flex-col items-center justify-center gap-4 py-20 border-2 border-dashed rounded-[32px] cursor-pointer transition-all duration-500 ${
-                                dragActive 
-                                ? 'border-primary bg-bg-primary-subtle' 
-                                : 'border-border-subtle bg-bg-subtle hover:border-border-primary-subtle hover:bg-bg-subtle'
-                            }`}>
-                                {previewUrl ? (
-                                    <div className="relative w-full px-6">
-                                        <img src={previewUrl} className="w-full h-48 object-cover rounded-2xl border border-border-subtle" alt="preview" />
-                                        <button 
-                                            type="button"
-                                            onClick={(e) => { e.preventDefault(); setSelectedFile(null); if (isEditing) { setPreviewUrl(null); setImageCleared(true); } }}
-                                            className="absolute top-4 right-10 bg-rose-500 text-white p-2 rounded-full shadow-xl hover:scale-110 transition-all"
-                                        >
-                                            <X size={16} />
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <>
-                                        <div className="w-16 h-16 bg-bg-subtle rounded-full flex items-center justify-center text-text-secondary border border-border-subtle">
-                                            <FileImage size={28} />
+                        {type !== 'offers' && (
+                            <div 
+                                className={`relative group transition-all duration-500 ${dragActive ? 'scale-[1.01]' : ''}`}
+                                onDragEnter={handleDrag}
+                                onDragLeave={handleDrag}
+                                onDragOver={handleDrag}
+                                onDrop={handleDrop}
+                            >
+                                <input 
+                                    type="file" 
+                                    className="hidden" 
+                                    id="blog-image"
+                                    onChange={e => setSelectedFile(e.target.files[0])}
+                                />
+                                <label htmlFor="blog-image" className={`flex flex-col items-center justify-center gap-4 py-20 border-2 border-dashed rounded-[32px] cursor-pointer transition-all duration-500 ${
+                                    dragActive 
+                                    ? 'border-primary bg-bg-primary-subtle' 
+                                    : 'border-border-subtle bg-bg-subtle hover:border-border-primary-subtle hover:bg-bg-subtle'
+                                }`}>
+                                    {previewUrl ? (
+                                        <div className="relative w-full px-6">
+                                            <img src={previewUrl} className="w-full h-48 object-cover rounded-2xl border border-border-subtle" alt="preview" />
+                                            <button 
+                                                type="button"
+                                                onClick={(e) => { e.preventDefault(); setSelectedFile(null); if (isEditing) { setPreviewUrl(null); setImageCleared(true); } }}
+                                                className="absolute top-4 right-10 bg-rose-500 text-white p-2 rounded-full shadow-xl hover:scale-110 transition-all"
+                                            >
+                                                <X size={16} />
+                                            </button>
                                         </div>
-                                        <div className="text-center">
-                                            <p className="text-[13px] font-bold text-text-primary tracking-tight">Synchronize Media Header</p>
-                                            <p className="text-[10px] text-text-secondary uppercase tracking-[0.1em] mt-1 font-medium">Drag assets or browse local directory</p>
-                                        </div>
-                                    </>
-                                )}
-                            </label>
-                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="w-16 h-16 bg-bg-subtle rounded-full flex items-center justify-center text-text-secondary border border-border-subtle">
+                                                <FileImage size={28} />
+                                            </div>
+                                            <div className="text-center">
+                                                <p className="text-[13px] font-bold text-text-primary tracking-tight">Synchronize Media Header</p>
+                                                <p className="text-[10px] text-text-secondary uppercase tracking-[0.1em] mt-1 font-medium">Drag assets or browse local directory</p>
+                                            </div>
+                                        </>
+                                    )}
+                                </label>
+                            </div>
+                        )}
 
                         <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">
-                                        {type === 'blogs' ? 'Article Title' : 'Domain Heading'}
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        className="w-full bg-bg-subtle border border-border-subtle rounded-2xl p-4 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all" 
-                                        placeholder={type === 'blogs' ? 'Enter blog title...' : 'Enter subject...'}
-                                        value={formData.title || ''}
-                                        onChange={e => setFormData({...formData, title: e.target.value})}
-                                    />
+                            {type !== 'banners' && type !== 'offers' && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">
+                                            {type === 'blogs' ? 'Article Title' : 'Domain Heading'}
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            className="w-full bg-bg-subtle border border-border-subtle rounded-2xl p-4 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all" 
+                                            placeholder={type === 'blogs' ? 'Enter blog title...' : 'Enter subject...'}
+                                            value={formData.title || ''}
+                                            onChange={e => setFormData({...formData, title: e.target.value})}
+                                        />
+                                    </div>
+                                    {type === 'facilities' && (
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Icon Class/Name</label>
+                                            <input 
+                                                type="text" 
+                                                className="w-full bg-bg-subtle border border-border-subtle rounded-2xl p-4 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all" 
+                                                placeholder="e.g. coffee, pool..." 
+                                                value={formData.icon || ''}
+                                                onChange={e => setFormData({...formData, icon: e.target.value})}
+                                            />
+                                        </div>
+                                    )}
+                                    {type === 'blogs' && (
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Author</label>
+                                            <input 
+                                                type="text" 
+                                                className="w-full bg-bg-subtle border border-border-subtle rounded-2xl p-4 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all" 
+                                                placeholder="Enter author name..." 
+                                                value={formData.author || ''}
+                                                onChange={e => setFormData({...formData, author: e.target.value})}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
-                                {type === 'facilities' && (
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Icon Class/Name</label>
-                                        <input 
-                                            type="text" 
-                                            className="w-full bg-bg-subtle border border-border-subtle rounded-2xl p-4 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all" 
-                                            placeholder="e.g. coffee, pool..." 
-                                            value={formData.icon || ''}
-                                            onChange={e => setFormData({...formData, icon: e.target.value})}
-                                        />
-                                    </div>
-                                )}
-                                {type === 'blogs' && (
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Author</label>
-                                        <input 
-                                            type="text" 
-                                            className="w-full bg-bg-subtle border border-border-subtle rounded-2xl p-4 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all" 
-                                            placeholder="Enter author name..." 
-                                            value={formData.author || ''}
-                                            onChange={e => setFormData({...formData, author: e.target.value})}
-                                        />
-                                    </div>
-                                )}
-                            </div>
+                            )}
 
                             {type === 'blogs' && (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -797,17 +810,19 @@ const ContentItemManager = ({ type, apiBase }) => {
                                 </div>
                             )}
 
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">
-                                    {type === 'blogs' ? 'Blog Content' : 'Payload Content'}
-                                </label>
-                                <textarea 
-                                    className="w-full bg-bg-subtle border border-border-subtle rounded-[24px] p-5 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all h-32 resize-none leading-relaxed" 
-                                    placeholder={type === 'blogs' ? 'Enter full blog content...' : 'Enter full intelligence payload...'}
-                                    value={formData.content || formData.description || ''}
-                                    onChange={e => setFormData({...formData, content: e.target.value, description: e.target.value})}
-                                />
-                            </div>
+                            {type !== 'banners' && type !== 'offers' && (
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">
+                                        {type === 'blogs' ? 'Blog Content' : 'Payload Content'}
+                                    </label>
+                                    <textarea 
+                                        className="w-full bg-bg-subtle border border-border-subtle rounded-[24px] p-5 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all h-32 resize-none leading-relaxed" 
+                                        placeholder={type === 'blogs' ? 'Enter full blog content...' : 'Enter full intelligence payload...'}
+                                        value={formData.content || formData.description || ''}
+                                        onChange={e => setFormData({...formData, content: e.target.value, description: e.target.value})}
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </>

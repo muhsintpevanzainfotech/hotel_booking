@@ -374,6 +374,14 @@ exports.updateBanner = async (req, res) => {
         const banner = await Banner.findById(req.params.id);
         if (!banner) return res.status(404).json({ message: 'Banner not found' });
 
+        if (req.body.imageCleared === 'true') {
+            if (banner.image) {
+                if (isCloudinaryUrl(banner.image)) await deleteFromCloudinary(banner.image);
+                else deleteFile(banner.image);
+                banner.image = '';
+            }
+        }
+
         if (req.file) {
             if (banner.image) {
                 if (isCloudinaryUrl(banner.image)) await deleteFromCloudinary(banner.image);

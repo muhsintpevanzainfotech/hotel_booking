@@ -4,7 +4,8 @@ export const getImageUrl = (url, apiBase) => {
     url.startsWith('http://') ||
     url.startsWith('https://') ||
     url.startsWith('/') ||
-    url.startsWith('data:')
+    url.startsWith('data:') ||
+    url.startsWith('blob:')
   ) {
     return url;
   }
