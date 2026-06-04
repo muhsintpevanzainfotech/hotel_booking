@@ -97,13 +97,17 @@ const RoomManager = ({ apiBase }) => {
       type: room.type || 'Standard',
       capacity: room.capacity || 2,
       amenities: Array.isArray(room.amenities) ? room.amenities : [],
-      facilities: room.facilities?.map(f => typeof f === 'object' ? f._id : f) || []
+      facilities: room.facilities?.filter(Boolean).map(f => typeof f === 'object' ? f._id : f) || []
     });
-    setImagesState(room.images.map(img => ({
-      url: img.url,
-      category: img.category || 'General',
-      isExisting: true
-    })));
+    setImagesState((room.images || []).map(img => {
+      const url = typeof img === 'string' ? img : img?.url;
+      const category = typeof img === 'string' ? 'General' : (img?.category || 'General');
+      return {
+        url,
+        category,
+        isExisting: true
+      };
+    }));
     setIsModalOpen(true);
   };
 

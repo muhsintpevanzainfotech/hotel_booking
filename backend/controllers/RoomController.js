@@ -68,8 +68,8 @@ exports.updateRoom = async (req, res) => {
 
         // Normalize existingImages to always be objects with url
         existingImages = existingImages.map(img => {
-            if (typeof img === 'string') return { url: img, category: 'General' };
-            if (img && typeof img === 'object') return { url: img.url, category: img.category || 'General' };
+            if (typeof img === 'string' && img) return { url: img, category: 'General' };
+            if (img && typeof img === 'object' && img.url) return { url: img.url, category: img.category || 'General' };
             return null;
         }).filter(Boolean);
 
