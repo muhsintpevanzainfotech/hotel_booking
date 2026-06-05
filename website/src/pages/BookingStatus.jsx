@@ -4,6 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { useLanguage } from '../context/LanguageContext';
+import useSEO from '../hooks/useSEO';
 import sitoutImg from '../assets/images/sitout.jpeg';
 
 const BookingStatus = () => {
@@ -13,6 +14,11 @@ const BookingStatus = () => {
     const { t } = useLanguage();
     const [searchParams] = useSearchParams();
     const queryRef = searchParams.get('ref');
+
+    useSEO(
+        t('Track Stay Status', 'आरक्षण स्थिति', 'താമസം ട്രാക്ക് ചെയ്യുക'),
+        t('Enter your Reservation ID to track checkout, check-in, billing, and room confirmation status at Lake Breeze Resorts.', 'अपना आरक्षण संदर्भ दर्ज करके अपनी बुकिंग स्थिति जानें।')
+    );
 
     useEffect(() => {
         if (queryRef) {

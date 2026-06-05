@@ -4,6 +4,7 @@ import { Zap, ChevronLeft, Gift, Tag, Calendar, Copy, Check } from 'lucide-react
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import toast from 'react-hot-toast';
+import useSEO from '../hooks/useSEO';
 import sitoutImg from '../assets/images/sitout.jpeg';
 
 const Offers = () => {
@@ -11,6 +12,11 @@ const Offers = () => {
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState(null);
+
+  useSEO(
+    t('Exclusive Offers & Campaigns', 'विशेष ऑफर', 'പ്രത്യേക ഓഫറുകൾ'),
+    t('Discover seasonal deals, early bird savings, discount vouchers, and direct booking campaigns for Lake Breeze Resorts.', 'लेक ब्रीज रिसॉर्ट्स के विशेष ऑफर्स और डिस्काउंट वाउचर्स की जानकारी प्राप्त करें।')
+  );
 
   useEffect(() => {
     const fetchOffers = async () => {

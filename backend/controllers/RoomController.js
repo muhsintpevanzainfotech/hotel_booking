@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Room = require('../models/Room');
 const Booking = require('../models/Booking');
 const { deleteFile } = require('../utils/fileHelper');
@@ -156,7 +157,23 @@ exports.checkAvailability = async (req, res) => {
 
 exports.getRoomById = async (req, res) => {
     try {
-        const room = await Room.findById(req.params.id).populate('facilities');
+        const { id } = req.params;
+        let room;
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            room = await Room.findById(id).populate('facilities');
+        } else {
+            const slugify = (text) => text
+                .toString()
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, '-')
+                .replace(/[^\w\-]+/g, '')
+                .replace(/\-\-+/g, '-');
+            
+            const rooms = await Room.find().populate('facilities');
+            room = rooms.find(r => slugify(r.name) === id.toLowerCase());
+        }
+
         if (!room) return res.status(404).json({ message: 'Room not found' });
         res.json(room);
     } catch (error) {

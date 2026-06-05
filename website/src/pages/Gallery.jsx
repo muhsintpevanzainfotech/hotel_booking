@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Image as ImageIcon, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../utils/imageHelper';
+import useSEO from '../hooks/useSEO';
 import bathroomImg from '../assets/images/bathroom.jpeg';
 import bgImg from '../assets/images/bg.jpeg';
 import coupleImg from '../assets/images/couple.jpeg';
@@ -22,6 +23,11 @@ const Gallery = () => {
   const [loading, setLoading] = useState(true);
   const [displayLimit, setDisplayLimit] = useState(9);
   const { t } = useLanguage();
+
+  useSEO(
+    t('Visual Gallery & Estate Views', 'चित्र दीर्घा', 'ചിത്രശാല'),
+    t('Take a visual tour of Lake Breeze Resorts. Browse stunning photographs of our water-facing cottages, backwater tours, and spa sanctuaries.', 'लेक ब्रीज रिसॉर्ट्स की सुंदर तस्वीरें और नज़ारे देखें।')
+  );
 
   useEffect(() => {
     const fetchGallery = async () => {

@@ -3,9 +3,15 @@ import { motion } from 'framer-motion';
 import { Scale, CheckCircle2, AlertCircle, Clock, ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import useSEO from '../hooks/useSEO';
 
 const TermsConditions = () => {
     const { t } = useLanguage();
+
+    useSEO(
+        t('Terms & Conditions', 'नियम और शर्तें', 'വ്യവസ്ഥകളും നിബന്ധനകളും'),
+        t('Read the binding rules and booking/cancellation terms of service for Lake Breeze Resorts.', 'लेक ब्रीज रिसॉर्ट्स के नियमों और शर्तों को पढ़ें।')
+    );
 
     const terms = [
         {

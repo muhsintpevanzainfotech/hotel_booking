@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { getImageUrl } from '../utils/imageHelper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
+import useSEO from '../hooks/useSEO';
 import 'swiper/css';
 import heroVideo from '../assets/images/hero.mp4';
 import bathroomImg from '../assets/images/bathroom.jpeg';
@@ -26,6 +27,11 @@ import BookingModal from '../components/rooms/BookingModal';
 
 const Home = () => {
   const dispatch = useDispatch();
+
+  useSEO(
+    'Lake Breeze Resorts | Ultra-Luxury Waterfront Sanctuary',
+    'Experience unrivaled luxury at Lake Breeze Resorts. A sanctuary where architectural brilliance meets the wild beauty of the valley. Book your signature suite today.'
+  );
   const { items: allRooms, loading } = useSelector(state => state.rooms);
   const rooms = allRooms.slice(0, 6);
   const { t } = useLanguage();

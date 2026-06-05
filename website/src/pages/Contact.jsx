@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
 import useContact from '../hooks/useContact';
+import useSEO from '../hooks/useSEO';
 import sitoutImg from '../assets/images/sitout.jpeg';
 
 const Contact = () => {
@@ -16,6 +17,11 @@ const Contact = () => {
   const [status, setStatus] = useState({ loading: false, success: false, error: null });
   const { t } = useLanguage();
   const { contact } = useContact();
+
+  useSEO(
+    t('Contact & Directions', 'हमसे संपर्क करें', 'ബന്ധപ്പെടുക'),
+    t('Get in touch with the Lake Breeze Resorts concierge desk. Find locations, map directions, email and phone numbers.', 'हमसे संपर्क करें। लेक ब्रीज रिसॉर्ट्स के पते, फोन नंबर और ईमेल की जानकारी प्राप्त करें।')
+  );
 
   const handleChange = (e) => {
     const { name, value } = e.target;

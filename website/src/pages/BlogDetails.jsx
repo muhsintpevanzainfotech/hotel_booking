@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Calendar, User, ArrowLeft, BookOpen, Star, Clock, Sparkles } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { getImageUrl } from '../utils/imageHelper';
+import useSEO from '../hooks/useSEO';
 import bathroomImg from '../assets/images/bathroom.jpeg';
 import bgImg from '../assets/images/bg.jpeg';
 import familyImg from '../assets/images/family.jpeg';
@@ -148,6 +149,11 @@ const BlogDetails = () => {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [recentPosts, setRecentPosts] = useState([]);
+
+  useSEO(
+    post ? post.title : t('Travel Stories', 'यात्रा ब्लॉग'),
+    post ? post.description : t('Read this travel blog post from Lake Breeze Resorts.', 'लेक ब्रीज रिसॉर्ट्स ब्लॉग पढ़ें।')
+  );
 
   // Fetch blog data
   useEffect(() => {

@@ -3,9 +3,15 @@ import { motion } from 'framer-motion';
 import { Shield, Lock, Eye, FileText, ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import useSEO from '../hooks/useSEO';
 
 const PrivacyPolicy = () => {
     const { t } = useLanguage();
+
+    useSEO(
+        t('Privacy Policy', 'गोपनीयता नीति', 'സ്വകാര്യതാ നയം'),
+        t('Learn how Lake Breeze Resorts collects, protects, and manages your personal booking data.', 'जानें कि हम आपकी व्यक्तिगत जानकारी की सुरक्षा कैसे करते हैं।')
+    );
 
     const sections = [
         {

@@ -4,6 +4,7 @@ import { Sparkles, Waves, Wind, Coffee, Utensils, Wifi, Car, Camera, MapPin, Arr
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { getImageUrl } from '../utils/imageHelper';
+import useSEO from '../hooks/useSEO';
 import bathroomImg from '../assets/images/bathroom.jpeg';
 import coupleImg from '../assets/images/couple.jpeg';
 import familyImg from '../assets/images/family.jpeg';
@@ -18,6 +19,11 @@ const Facilities = () => {
     const [facilities, setFacilities] = useState([]);
     const [loading, setLoading] = useState(true);
     const { t } = useLanguage();
+
+    useSEO(
+        t('Luxury Facilities & Amenities', 'शानदार सुविधाएं', 'സൗകര്യങ്ങൾ'),
+        t('Explore the world-class facilities at Lake Breeze Resorts: infinity pool, fine dining, traditional spa, water sports, and high-speed Wi-Fi.', 'लेक ब्रीज रिसॉर्ट्स की शानदार सुविधाओं की सूची देखें: स्विमिंग पूल, स्पा और बहुत कुछ।')
+    );
 
     useEffect(() => {
         const fetchFacilities = async () => {

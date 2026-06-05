@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, ShieldCheck, Heart, History, Leaf, MapPin, Users, Award, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import useSEO from '../hooks/useSEO';
 import bathroomImg from '../assets/images/bathroom.jpeg';
 import bgImg from '../assets/images/bg.jpeg';
 import coupleImg from '../assets/images/couple.jpeg';
@@ -13,6 +14,11 @@ import sitoutImg from '../assets/images/sitout.jpeg';
 
 const About = () => {
   const { t } = useLanguage();
+
+  useSEO(
+    t('About Us', 'हमारे बारे में', 'ഞങ്ങളെക്കുറിച്ച്'),
+    t('Discover the history, architecture, and story behind Lake Breeze Resorts, Kerala’s luxury waterfront sanctuary.', 'लेक ब्रीज रिसॉर्ट्स के इतिहास और कहानी को जानें।')
+  );
 
   const milestones = [
     { year: '2018', title: t('The Vision', 'दृष्टिकोण', 'കാഴ്ചപ്പാട്'), desc: t('Founded in Wayanad and Calicut with a focus on immersive hospitality.', 'शानदार आतिथ्य पर ध्यान देने के साथ वायनाड और कोझिकोड में स्थापना।', 'വയനാട്ടിലും കോഴിക്കോട്ടും സമാനതകളില്ലാത്ത ഹോസ്പിറ്റാലിറ്റിയോടെ തുടക്കം കുറിച്ചു.') },

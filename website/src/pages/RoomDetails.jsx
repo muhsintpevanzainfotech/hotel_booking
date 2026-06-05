@@ -9,6 +9,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useLanguage } from '../context/LanguageContext';
 import { getImageUrl } from '../utils/imageHelper';
+import useSEO from '../hooks/useSEO';
 import roomImg from '../assets/images/room.jpeg';
 
 import 'swiper/css';
@@ -19,6 +20,11 @@ const RoomDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { t } = useLanguage();
+
+    useSEO(
+        room ? room.name : t('Luxury Sanctuary Details', 'कमरे का विवरण'),
+        room ? room.description : t('Explore the specifications and reserve your stay at Lake Breeze Resorts.', 'कमरे का विवरण देखें और अपनी बुकिंग करें।')
+    );
 
     const [room, setRoom] = useState(null);
     const [loading, setLoading] = useState(true);

@@ -4,6 +4,7 @@ import { Search, Calendar, User, ChevronLeft, ChevronRight, Play, X, ArrowRight,
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { getImageUrl } from '../utils/imageHelper';
+import useSEO from '../hooks/useSEO';
 import bathroomImg from '../assets/images/bathroom.jpeg';
 import bgImg from '../assets/images/bg.jpeg';
 import familyroomImg from '../assets/images/familyroom.jpeg';
@@ -14,6 +15,11 @@ import sitoutImg from '../assets/images/sitout.jpeg';
 
 const Blog = () => {
   const { t } = useLanguage();
+
+  useSEO(
+    t('Travel Stories & Heritage', 'यात्रा ब्लॉग और विरासत', 'യാത്രാ വിവരണങ്ങളും പൈതൃകവും'),
+    t('Read the latest guides, travel stories, local heritage logs, and wellness tips from Lake Breeze Resorts.', 'लेक ब्रीज रिसॉर्ट्स के नवीनतम यात्रा ब्लॉग और टिप्स पढ़ें।')
+  );
   
   // State for database blogs
   const [dbPosts, setDbPosts] = useState([]);

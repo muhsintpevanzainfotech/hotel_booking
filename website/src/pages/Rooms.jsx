@@ -7,6 +7,7 @@ import BookingModal from '../components/rooms/BookingModal';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
 import { getImageUrl } from '../utils/imageHelper';
+import useSEO from '../hooks/useSEO';
 import roomImg from '../assets/images/room.jpeg';
 import roomsImg from '../assets/images/rooms.jpeg';
 import masterbedroomImg from '../assets/images/masterbedroom.jpeg';
@@ -19,6 +20,11 @@ const Rooms = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeCategory, setActiveCategory] = useState('All Rooms');
     const { t } = useLanguage();
+
+    useSEO(
+        t('Luxury Suites & cottages', 'लक्जरी सुइट्स और कॉटेज', 'ഡീലക്സ് കോട്ടേജുകൾ'),
+        t('Browse our curated sanctuaries. Choose between Deluxe, Premium, and Family Waterfront Cottages at Lake Breeze Resorts.', 'हमारे शानदार कॉटेज और कमरों की सूची देखें।')
+    );
 
     useEffect(() => {
         dispatch(fetchRoomsRequest());
@@ -35,7 +41,8 @@ const Rooms = () => {
     };
 
     const handleViewClick = (room) => {
-        navigate(`/rooms/${room._id}`);
+        const slugify = (text) => text.toString().toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-');
+        navigate(`/rooms/${slugify(room.name)}`);
     };
 
     return (
