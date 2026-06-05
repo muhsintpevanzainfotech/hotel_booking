@@ -89,7 +89,13 @@ exports.updateBookingStatus = async (req, res) => {
         if (status) update.status = status;
         if (paymentStatus) update.paymentStatus = paymentStatus;
         
-        const booking = await Booking.findByIdAndUpdate(req.params.id, update, { new: true });
+        const booking = await Booking.findByIdAndUpdate(req.params.id, update, { new: true }).populate('room');
+        
+        if (status) {
+            const { sendBookingStatusEmail } = require('../utils/emailService');
+            sendBookingStatusEmail(booking).catch(err => console.error('Error sending booking status email:', err));
+        }
+
         res.json(booking);
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -137,3 +137,106 @@ exports.sendWelcomeEmail = async (email, username, setupOTP) => {
         return false;
     }
 };
+
+exports.sendBookingStatusEmail = async (booking) => {
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:6002';
+    const checkLink = `${clientUrl}/booking-status?ref=${booking.bookingReference}`;
+    
+    let statusText = '';
+    let statusColor = '#0F4C4C';
+    let detailMessage = '';
+
+    if (booking.status === 'Approved') {
+        statusText = 'Approved & Confirmed';
+        statusColor = '#14b8a6'; // Teal/emerald
+        detailMessage = `We are delighted to inform you that your reservation has been approved. Your sanctuary at Lake Breeze Resorts is secured!`;
+    } else if (booking.status === 'Rejected') {
+        statusText = 'Rejected';
+        statusColor = '#f43f5e'; // Rose
+        detailMessage = `We regret to inform you that we are unable to accommodate your reservation request at this time. If you have any questions, please contact our concierge.`;
+    } else if (booking.status === 'Cancelled') {
+        statusText = 'Cancelled';
+        statusColor = '#64748b'; // Slate
+        detailMessage = `Your reservation has been successfully cancelled. We hope to welcome you to our resort in the future.`;
+    } else {
+        statusText = booking.status;
+        detailMessage = `Your reservation status has been updated to: ${booking.status}.`;
+    }
+
+    const checkInDate = booking.checkIn ? new Date(booking.checkIn).toLocaleDateString() : 'N/A';
+    const checkOutDate = booking.checkOut ? new Date(booking.checkOut).toLocaleDateString() : 'N/A';
+    const roomName = booking.room?.name || 'Luxury Room';
+
+    const mailOptions = {
+        from: `"Lake Breeze Resorts" <${process.env.EMAIL_USER}>`,
+        to: booking.email,
+        subject: `Booking ${statusText} - Reference ID: ${booking.bookingReference}`,
+        html: `
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 20px; background: #ffffff;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h2 style="color: #0F4C4C; margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 2px;">LAKE BREEZE RESORTS</h2>
+                    <p style="color: #94a3b8; font-size: 10px; text-transform: uppercase; letter-spacing: 3px; margin: 5px 0 0 0;">Kerala, India</p>
+                </div>
+                
+                <div style="background: #f8fafc; border-left: 4px solid ${statusColor}; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+                    <h3 style="color: ${statusColor}; margin-top: 0; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">Reservation Status: ${statusText}</h3>
+                    <p style="color: #475569; font-size: 14px; line-height: 1.6; margin: 0;">Dear <strong>${booking.guestName}</strong>,</p>
+                    <p style="color: #475569; font-size: 14px; line-height: 1.6; margin: 10px 0 0 0;">${detailMessage}</p>
+                </div>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 35px; font-size: 14px;">
+                    <tr>
+                        <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;"><strong>Booking Reference:</strong></td>
+                        <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #0F4C4C; font-family: monospace; font-size: 16px; font-weight: bold;">${booking.bookingReference}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;"><strong>Sanctuary:</strong></td>
+                        <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #334155; font-weight: 600;">${roomName}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;"><strong>Check-In Date:</strong></td>
+                        <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #334155;">${checkInDate}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;"><strong>Check-Out Date:</strong></td>
+                        <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #334155;">${checkOutDate}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;"><strong>Total Price:</strong></td>
+                        <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #0F4C4C; font-weight: bold; font-size: 16px;">₹${booking.totalPrice?.toLocaleString()}</td>
+                    </tr>
+                </table>
+                
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <a href="${checkLink}" style="background-color: #0F4C4C; color: #ffffff; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; display: inline-block; box-shadow: 0 10px 20px rgba(15,76,76,0.2);">
+                        View Reservation Details
+                    </a>
+                </div>
+                
+                <div style="border-top: 1px solid #f1f5f9; padding-top: 20px; text-align: center; font-size: 11px; color: #94a3b8;">
+                    <p style="margin: 0 0 5px 0;">If you need further assistance, contact our concierge desk at +91 98765 43210.</p>
+                    <p style="margin: 0; text-transform: uppercase; letter-spacing: 1px;">&copy; ${new Date().getFullYear()} Lake Breeze Resorts & Spa</p>
+                </div>
+            </div>
+        `
+    };
+
+    try {
+        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+            console.log('--- BOOKING STATUS EMAIL SIMULATION ---');
+            console.log(`To: ${booking.email}`);
+            console.log(`Subject: ${mailOptions.subject}`);
+            console.log(`Reference: ${booking.bookingReference}`);
+            console.log(`Status: ${booking.status}`);
+            console.log(`Link: ${checkLink}`);
+            console.log('----------------------------------------');
+            return true;
+        }
+        await transporter.sendMail(mailOptions);
+        return true;
+    } catch (error) {
+        console.error('Booking status email failed:', error);
+        return false;
+    }
+};
+

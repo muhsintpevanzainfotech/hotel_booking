@@ -153,3 +153,13 @@ exports.checkAvailability = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.getRoomById = async (req, res) => {
+    try {
+        const room = await Room.findById(req.params.id).populate('facilities');
+        if (!room) return res.status(404).json({ message: 'Room not found' });
+        res.json(room);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};

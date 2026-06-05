@@ -34,6 +34,7 @@ router.delete('/users/:id', auth, checkRole(['super_admin', 'admin']), authCtrl.
 
 // Room & Booking (Public)
 router.get('/rooms', roomCtrl.getAllRooms);
+router.get('/rooms/:id', roomCtrl.getRoomById);
 router.post('/check-availability', roomCtrl.checkAvailability);
 router.post('/book', bookingCtrl.createBooking);
 router.get('/bookings/reference/:ref', bookingCtrl.getBookingByReference);

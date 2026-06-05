@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { fetchRoomsRequest } from '../redux/slices/roomSlice';
 import { Star, MapPin, Users, Waves, Wind, Coffee, Shield, Heart, Search, Filter, SlidersHorizontal } from 'lucide-react';
 import BookingModal from '../components/rooms/BookingModal';
-import RoomDetailsModal from '../components/rooms/RoomDetailsModal';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
 import { getImageUrl } from '../utils/imageHelper';
@@ -14,10 +13,10 @@ import masterbedroomImg from '../assets/images/masterbedroom.jpeg';
 
 const Rooms = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { items: rooms, loading, error } = useSelector((state) => state.rooms);
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [activeCategory, setActiveCategory] = useState('All Rooms');
     const { t } = useLanguage();
 
@@ -36,8 +35,7 @@ const Rooms = () => {
     };
 
     const handleViewClick = (room) => {
-        setSelectedRoom(room);
-        setIsDetailsOpen(true);
+        navigate(`/rooms/${room._id}`);
     };
 
     return (
@@ -175,13 +173,6 @@ const Rooms = () => {
                 isOpen={isModalOpen} 
                 onClose={() => setIsModalOpen(false)} 
                 room={selectedRoom} 
-            />
-
-            <RoomDetailsModal 
-                isOpen={isDetailsOpen} 
-                onClose={() => setIsDetailsOpen(false)} 
-                room={selectedRoom} 
-                onBookNow={handleBookClick} 
             />
         </div>
     );

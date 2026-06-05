@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Calendar, User, Mail, Phone, Users, MessageSquare, AlertCircle, MapPin, Hash, DollarSign, BookmarkCheck } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { useLanguage } from '../context/LanguageContext';
@@ -11,6 +11,33 @@ const BookingStatus = () => {
     const [booking, setBooking] = useState(null);
     const [loading, setLoading] = useState(false);
     const { t } = useLanguage();
+    const [searchParams] = useSearchParams();
+    const queryRef = searchParams.get('ref');
+
+    useEffect(() => {
+        if (queryRef) {
+            setReference(queryRef.toUpperCase());
+            const fetchByRef = async (refVal) => {
+                setLoading(true);
+                try {
+                    const res = await fetch(`${import.meta.env.VITE_API_BASE}/bookings/reference/${refVal}`);
+                    const data = await res.json();
+                    if (res.ok) {
+                        setBooking(data);
+                        toast.success(t('Reservation details retrieved', 'बुकिंग विवरण मिल गया है'));
+                    } else {
+                        toast.error(data.message || t('Booking not found', 'बुकिंग नहीं मिली'));
+                        setBooking(null);
+                    }
+                } catch (err) {
+                    toast.error(t('Connection failed', 'कनेक्शन विफल'));
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchByRef(queryRef.toUpperCase());
+        }
+    }, [queryRef]);
 
     const handleSearch = async (e) => {
         e.preventDefault();
