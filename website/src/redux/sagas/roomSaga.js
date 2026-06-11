@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { fetchRoomsRequest, fetchRoomsSuccess, fetchRoomsFailure } from '../slices/roomSlice';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:6000/api';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:6003/api';
 
 function* fetchRoomsSaga() {
   try {
