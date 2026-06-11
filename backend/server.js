@@ -19,14 +19,14 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Session Configuration
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'hotel-booking-secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-    }
+  secret: process.env.SESSION_SECRET || 'hotel-booking-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+  }
 }));
 
 // Routes
@@ -82,10 +82,10 @@ app.get('/api/live', (req, res) => {
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/hotel-booking';
 mongoose.connect(MONGODB_URI)
-    .then(() => console.log('Connected to MongoDB Successfully'))
-    .catch(err => console.error('MongoDB connection error:', err));
+  .then(() => console.log('Connected to MongoDB Successfully'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
-const PORT = process.env.PORT || 6003;
+const PORT = process.env.PORT || 6000;
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
