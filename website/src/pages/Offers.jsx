@@ -205,7 +205,7 @@ const Offers = () => {
           )
         ) : (
           comboOffers.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {comboOffers.map((combo, i) => (
                 <motion.div
                   key={combo._id || i}
@@ -213,72 +213,80 @@ const Offers = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className="bg-white rounded-[40px] border border-gray-100 shadow-[0_15px_40px_rgba(0,0,0,0.03)] hover:shadow-2xl hover:border-teal-100 transition-all duration-300 overflow-hidden flex flex-col justify-between group h-[520px]"
+                  className="bg-white rounded-[32px] border border-gray-100 shadow-[0_15px_40px_rgba(0,0,0,0.03)] hover:shadow-2xl hover:border-teal-100 transition-all duration-300 overflow-hidden flex flex-col sm:flex-row group min-h-[300px] sm:h-[350px]"
                 >
-                  {/* Image Header */}
-                  <div className="relative h-48 overflow-hidden shrink-0">
+                  {/* Left Side: Image */}
+                  <div className="relative w-full sm:w-[42%] min-h-[180px] sm:min-h-full overflow-hidden shrink-0">
                     <img 
                       src={combo.coverImage || sitoutImg} 
                       alt={combo.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t sm:bg-gradient-to-r from-black/50 sm:from-transparent to-transparent pointer-events-none" />
+                    
+                    {/* Floating type badge */}
                     <div className="absolute top-4 left-4">
                       <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#0F4C4C] text-white rounded-full text-[9px] font-black uppercase tracking-wider">
                         {combo.type}
                       </span>
                     </div>
-                    <div className="absolute bottom-4 right-4">
-                      <span className="text-xl font-black text-white bg-teal-600 px-3 py-1 rounded-xl shadow-lg">
-                        ₹{combo.price}
-                      </span>
-                    </div>
                   </div>
 
-                  {/* Body Content */}
-                  <div className="p-8 flex-grow flex flex-col justify-between">
-                    <div className="space-y-3">
-                      <h3 className="text-xl font-black text-[#0F4C4C] leading-tight tracking-tight group-hover:text-teal-800 transition-colors">
-                        {combo.title}
-                      </h3>
-                      <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-3">
+                  {/* Right Side: Content */}
+                  <div className="p-5 sm:p-6 flex-grow flex flex-col justify-between">
+                    <div className="space-y-2">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                        <h3 className="text-lg md:text-xl font-black text-[#0F4C4C] leading-tight tracking-tight group-hover:text-teal-800 transition-colors line-clamp-2">
+                          {combo.title}
+                        </h3>
+                        <span className="shrink-0 text-base sm:text-lg font-black text-white bg-[#0F4C4C] px-3.5 py-1 rounded-xl shadow-md self-start">
+                          ₹{combo.price.toLocaleString()}
+                        </span>
+                      </div>
+                      
+                      <p className="text-gray-500 text-xs leading-relaxed line-clamp-2">
                         {combo.description}
                       </p>
+
+                      {/* Includes tags */}
+                      {combo.includes && combo.includes.length > 0 && (
+                        <div className="pt-1">
+                          <span className="text-[8px] font-bold text-gray-400 uppercase tracking-widest block mb-1">{t('Includes:', 'शामिल है:')}</span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {combo.includes.slice(0, 3).map((inc, index) => (
+                              <span key={index} className="px-2 py-0.5 bg-teal-50 text-[#0F4C4C] text-[8.5px] font-bold rounded-lg border border-teal-100/30 uppercase tracking-wider">
+                                {inc}
+                              </span>
+                            ))}
+                            {combo.includes.length > 3 && (
+                              <span className="px-2 py-0.5 bg-neutral-50 text-gray-400 text-[8.5px] font-bold rounded-lg border border-gray-100 uppercase tracking-wider">
+                                +{combo.includes.length - 3}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
-                    {/* Includes tags */}
-                    {combo.includes && combo.includes.length > 0 && (
-                      <div className="mt-4">
-                        <span className="text-[8px] font-bold text-gray-400 uppercase tracking-widest block mb-1.5">{t('Includes:', 'शामिल है:')}</span>
-                        <div className="flex flex-wrap gap-1.5 max-h-[60px] overflow-hidden">
-                          {combo.includes.map((inc, index) => (
-                            <span key={index} className="px-2 py-1 bg-teal-50 text-[#0F4C4C] text-[9px] font-bold rounded-lg border border-teal-100/30 uppercase tracking-wider">
-                              {inc}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Footer Button */}
-                  <div className="p-8 pt-0 shrink-0">
-                    <button
-                      onClick={() => {
-                        if (combo.links) {
-                          if (combo.links.startsWith('http')) {
-                            window.open(combo.links, '_blank');
+                    {/* Book Button */}
+                    <div className="mt-6 pt-4 border-t border-gray-100 flex justify-end">
+                      <button
+                        onClick={() => {
+                          if (combo.links) {
+                            if (combo.links.startsWith('http')) {
+                              window.open(combo.links, '_blank');
+                            } else {
+                              window.location.href = combo.links;
+                            }
                           } else {
-                            window.location.href = combo.links;
+                            window.location.href = `/contact?subject=Booking ${combo.title}`;
                           }
-                        } else {
-                          window.location.href = `/contact?subject=Booking ${combo.title}`;
-                        }
-                      }}
-                      className="w-full py-3.5 bg-neutral-950 hover:bg-neutral-900 text-white rounded-full font-black uppercase text-[10px] tracking-widest transition-all duration-200 active:scale-[0.98] shadow-md cursor-pointer text-center"
-                    >
-                      {t('Book Package', 'पैकेज बुक करें', 'പാക്കേജ് ബുക്ക് ചെയ്യുക')}
-                    </button>
+                        }}
+                        className="px-8 py-3.5 bg-neutral-950 hover:bg-[#0F4C4C] text-white rounded-full font-black uppercase text-[10px] tracking-widest transition-all duration-200 active:scale-[0.98] shadow-md cursor-pointer text-center"
+                      >
+                        {t('Book Package', 'पैकेज बुक करें', 'പാക്കേജ് ബുക്ക് ചെയ്യുക')}
+                      </button>
+                    </div>
                   </div>
                 </motion.div>
               ))}

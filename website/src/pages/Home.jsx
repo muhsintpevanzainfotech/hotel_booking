@@ -246,62 +246,87 @@ const ComboOfferCard = ({ combo, index, t }) => {
     }
   };
 
+  const badgeText = combo.type && String(combo.type).trim() ? combo.type : t('Package', 'पैकेज');
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.05 }}
-      whileHover={{ y: -8 }}
       onClick={handleCardClick}
-      className="relative w-full h-[400px] sm:h-[420px] rounded-[32px] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl border border-white/10 transition-all duration-300 group bg-slate-950"
+      className="relative w-full min-h-[320px] md:h-[380px] rounded-[32px] md:rounded-[40px] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl border border-white/10 transition-all duration-500 group bg-slate-950 flex flex-col justify-between p-5 md:p-6 lg:p-7"
     >
       {/* Background Cover Image */}
       <img
         src={combo.coverImage ? getImageUrl(combo.coverImage) : sitoutImg}
         alt={combo.title}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
       />
       
-      {/* Dark Premium Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-10" />
+      {/* Dark Premium Gradient Overlay - covers full height for readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/20 z-10" />
 
-      {/* Floating Card Content Overlay */}
-      <div className="absolute inset-0 z-20 p-6 sm:p-8 flex flex-col justify-end text-white">
-        <div className="space-y-3">
-          {/* Package Type Badge */}
-          <div className="inline-flex px-2.5 py-1 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-[8px] font-black uppercase tracking-widest text-white">
-            {combo.type || t('Package', 'पैकेज')}
-          </div>
+      {/* Top Section: Badge */}
+      <div className="relative z-20 self-start">
+        <div className="inline-flex items-center gap-1 px-2.5 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full">
+          <div className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-pulse" />
+          <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-white">
+            {badgeText}
+          </span>
+        </div>
+      </div>
 
-          {/* Title and Price */}
-          <div className="flex justify-between items-end gap-3">
-            <h3 className="text-base sm:text-lg font-black tracking-tight leading-snug group-hover:text-teal-300 transition-colors line-clamp-2">
-              {combo.title}
-            </h3>
-            <span className="shrink-0 px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-black tracking-tight shadow-md bg-teal-500 text-white">
+      {/* Bottom Section: Title, Price, Desc, Includes, CTA */}
+      <div className="relative z-20 w-full space-y-2 mt-auto">
+        {/* Title and Price */}
+        <div className="space-y-1">
+          <h3 className="text-white text-lg sm:text-xl md:text-2xl font-black tracking-tight leading-tight group-hover:text-teal-300 transition-colors line-clamp-2">
+            {combo.title}
+          </h3>
+          <div className="flex items-center gap-2">
+            <span className="text-base sm:text-lg md:text-xl font-black text-teal-400">
               ₹{combo.price.toLocaleString()}
             </span>
+            <span className="text-white/30 text-xs">|</span>
+            <span className="text-[8px] md:text-[9px] font-bold text-teal-200 uppercase tracking-widest bg-white/10 px-2 py-0.5 rounded">
+              {t('All-Inclusive', 'सर्व समावेशी')}
+            </span>
           </div>
+        </div>
 
-          {/* Description */}
-          <p className="text-[11px] text-white/80 font-normal leading-relaxed line-clamp-2">
-            {combo.description}
-          </p>
+        {/* Description */}
+        <p className="text-[10px] sm:text-xs text-white/80 font-normal leading-relaxed line-clamp-2">
+          {combo.description}
+        </p>
 
-          {/* Included Items Tags */}
-          <div className="flex flex-wrap gap-1.5 pt-1">
-            {combo.includes && combo.includes.slice(0, 3).map((inc, idx) => (
-              <span key={idx} className="text-[7.5px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded bg-white/10 border border-white/20 text-white/95">
+        {/* Included Items Tags */}
+        {combo.includes && combo.includes.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 pt-0.5">
+            {combo.includes.slice(0, 3).map((inc, idx) => (
+              <span key={idx} className="text-[7px] md:text-[7.5px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-white/10 border border-white/10 text-white/95">
                 {inc}
               </span>
             ))}
-            {combo.includes && combo.includes.length > 3 && (
-              <span className="text-[7.5px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">
+            {combo.includes.length > 3 && (
+              <span className="text-[7px] md:text-[7.5px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-white/5 border border-white/5 text-white/50">
                 +{combo.includes.length - 3} More
               </span>
             )}
           </div>
+        )}
+
+        {/* Book Button */}
+        <div className="pt-1">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCardClick();
+            }}
+            className="px-5 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-lg font-black uppercase text-[8px] tracking-widest transition-all shadow-md active:scale-95 cursor-pointer"
+          >
+            {t('Book Package Now', 'अभी पैकेज बुक करें')}
+          </button>
         </div>
       </div>
     </motion.div>
@@ -910,16 +935,34 @@ const Home = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <Swiper
+          modules={[Autoplay]}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+          }}
+          loop={displayComboOffers.length > 1}
+          slidesPerView={1}
+          spaceBetween={20}
+          breakpoints={{
+            1024: {
+              slidesPerView: 2,
+              spaceBetween: 30,
+            }
+          }}
+          className="w-full rounded-[40px] md:rounded-[48px] overflow-hidden"
+        >
           {displayComboOffers.map((combo, i) => (
-            <ComboOfferCard
-              key={combo._id || i}
-              combo={combo}
-              index={i}
-              t={t}
-            />
+            <SwiperSlide key={combo._id || i}>
+              <ComboOfferCard
+                combo={combo}
+                index={i}
+                t={t}
+              />
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
       </div>
 
       {/* 2.7 EXCLUSIVE OFFERS SECTION */}
