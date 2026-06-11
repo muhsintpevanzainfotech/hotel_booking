@@ -23,6 +23,7 @@ import Facilities from './pages/Facilities';
 import Blog from './pages/Blog';
 import BlogDetails from './pages/BlogDetails';
 import Offers from './pages/Offers';
+import NotFound from './pages/NotFound';
 
 // Components
 import Preloader from './components/common/Preloader';
@@ -63,6 +64,7 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogDetails />} />
             <Route path="/offers" element={<Offers />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />

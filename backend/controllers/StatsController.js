@@ -9,6 +9,8 @@ const Testimonial = require('../models/Testimonial');
 const Gallery = require('../models/Gallery');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
+const Category = require('../models/Category');
+const ComboOffer = require('../models/ComboOffer');
 
 exports.getGlobalStats = async (req, res) => {
     try {
@@ -25,7 +27,9 @@ exports.getGlobalStats = async (req, res) => {
             galleryCount,
             userCount,
             notificationCount,
-            unreadNotificationCount
+            unreadNotificationCount,
+            categoryCount,
+            comboOfferCount
         ] = await Promise.all([
             Room.countDocuments(),
             Booking.countDocuments(),
@@ -39,7 +43,9 @@ exports.getGlobalStats = async (req, res) => {
             Gallery.countDocuments(),
             User.countDocuments(),
             Notification.countDocuments(),
-            Notification.countDocuments({ isRead: false })
+            Notification.countDocuments({ isRead: false }),
+            Category.countDocuments(),
+            ComboOffer.countDocuments()
         ]);
 
         const valuationResult = await Booking.aggregate([
@@ -96,6 +102,8 @@ exports.getGlobalStats = async (req, res) => {
             gallery: galleryCount,
             users: userCount,
             notifications: notificationCount,
+            categories: categoryCount,
+            comboOffers: comboOfferCount,
             unreadNotifications: unreadNotificationCount,
             revenue: approvedValue, // Backward compatibility with "revenue" field
             approvedRevenue: approvedValue,

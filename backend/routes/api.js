@@ -48,6 +48,8 @@ router.get('/testimonials', adminCtrl.getTestimonials);
 router.get('/gallery', adminCtrl.getGallery);
 router.get('/banners', adminCtrl.getBanners);
 router.get('/offers', adminCtrl.getOffers);
+router.get('/categories', adminCtrl.getCategories);
+router.get('/combo-offers', adminCtrl.getComboOffers);
 router.post('/enquiry', adminCtrl.createEnquiry);
 
 // Admin Restricted Routes (Accessible by admin and super_admin)
@@ -84,5 +86,93 @@ router.delete('/banners/:id', auth, checkRole(['super_admin', 'admin']), adminCt
 router.post('/offers', auth, checkRole(['super_admin', 'admin']), adminCtrl.createOffer);
 router.patch('/offers/:id', auth, checkRole(['super_admin', 'admin']), adminCtrl.updateOffer);
 router.delete('/offers/:id', auth, checkRole(['super_admin', 'admin']), adminCtrl.deleteOffer);
+
+router.post('/categories', auth, checkRole(['super_admin', 'admin']), upload.single('image'), adminCtrl.createCategory);
+router.patch('/categories/:id', auth, checkRole(['super_admin', 'admin']), upload.single('image'), adminCtrl.updateCategory);
+router.delete('/categories/:id', auth, checkRole(['super_admin', 'admin']), adminCtrl.deleteCategory);
+
+router.post('/combo-offers', auth, checkRole(['super_admin', 'admin']), upload.single('coverImage'), adminCtrl.createComboOffer);
+router.patch('/combo-offers/:id', auth, checkRole(['super_admin', 'admin']), upload.single('coverImage'), adminCtrl.updateComboOffer);
+router.delete('/combo-offers/:id', auth, checkRole(['super_admin', 'admin']), adminCtrl.deleteComboOffer);
+
+// Sitemap trigger route (Public for verification/generation)
+router.get('/generate-sitemap', async (req, res) => {
+    try {
+        const Room = require('../models/Room');
+        const Blog = require('../models/Blog');
+        const fs = require('fs');
+        const path = require('path');
+
+        const domain = 'https://lakebreezeresorts.com/';
+        const outputPath = path.join(__dirname, '../../website/public/sitemap.xml');
+
+        const staticPages = [
+            { path: '', priority: '1.0', changefreq: 'daily' },
+            { path: 'rooms', priority: '0.8', changefreq: 'daily' },
+            { path: 'gallery', priority: '0.6', changefreq: 'monthly' },
+            { path: 'about', priority: '0.6', changefreq: 'monthly' },
+            { path: 'contact', priority: '0.6', changefreq: 'monthly' },
+            { path: 'facilities', priority: '0.6', changefreq: 'monthly' },
+            { path: 'blog', priority: '0.7', changefreq: 'daily' },
+            { path: 'offers', priority: '0.7', changefreq: 'weekly' },
+            { path: 'privacy-policy', priority: '0.3', changefreq: 'monthly' },
+            { path: 'terms-conditions', priority: '0.3', changefreq: 'monthly' }
+        ];
+
+        const slugify = (text) => text
+            .toString()
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, '-')
+            .replace(/[^\w\-]+/g, '')
+            .replace(/\-\-+/g, '-');
+
+        const rooms = await Room.find({}, 'name updatedAt');
+        const blogs = await Blog.find({}, 'slug updatedAt');
+
+        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+
+        staticPages.forEach(p => {
+            const url = `${domain}${p.path}`;
+            const date = new Date().toISOString().split('T')[0];
+            xml += '  <url>\n';
+            xml += `    <loc>${url}</loc>\n`;
+            xml += `    <lastmod>${date}</lastmod>\n`;
+            xml += `    <changefreq>${p.changefreq}</changefreq>\n`;
+            xml += `    <priority>${p.priority}</priority>\n`;
+            xml += '  </url>\n';
+        });
+
+        rooms.forEach(r => {
+            const url = `${domain}rooms/${slugify(r.name)}`;
+            const date = (r.updatedAt || new Date()).toISOString().split('T')[0];
+            xml += '  <url>\n';
+            xml += `    <loc>${url}</loc>\n`;
+            xml += `    <lastmod>${date}</lastmod>\n`;
+            xml += '    <changefreq>weekly</changefreq>\n';
+            xml += '    <priority>0.7</priority>\n';
+            xml += '  </url>\n';
+        });
+
+        blogs.forEach(b => {
+            const url = `${domain}blog/${b.slug}`;
+            const date = (b.updatedAt || new Date()).toISOString().split('T')[0];
+            xml += '  <url>\n';
+            xml += `    <loc>${url}</loc>\n`;
+            xml += `    <lastmod>${date}</lastmod>\n`;
+            xml += '    <changefreq>weekly</changefreq>\n';
+            xml += '    <priority>0.6</priority>\n';
+            xml += '  </url>\n';
+        });
+
+        xml += '</urlset>\n';
+
+        fs.writeFileSync(outputPath, xml, 'utf8');
+        res.json({ success: true, message: 'Sitemap generated successfully!', rooms: rooms.length, blogs: blogs.length });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
 
 module.exports = router;

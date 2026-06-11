@@ -7,6 +7,8 @@ const Gallery = require('../models/Gallery');
 const Notification = require('../models/Notification');
 const Banner = require('../models/Banner');
 const Offer = require('../models/Offer');
+const Category = require('../models/Category');
+const ComboOffer = require('../models/ComboOffer');
 const { deleteFile } = require('../utils/fileHelper');
 const { uploadToCloudinary, deleteFromCloudinary, isCloudinaryUrl } = require('../utils/cloudinaryHelper');
 
@@ -443,5 +445,161 @@ exports.deleteEnquiry = async (req, res) => {
     try {
         await Enquiry.findByIdAndDelete(req.params.id);
         res.json({ message: 'Enquiry deleted successfully' });
+    } catch (error) { res.status(500).json({ error: error.message }); }
+};
+
+// Category CRUD
+exports.getCategories = async (req, res) => {
+    try { res.json(await Category.find().sort('-createdAt')); }
+    catch (error) { res.status(500).json({ error: error.message }); }
+};
+
+exports.createCategory = async (req, res) => {
+    try {
+        let imageUrl = '';
+        if (req.file) {
+            const uploaded = await uploadToCloudinary(req.file.path, 'hotel_booking/categories');
+            imageUrl = uploaded.url;
+            deleteFile(req.file.path);
+        }
+
+        const category = new Category({
+            ...req.body,
+            image: imageUrl
+        });
+        await category.save();
+        res.status(201).json(category);
+    } catch (error) { res.status(500).json({ error: error.message }); }
+};
+
+exports.updateCategory = async (req, res) => {
+    try {
+        const category = await Category.findById(req.params.id);
+        if (!category) return res.status(404).json({ message: 'Category not found' });
+
+        if (req.body.imageCleared === 'true') {
+            if (category.image) {
+                if (isCloudinaryUrl(category.image)) await deleteFromCloudinary(category.image);
+                else deleteFile(category.image);
+                category.image = '';
+            }
+        }
+
+        if (req.file) {
+            if (category.image) {
+                if (isCloudinaryUrl(category.image)) await deleteFromCloudinary(category.image);
+                else deleteFile(category.image);
+            }
+            const uploaded = await uploadToCloudinary(req.file.path, 'hotel_booking/categories');
+            category.image = uploaded.url;
+            deleteFile(req.file.path);
+        }
+
+        Object.assign(category, req.body);
+        await category.save();
+        res.json(category);
+    } catch (error) { res.status(500).json({ error: error.message }); }
+};
+
+exports.deleteCategory = async (req, res) => {
+    try {
+        const category = await Category.findById(req.params.id);
+        if (category && category.image) {
+            if (isCloudinaryUrl(category.image)) await deleteFromCloudinary(category.image);
+            else deleteFile(category.image);
+        }
+        await Category.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Category removed' });
+    } catch (error) { res.status(500).json({ error: error.message }); }
+};
+
+// ComboOffer CRUD
+exports.getComboOffers = async (req, res) => {
+    try {
+        const offers = await ComboOffer.find().sort('-createdAt');
+        res.json(offers);
+    }
+    catch (error) {
+        console.error('getComboOffers API 500 Error:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.createComboOffer = async (req, res) => {
+    try {
+        let imageUrl = '';
+        if (req.file) {
+            const uploaded = await uploadToCloudinary(req.file.path, 'hotel_booking/combo_offers');
+            imageUrl = uploaded.url;
+            deleteFile(req.file.path);
+        }
+
+        let includes = [];
+        if (req.body.includes) {
+            try {
+                includes = JSON.parse(req.body.includes);
+            } catch (e) {
+                includes = typeof req.body.includes === 'string' ? req.body.includes.split(',') : req.body.includes;
+            }
+        }
+
+        const comboOffer = new ComboOffer({
+            ...req.body,
+            includes: Array.isArray(includes) ? includes : [includes],
+            coverImage: imageUrl
+        });
+        await comboOffer.save();
+        res.status(201).json(comboOffer);
+    } catch (error) { res.status(500).json({ error: error.message }); }
+};
+
+exports.updateComboOffer = async (req, res) => {
+    try {
+        const comboOffer = await ComboOffer.findById(req.params.id);
+        if (!comboOffer) return res.status(404).json({ message: 'Combo offer not found' });
+
+        if (req.body.coverImageCleared === 'true') {
+            if (comboOffer.coverImage) {
+                if (isCloudinaryUrl(comboOffer.coverImage)) await deleteFromCloudinary(comboOffer.coverImage);
+                else deleteFile(comboOffer.coverImage);
+                comboOffer.coverImage = '';
+            }
+        }
+
+        if (req.file) {
+            if (comboOffer.coverImage) {
+                if (isCloudinaryUrl(comboOffer.coverImage)) await deleteFromCloudinary(comboOffer.coverImage);
+                else deleteFile(comboOffer.coverImage);
+            }
+            const uploaded = await uploadToCloudinary(req.file.path, 'hotel_booking/combo_offers');
+            comboOffer.coverImage = uploaded.url;
+            deleteFile(req.file.path);
+        }
+
+        if (req.body.includes) {
+            let includes = [];
+            try {
+                includes = JSON.parse(req.body.includes);
+            } catch (e) {
+                includes = typeof req.body.includes === 'string' ? req.body.includes.split(',') : req.body.includes;
+            }
+            req.body.includes = Array.isArray(includes) ? includes : [includes];
+        }
+
+        Object.assign(comboOffer, req.body);
+        await comboOffer.save();
+        res.json(comboOffer);
+    } catch (error) { res.status(500).json({ error: error.message }); }
+};
+
+exports.deleteComboOffer = async (req, res) => {
+    try {
+        const comboOffer = await ComboOffer.findById(req.params.id);
+        if (comboOffer && comboOffer.coverImage) {
+            if (isCloudinaryUrl(comboOffer.coverImage)) await deleteFromCloudinary(comboOffer.coverImage);
+            else deleteFile(comboOffer.coverImage);
+        }
+        await ComboOffer.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Combo offer removed' });
     } catch (error) { res.status(500).json({ error: error.message }); }
 };

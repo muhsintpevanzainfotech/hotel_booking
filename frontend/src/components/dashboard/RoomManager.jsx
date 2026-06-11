@@ -29,6 +29,7 @@ const RoomManager = ({ apiBase }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const { token } = useSelector(state => state.auth);
   const [dbFacilities, setDbFacilities] = useState([]);
+  const [dbCategories, setDbCategories] = useState([]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -36,7 +37,7 @@ const RoomManager = ({ apiBase }) => {
     description: '',
     price: '',
     quantity: 1,
-    type: 'Standard',
+    type: 'Rooms',
     capacity: 2,
     amenities: [],
     facilities: []
@@ -56,7 +57,22 @@ const RoomManager = ({ apiBase }) => {
   useEffect(() => {
     fetchRooms();
     fetchFacilities();
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch(`${apiBase}/categories`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setDbCategories(data);
+      }
+    } catch (err) {
+      console.error('Categories Fetch Error:', err);
+    }
+  };
 
   const fetchFacilities = async () => {
     try {
@@ -94,7 +110,7 @@ const RoomManager = ({ apiBase }) => {
       description: room.description,
       price: room.price,
       quantity: room.quantity,
-      type: room.type || 'Standard',
+      type: room.type || 'Rooms',
       capacity: room.capacity || 2,
       amenities: Array.isArray(room.amenities) ? room.amenities : [],
       facilities: room.facilities?.filter(Boolean).map(f => typeof f === 'object' ? f._id : f) || []
@@ -115,7 +131,7 @@ const RoomManager = ({ apiBase }) => {
     setIsModalOpen(false);
     setIsEditing(false);
     setCurrentRoomId(null);
-    setFormData({ name: '', description: '', price: '', quantity: 1, type: 'Standard', capacity: 2, amenities: [], facilities: [] });
+    setFormData({ name: '', description: '', price: '', quantity: 1, type: 'Rooms', capacity: 2, amenities: [], facilities: [] });
     setImagesState([]);
   };
 
@@ -257,11 +273,13 @@ const RoomManager = ({ apiBase }) => {
                 value={typeFilter}
                 onChange={setTypeFilter}
                 options={[
-                  { value: 'All', label: 'All Types' },
-                  { value: 'Standard', label: 'Standard' },
-                  { value: 'Deluxe', label: 'Deluxe' },
-                  { value: 'Luxury', label: 'Luxury' },
-                  { value: 'Suite', label: 'Suite' }
+                  { value: 'All', label: 'All Categories' },
+                  ...(dbCategories.filter(cat => cat.type === 'room').length > 0
+                    ? dbCategories.filter(cat => cat.type === 'room').map(cat => ({ value: cat.title, label: cat.title }))
+                    : [
+                        { value: 'Rooms', label: 'Rooms' },
+                        { value: 'Combo Offer', label: 'Combo Offer' }
+                      ])
                 ]}
                 className="w-[140px] max-md:w-full"
               />
@@ -580,16 +598,18 @@ const RoomManager = ({ apiBase }) => {
                     />
                 </div>
                 <div className="space-y-2">
-                    <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Category</label>
+                    <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Room Categories</label>
                     <CustomSelect 
                         value={formData.type}
                         onChange={val => setFormData({...formData, type: val})}
-                        options={[
-                            { value: 'Standard', label: 'Standard' },
-                            { value: 'Deluxe', label: 'Deluxe' },
-                            { value: 'Luxury', label: 'Luxury' },
-                            { value: 'Suite', label: 'Suite' }
-                        ]}
+                        options={
+                            dbCategories.filter(cat => cat.type === 'room').length > 0
+                                ? dbCategories.filter(cat => cat.type === 'room').map(cat => ({ value: cat.title, label: cat.title }))
+                                : [
+                                    { value: 'Rooms', label: 'Rooms' },
+                                    { value: 'Combo Offer', label: 'Combo Offer' }
+                                  ]
+                        }
                         className="w-full"
                     />
                 </div>

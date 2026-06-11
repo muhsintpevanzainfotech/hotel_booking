@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, ChevronLeft, Gift, Tag, Calendar, Copy, Check } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Zap, ChevronLeft, Gift, Tag, Copy, Check } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import toast from 'react-hot-toast';
 import useSEO from '../hooks/useSEO';
@@ -9,9 +9,17 @@ import sitoutImg from '../assets/images/sitout.jpeg';
 
 const Offers = () => {
   const { t } = useLanguage();
+  const location = useLocation();
   const [offers, setOffers] = useState([]);
+  const [comboOffers, setComboOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState(null);
+  const [activeTab, setActiveTab] = useState('promos'); // 'promos' or 'combos'
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setActiveTab(params.get('tab') === 'combos' ? 'combos' : 'promos');
+  }, [location]);
 
   useSEO(
     t('Exclusive Offers & Campaigns', 'विशेष ऑफर', 'പ്രത്യേക ഓഫറുകൾ'),
@@ -19,21 +27,26 @@ const Offers = () => {
   );
 
   useEffect(() => {
-    const fetchOffers = async () => {
+    const fetchAllOffers = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE}/offers`);
-        if (res.ok) {
-          const data = await res.json();
-          setOffers(data);
+        const [offRes, comboRes] = await Promise.all([
+          fetch(`${import.meta.env.VITE_API_BASE}/offers`),
+          fetch(`${import.meta.env.VITE_API_BASE}/combo-offers`)
+        ]);
+        if (offRes.ok) {
+          setOffers(await offRes.json());
+        }
+        if (comboRes.ok) {
+          setComboOffers(await comboRes.json());
         }
       } catch (error) {
-        console.error("Failed to fetch offers", error);
+        console.error("Failed to fetch offers data", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchOffers();
+    fetchAllOffers();
   }, []);
 
   const handleCopyCode = (code) => {
@@ -77,8 +90,32 @@ const Offers = () => {
         </div>
       </section>
 
-      {/* Offers Grid */}
+      {/* Offers & Packages Navigation Section */}
       <section className="max-w-[1200px] mx-auto px-6 -mt-16 relative z-20">
+        {/* Tab Buttons */}
+        <div className="flex justify-center gap-4 mb-12">
+          <button
+            onClick={() => setActiveTab('promos')}
+            className={`px-8 py-4 rounded-full font-black uppercase text-[10px] tracking-widest transition-all duration-300 shadow-md cursor-pointer ${
+              activeTab === 'promos'
+                ? 'bg-neutral-950 text-white shadow-neutral-950/20'
+                : 'bg-white text-gray-800 hover:bg-teal-50/50 border border-gray-100'
+            }`}
+          >
+            {t('Promo Vouchers', 'प्रोमो वाउचर')} ({offers.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('combos')}
+            className={`px-8 py-4 rounded-full font-black uppercase text-[10px] tracking-widest transition-all duration-300 shadow-md cursor-pointer ${
+              activeTab === 'combos'
+                ? 'bg-neutral-950 text-white shadow-neutral-950/20'
+                : 'bg-white text-gray-800 hover:bg-teal-50/50 border border-gray-100'
+            }`}
+          >
+            {t('Combo Packages', 'कॉम्बो पैकेज')} ({comboOffers.length})
+          </button>
+        </div>
+
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3].map(i => (
@@ -94,77 +131,165 @@ const Offers = () => {
               </div>
             ))}
           </div>
-        ) : offers.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {offers.map((offer, i) => (
-              <motion.div
-                key={offer._id || i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="bg-white rounded-[40px] border border-gray-100 shadow-[0_15px_40px_rgba(0,0,0,0.03)] hover:shadow-2xl hover:border-teal-100 transition-all duration-300 p-10 flex flex-col justify-between relative overflow-hidden group h-[400px]"
-              >
-                {/* Accent Background Glow */}
-                <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-10 group-hover:scale-125 transition-all duration-500 pointer-events-none">
-                  <Zap size={140} className="text-[#0F4C4C]" />
-                </div>
+        ) : activeTab === 'promos' ? (
+          offers.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {offers.map((offer, i) => (
+                <motion.div
+                  key={offer._id || i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.5 }}
+                  className="bg-white rounded-[40px] border border-gray-100 shadow-[0_15px_40px_rgba(0,0,0,0.03)] hover:shadow-2xl hover:border-teal-100 transition-all duration-300 p-10 flex flex-col justify-between relative overflow-hidden group h-[400px]"
+                >
+                  <div className="absolute inset-y-0 right-0 w-24 opacity-[0.03] group-hover:opacity-10 group-hover:scale-125 transition-all duration-500 pointer-events-none">
+                    <Zap size={140} className="text-[#0F4C4C] absolute top-10 right-4" />
+                  </div>
 
-                <div>
-                  <div className="flex items-center justify-between mb-8">
-                    <div className="w-12 h-12 bg-teal-50 rounded-2xl flex items-center justify-center text-[#0F4C4C] group-hover:bg-[#0F4C4C] group-hover:text-white transition-colors duration-300 shadow-sm">
-                      <Zap size={20} />
+                  <div>
+                    <div className="flex items-center justify-between mb-8">
+                      <div className="w-12 h-12 bg-teal-50 rounded-2xl flex items-center justify-center text-[#0F4C4C] group-hover:bg-[#0F4C4C] group-hover:text-white transition-colors duration-300 shadow-sm">
+                        <Zap size={20} />
+                      </div>
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 text-[#0F4C4C] rounded-full text-[9px] font-black uppercase tracking-wider">
+                        <Tag size={10} />
+                        {t('Promo Deal', 'प्रोमो डील')}
+                      </div>
                     </div>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 text-[#0F4C4C] rounded-full text-[9px] font-black uppercase tracking-wider">
-                      <Tag size={10} />
-                      {t('Promo Deal', 'प्रोमो डील')}
+
+                    <h3 className="text-2xl font-black text-[#0F4C4C] mb-2 leading-tight tracking-tight group-hover:text-teal-800 transition-colors">
+                      {offer.title}
+                    </h3>
+                    <p className="text-4xl font-black text-teal-600 mb-6 tracking-tighter">
+                      {offer.discount}
+                    </p>
+                    <p className="text-gray-500 text-xs leading-relaxed line-clamp-3">
+                      {offer.description}
+                    </p>
+                  </div>
+
+                  <div className="pt-6 border-t border-gray-50 mt-6 flex flex-col gap-4">
+                    {offer.code && (
+                      <div className="flex items-center justify-between bg-[#F8FAFA] px-5 py-3 rounded-2xl border border-gray-100">
+                        <div className="flex flex-col">
+                          <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">{t('Promo Code', 'प्रोमो कोड')}</span>
+                          <span className="text-xs font-black text-[#0F4C4C] tracking-widest">{offer.code}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopyCode(offer.code)}
+                          className="text-[#0F4C4C] hover:text-teal-600 p-1.5 rounded-lg hover:bg-white transition-all cursor-pointer"
+                          title="Copy Code"
+                        >
+                          {copiedCode === offer.code ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
+                        </button>
+                      </div>
+                    )}
+
+                    <button
+                      onClick={() => window.location.href = `/rooms?code=${offer.code}`}
+                      className="w-full py-3.5 bg-neutral-950 hover:bg-neutral-900 text-white rounded-full font-black uppercase text-[10px] tracking-widest transition-all duration-200 active:scale-[0.98] shadow-md cursor-pointer text-center"
+                    >
+                      {t('Book with Offer', 'ऑफर के साथ बुक करें', 'ഓഫറോടെ ബുക്ക് ചെയ്യുക')}
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-[40px] shadow-sm border border-gray-100 p-16 text-center">
+              <Gift size={48} className="mx-auto text-teal-600 opacity-20 mb-6" />
+              <h3 className="text-2xl font-bold text-[#0F4C4C] mb-2">{t('No Vouchers Available', 'कोई प्रोमो उपलब्ध नहीं है')}</h3>
+              <p className="text-gray-400 text-sm max-w-md mx-auto">{t('All our exclusive promos have been claimed. Check back soon for new special deals!', 'हमारे सभी विशेष प्रोमो पूरे हो चुके हैं। जल्द ही नए विशेष सौदों के लिए वापस आएं!')}</p>
+            </div>
+          )
+        ) : (
+          comboOffers.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {comboOffers.map((combo, i) => (
+                <motion.div
+                  key={combo._id || i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.5 }}
+                  className="bg-white rounded-[40px] border border-gray-100 shadow-[0_15px_40px_rgba(0,0,0,0.03)] hover:shadow-2xl hover:border-teal-100 transition-all duration-300 overflow-hidden flex flex-col justify-between group h-[520px]"
+                >
+                  {/* Image Header */}
+                  <div className="relative h-48 overflow-hidden shrink-0">
+                    <img 
+                      src={combo.coverImage || sitoutImg} 
+                      alt={combo.title} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                    <div className="absolute top-4 left-4">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#0F4C4C] text-white rounded-full text-[9px] font-black uppercase tracking-wider">
+                        {combo.type}
+                      </span>
+                    </div>
+                    <div className="absolute bottom-4 right-4">
+                      <span className="text-xl font-black text-white bg-teal-600 px-3 py-1 rounded-xl shadow-lg">
+                        ₹{combo.price}
+                      </span>
                     </div>
                   </div>
 
-                  <h3 className="text-2xl font-black text-[#0F4C4C] mb-2 leading-tight tracking-tight group-hover:text-teal-800 transition-colors">
-                    {offer.title}
-                  </h3>
-                  <p className="text-4xl font-black text-teal-600 mb-6 tracking-tighter">
-                    {offer.discount}
-                  </p>
-                  <p className="text-gray-500 text-xs leading-relaxed line-clamp-3">
-                    {offer.description}
-                  </p>
-                </div>
-
-                <div className="pt-6 border-t border-gray-50 mt-6 flex flex-col gap-4">
-                  {offer.code && (
-                    <div className="flex items-center justify-between bg-[#F8FAFA] px-5 py-3 rounded-2xl border border-gray-100">
-                      <div className="flex flex-col">
-                        <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">{t('Promo Code', 'प्रोमो कोड')}</span>
-                        <span className="text-xs font-black text-[#0F4C4C] tracking-widest">{offer.code}</span>
-                      </div>
-                      <button
-                        onClick={() => handleCopyCode(offer.code)}
-                        className="text-[#0F4C4C] hover:text-teal-600 p-1.5 rounded-lg hover:bg-white transition-all cursor-pointer"
-                        title="Copy Code"
-                      >
-                        {copiedCode === offer.code ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
-                      </button>
+                  {/* Body Content */}
+                  <div className="p-8 flex-grow flex flex-col justify-between">
+                    <div className="space-y-3">
+                      <h3 className="text-xl font-black text-[#0F4C4C] leading-tight tracking-tight group-hover:text-teal-800 transition-colors">
+                        {combo.title}
+                      </h3>
+                      <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-3">
+                        {combo.description}
+                      </p>
                     </div>
-                  )}
 
-                  <button
-                    onClick={() => window.location.href = `/rooms?code=${offer.code}`}
-                    className="w-full py-3.5 bg-neutral-950 hover:bg-neutral-900 text-white rounded-full font-black uppercase text-[10px] tracking-widest transition-all duration-200 active:scale-[0.98] shadow-md cursor-pointer text-center"
-                  >
-                    {t('Book with Offer', 'ऑफर के साथ बुक करें', 'ഓഫറോടെ ബുക്ക് ചെയ്യുക')}
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="bg-white rounded-[40px] shadow-sm border border-gray-100 p-16 text-center">
-            <Gift size={48} className="mx-auto text-teal-600 opacity-20 mb-6" />
-            <h3 className="text-2xl font-bold text-[#0F4C4C] mb-2">{t('No Offers Available', 'कोई ऑफर उपलब्ध नहीं है')}</h3>
-            <p className="text-gray-400 text-sm max-w-md mx-auto">{t('All our exclusive promos have been claimed. Check back soon for new special deals!', 'हमारे सभी विशेष प्रोमो पूरे हो चुके हैं। जल्द ही नए विशेष सौदों के लिए वापस आएं!')}</p>
-          </div>
+                    {/* Includes tags */}
+                    {combo.includes && combo.includes.length > 0 && (
+                      <div className="mt-4">
+                        <span className="text-[8px] font-bold text-gray-400 uppercase tracking-widest block mb-1.5">{t('Includes:', 'शामिल है:')}</span>
+                        <div className="flex flex-wrap gap-1.5 max-h-[60px] overflow-hidden">
+                          {combo.includes.map((inc, index) => (
+                            <span key={index} className="px-2 py-1 bg-teal-50 text-[#0F4C4C] text-[9px] font-bold rounded-lg border border-teal-100/30 uppercase tracking-wider">
+                              {inc}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Footer Button */}
+                  <div className="p-8 pt-0 shrink-0">
+                    <button
+                      onClick={() => {
+                        if (combo.links) {
+                          if (combo.links.startsWith('http')) {
+                            window.open(combo.links, '_blank');
+                          } else {
+                            window.location.href = combo.links;
+                          }
+                        } else {
+                          window.location.href = `/contact?subject=Booking ${combo.title}`;
+                        }
+                      }}
+                      className="w-full py-3.5 bg-neutral-950 hover:bg-neutral-900 text-white rounded-full font-black uppercase text-[10px] tracking-widest transition-all duration-200 active:scale-[0.98] shadow-md cursor-pointer text-center"
+                    >
+                      {t('Book Package', 'पैकेज बुक करें', 'പാക്കേജ് ബുക്ക് ചെയ്യുക')}
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-[40px] shadow-sm border border-gray-100 p-16 text-center">
+              <Gift size={48} className="mx-auto text-teal-600 opacity-20 mb-6" />
+              <h3 className="text-2xl font-bold text-[#0F4C4C] mb-2">{t('No Packages Available', 'कोई पैकेज उपलब्ध नहीं है')}</h3>
+              <p className="text-gray-400 text-sm max-w-md mx-auto">{t('All our combo packages are currently sold out. Check back soon for new special package deals!', 'हमारे सभी कॉम्बो पैकेज वर्तमान में बिक चुके हैं। नए विशेष पैकेज सौदों के लिए जल्द ही वापस आएं!')}</p>
+            </div>
+          )
         )}
 
         <div className="mt-20 text-center">

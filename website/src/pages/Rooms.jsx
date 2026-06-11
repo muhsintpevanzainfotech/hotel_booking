@@ -32,6 +32,12 @@ const Rooms = () => {
 
     const filteredRooms = rooms.filter(room => {
         if (activeCategory === 'All Rooms') return true;
+        if (activeCategory === 'Rooms') {
+            return !room.type || room.type === 'Rooms' || room.type === 'Standard';
+        }
+        if (activeCategory === 'Combo Offer') {
+            return room.type === 'Combo Offer' || room.type === 'compo-offer';
+        }
         return room.type?.toLowerCase() === activeCategory.toLowerCase();
     });
 
@@ -83,7 +89,7 @@ const Rooms = () => {
             <div className="max-w-[1100px] mx-auto px-6 -mt-8 relative z-20">
                 <div className="bg-white p-4 rounded-2xl shadow-xl border border-gray-50 flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-6 overflow-x-auto no-scrollbar py-1">
-                        {['All Rooms', 'Deluxe', 'Premium', 'Family', 'Budget'].map((cat, i) => (
+                        {['All Rooms', 'Rooms', 'Combo Offer'].map((cat, i) => (
                             <button 
                                 key={i} 
                                 onClick={() => setActiveCategory(cat)}

@@ -34,17 +34,21 @@ import {
   CalendarDays,
   Ticket,
   User,
-  TrendingUp
+  TrendingUp,
+  Layers,
+  Gift
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:6003/api';
 
 
 const FacilitiesManager = ({ apiBase }) => <ContentItemManager type="facilities" apiBase={apiBase} />;
 const BannerManager = ({ apiBase }) => <ContentItemManager type="banners" apiBase={apiBase} />;
 const OfferManager = ({ apiBase }) => <ContentItemManager type="offers" apiBase={apiBase} />;
+const CategoryManager = ({ apiBase }) => <ContentItemManager type="categories" apiBase={apiBase} />;
+const ComboOfferManager = ({ apiBase }) => <ContentItemManager type="combo_offers" apiBase={apiBase} />;
 const AvailabilityManager = ({ apiBase }) => <AvailabilityCalendar apiBase={apiBase} />;
 
 function App() {
@@ -154,7 +158,7 @@ function App() {
         <Navbar toggleSidebar={() => setIsOpen(!isOpen)} />
         
         <main className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="section-container w-full max-w-[1280px] mx-auto px-[24px] py-[24px]">
+          <div className="section-container w-full max-w-[1280px] mx-auto">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -166,22 +170,25 @@ function App() {
                 <Routes location={location} key={location.pathname}>
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   <Route path="/dashboard" element={
-                    <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-[24px]">
+                    <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-[24px] items-start">
+                      {/* Left Column: Welcome, Banner, Stats, charts, tables */}
                       <div className="space-y-[24px] min-w-0">
                         <WelcomeSection user={user} stats={stats} />
                         <BannerSection banners={banners} />
                         <StatsGrid stats={stats} />
                         <EntityInventory stats={stats} />
-                        <PriorityActionHub apiBase={API_BASE} />
-                        <OfferSection offers={offers} />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-[20px]">
                           <BookingChart />
                           <RevenueChart />
                         </div>
                         <RecentBookings apiBase={API_BASE} role="Admin" />
                       </div>
+                      
+                      {/* Right Column: Priority Actions, Hub, Offers */}
                       <div className="space-y-[24px] min-w-0">
                         <RightPanel apiBase={API_BASE} />
+                        <PriorityActionHub apiBase={API_BASE} />
+                        <OfferSection offers={offers} />
                       </div>
                     </div>
                   } />
@@ -197,6 +204,8 @@ function App() {
                   <Route path="/facilities" element={<FacilitiesManager apiBase={API_BASE} />} />
                   <Route path="/banners" element={<BannerManager apiBase={API_BASE} />} />
                   <Route path="/offers" element={<OfferManager apiBase={API_BASE} />} />
+                  <Route path="/categories" element={<CategoryManager apiBase={API_BASE} />} />
+                  <Route path="/combo_offers" element={<ComboOfferManager apiBase={API_BASE} />} />
                   <Route path="/availability" element={<AvailabilityManager apiBase={API_BASE} />} />
                   <Route path="/users" element={<UserManager apiBase={API_BASE} />} />
                 </Routes>
@@ -226,7 +235,7 @@ const WelcomeSection = ({ user, stats }) => (
         System integrity is <span className="text-primary font-semibold uppercase tracking-wider">Optimal</span>. You have <span className="text-text-primary font-semibold">{(stats?.enquiries || 0) + (stats?.contacts || 0)} inquiries & messages</span>. Estimated total booking valuation is <span className="text-primary font-semibold">₹{(stats?.totalEstimatedValue || 0).toLocaleString()}</span> (₹{(stats?.approvedRevenue || 0).toLocaleString()} realized). Here's your luxury estate overview.
       </p>
       
-      <div className="flex gap-[16px] mt-8">
+      <div className="flex flex-wrap gap-[12px] md:gap-[16px] mt-8">
           <div className="flex items-center gap-[12px] px-[16px] py-[10px] bg-bg-subtle rounded-xl border border-border-subtle">
             <Clock size={14} className="text-primary" />
             <span className="text-[12px] font-semibold text-text-secondary uppercase tracking-widest">Last login: 2h ago</span>
@@ -304,6 +313,8 @@ const EntityInventory = ({ stats }) => {
   const items = [
     { label: 'Rooms Inventory', count: stats?.rooms || 0, icon: BedDouble, color: 'text-primary' },
     { label: 'System Users', count: stats?.users || 0, icon: User, color: 'text-emerald-400' },
+    { label: 'Categories', count: stats?.categories || 0, icon: Layers, color: 'text-indigo-400' },
+    { label: 'Combo Offers', count: stats?.comboOffers || 0, icon: Gift, color: 'text-pink-400' },
     { label: 'Marketing Banners', count: stats?.banners || 0, icon: Layout, color: 'text-cyan-400' },
     { label: 'Active Promotions', count: stats?.offers || 0, icon: Ticket, color: 'text-yellow-400' },
     { label: 'Resort Facilities', count: stats?.facilities || 0, icon: Briefcase, color: 'text-indigo-400' },
@@ -317,7 +328,7 @@ const EntityInventory = ({ stats }) => {
       <div className="flex justify-between items-center">
         <h3 className="text-[18px] font-bold text-text-primary tracking-tight">System Inventory & Counts</h3>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-[16px]">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-[12px] md:gap-[16px]">
         {items.map((item, idx) => (
           <div key={idx} className="glass-card p-4 hover:border-primary/30 transition-all flex items-center gap-3">
             <div className={`p-2.5 rounded-xl bg-bg-subtle border border-border-subtle ${item.color}`}>
@@ -401,6 +412,7 @@ const BannerSection = ({ banners }) => {
 };
 
 const OfferSection = ({ offers }) => {
+  const navigate = useNavigate();
   const displayOffers = offers.length > 0 ? offers.slice(0, 3) : [
     { id: 1, title: 'No Active Offers', discount: '0%', status: 'Paused', bookings: 0, color: 'text-text-secondary' }
   ];
@@ -416,7 +428,7 @@ const OfferSection = ({ offers }) => {
           Manage All
         </button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-[20px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-1 gap-[16px] md:gap-[20px]">
         {displayOffers.map((offer, idx) => (
           <div key={offer._id || idx} className="glass-card p-6 group hover:border-primary/40 transition-all duration-300">
             <div className="flex justify-between items-start mb-6">

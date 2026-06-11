@@ -22,7 +22,9 @@ import {
   Zap,
   Ticket,
   Link as LinkIcon,
-  Palette
+  Palette,
+  Layers,
+  Gift
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -37,7 +39,8 @@ const ContentItemManager = ({ type, apiBase }) => {
   const [addModal, setAddModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentItemId, setCurrentItemId] = useState(null);
-  const [formData, setFormData] = useState({ rating: 5, icon: '', author: '', category: 'Holiday' });
+  const [formData, setFormData] = useState({ rating: 5, icon: '', author: '', category: 'Holiday', type: 'room', price: '', includes: [], links: '' });
+  const [dbCategories, setDbCategories] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedCoverFile, setSelectedCoverFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -58,6 +61,8 @@ const ContentItemManager = ({ type, apiBase }) => {
     facilities: { title: 'Hotel Facilities', icon: Briefcase, endpoint: '/facilities' },
     banners: { title: 'Promotional Banners', icon: Zap, endpoint: '/banners' },
     offers: { title: 'Special Offers', icon: Ticket, endpoint: '/offers' },
+    categories: { title: 'Categories', icon: Layers, endpoint: '/categories' },
+    combo_offers: { title: 'Combo Offers', icon: Gift, endpoint: '/combo-offers' },
   };
 
   const active = config[type];
@@ -74,7 +79,24 @@ const ContentItemManager = ({ type, apiBase }) => {
     fetchItems();
     setRatingFilter('All');
     setStatusFilter('All');
+    if (type === 'combo_offers') {
+      fetchCategories();
+    }
   }, [type]);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch(`${apiBase}/categories`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setDbCategories(data);
+      }
+    } catch (err) {
+      console.error('Categories Fetch Error:', err);
+    }
+  };
 
   useEffect(() => {
     if (!selectedFile) {
@@ -127,11 +149,17 @@ const ContentItemManager = ({ type, apiBase }) => {
         code: item.code || '',
         color: item.color || 'text-primary',
         author: item.author || 'Admin',
-        category: item.category || 'Holiday'
+        category: item.category || 'Holiday',
+        type: item.type || 'room',
+        price: item.price || '',
+        includes: Array.isArray(item.includes) ? item.includes : [],
+        links: item.links || ''
     });
     setImageCleared(false);
     setCoverImageCleared(false);
-    if (item.image) {
+    if (item.coverImage) {
+        setPreviewUrl(getImageUrl(item.coverImage, apiBase));
+    } else if (item.image) {
         setPreviewUrl(getImageUrl(item.image, apiBase));
     } else {
         setPreviewUrl(null);
@@ -148,7 +176,7 @@ const ContentItemManager = ({ type, apiBase }) => {
     setAddModal(false);
     setIsEditing(false);
     setCurrentItemId(null);
-    setFormData({ rating: 5, icon: '', subtitle: '', link: '', discount: '', code: '', color: 'text-primary', author: '', category: 'Holiday' });
+    setFormData({ rating: 5, icon: '', subtitle: '', link: '', discount: '', code: '', color: 'text-primary', author: '', category: 'Holiday', type: 'room', price: '', includes: [], links: '' });
     setSelectedFile(null);
     setSelectedCoverFile(null);
     setPreviewUrl(null);
@@ -170,12 +198,28 @@ const ContentItemManager = ({ type, apiBase }) => {
             const fd = new FormData();
             Object.keys(formData).forEach(key => {
                 if (formData[key] !== undefined && formData[key] !== null) {
-                    fd.append(key, formData[key]);
+                    if (key === 'includes') {
+                        fd.append(key, JSON.stringify(formData[key]));
+                    } else {
+                        fd.append(key, formData[key]);
+                    }
                 }
             });
-            if (selectedFile) fd.append('image', selectedFile);
+            if (selectedFile) {
+                if (type === 'combo_offers') {
+                    fd.append('coverImage', selectedFile);
+                } else {
+                    fd.append('image', selectedFile);
+                }
+            }
             if (selectedCoverFile) fd.append('coverImage', selectedCoverFile);
-            if (imageCleared) fd.append('imageCleared', 'true');
+            if (imageCleared) {
+                if (type === 'combo_offers') {
+                    fd.append('coverImageCleared', 'true');
+                } else {
+                    fd.append('imageCleared', 'true');
+                }
+            }
             if (coverImageCleared) fd.append('coverImageCleared', 'true');
             body = fd;
         }
@@ -317,6 +361,9 @@ const ContentItemManager = ({ type, apiBase }) => {
               <th className="pl-8">Content Intelligence Domain</th>
               {type === 'testimonials' && <th className="text-center">Rating</th>}
               {type === 'offers' && <th className="text-center">Discount Value</th>}
+              {type === 'categories' && <th className="text-center">Category Type</th>}
+              {type === 'combo_offers' && <th className="text-center">Price</th>}
+              {type === 'combo_offers' && <th className="text-center">Combo Type</th>}
               <th className="text-center">Lifecycle Status</th>
               <th className="text-center pr-8">Executive Controls</th>
             </tr>
@@ -334,8 +381,8 @@ const ContentItemManager = ({ type, apiBase }) => {
                 >
                   <td className="pl-8">
                     <div className="flex items-center gap-4">
-                      {item.image ? (
-                        <img src={getImageUrl(item.image, apiBase)} alt="" className="w-10 h-10 rounded-xl object-cover border border-border-subtle" />
+                      {item.coverImage || item.image ? (
+                        <img src={getImageUrl(item.coverImage || item.image, apiBase)} alt="" className="w-10 h-10 rounded-xl object-cover border border-border-subtle" />
                       ) : (
                         <div className="w-10 h-10 rounded-xl bg-bg-subtle border border-border-subtle flex items-center justify-center text-text-secondary">
                           <active.icon size={16} />
@@ -362,6 +409,21 @@ const ContentItemManager = ({ type, apiBase }) => {
                   {type === 'offers' && (
                     <td className="text-center">
                         <Badge status="primary">{item.discount}</Badge>
+                    </td>
+                  )}
+                  {type === 'categories' && (
+                    <td className="text-center">
+                        <Badge status="primary" className="capitalize">{item.type}</Badge>
+                    </td>
+                  )}
+                  {type === 'combo_offers' && (
+                    <td className="text-center">
+                        <span className="font-bold text-text-primary">₹{item.price}</span>
+                    </td>
+                  )}
+                  {type === 'combo_offers' && (
+                    <td className="text-center">
+                        <Badge status="primary" className="capitalize">{item.type}</Badge>
                     </td>
                   )}
                   <td className="text-center">
@@ -396,7 +458,7 @@ const ContentItemManager = ({ type, apiBase }) => {
                 </motion.tr>
               )) : (
                 <tr>
-                  <td colSpan={type === 'testimonials' ? 4 : 3} className="py-24 text-center">
+                  <td colSpan={type === 'combo_offers' ? 5 : ['testimonials', 'offers', 'categories'].includes(type) ? 4 : 3} className="py-24 text-center">
                       <div className="flex flex-col items-center justify-center space-y-3">
                           <div className="w-12 h-12 rounded-full bg-bg-subtle border border-dashed border-border-subtle flex items-center justify-center">
                               <active.icon size={20} className="text-text-secondary opacity-20" />
@@ -460,9 +522,9 @@ const ContentItemManager = ({ type, apiBase }) => {
       >
         {viewModal.item && (
             <div className="space-y-6">
-                {viewModal.item.image && (
+                {(viewModal.item.coverImage || viewModal.item.image) && (
                     <div className="w-full h-64 rounded-3xl overflow-hidden border border-border-subtle relative group">
-                        <img src={getImageUrl(viewModal.item.image, apiBase)} className="w-full h-full object-cover" alt="intelligence" />
+                        <img src={getImageUrl(viewModal.item.coverImage || viewModal.item.image, apiBase)} className="w-full h-full object-cover" alt="intelligence" />
                         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/80 to-transparent" />
                         <div className="absolute bottom-6 left-6 right-6">
                             <Badge status="success">Operational Asset</Badge>
@@ -494,15 +556,57 @@ const ContentItemManager = ({ type, apiBase }) => {
                             <span className="text-[11px] font-bold text-text-secondary uppercase">Guest Rating</span>
                         </div>
                     )}
-
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">
-                            {type === 'blogs' ? 'Blog Content' : 'Payload Content'}
-                        </label>
-                        <div className="bg-bg-subtle border border-border-subtle rounded-2xl p-5 text-sm text-text-primary leading-relaxed italic">
-                            "{viewModal.item.content || viewModal.item.description}"
+                    {type === 'categories' && (
+                        <div className="flex items-center gap-2 p-3 bg-bg-subtle border border-border-subtle rounded-xl w-fit">
+                            <span className="text-[11px] font-black text-primary uppercase tracking-widest">{viewModal.item.type}</span>
+                            <span className="text-[11px] font-bold text-text-secondary uppercase">Category Type</span>
                         </div>
-                    </div>
+                    )}
+                    {type === 'combo_offers' && (
+                        <div className="flex flex-wrap gap-4">
+                            <div className="flex items-center gap-2 p-3 bg-bg-subtle border border-border-subtle rounded-xl w-fit">
+                                <span className="text-[11px] font-black text-primary uppercase tracking-widest">₹{viewModal.item.price}</span>
+                                <span className="text-[11px] font-bold text-text-secondary uppercase">Price</span>
+                            </div>
+                            <div className="flex items-center gap-2 p-3 bg-bg-subtle border border-border-subtle rounded-xl w-fit">
+                                <span className="text-[11px] font-black text-cyan-400 uppercase tracking-widest">{viewModal.item.type}</span>
+                                <span className="text-[11px] font-bold text-text-secondary uppercase">Combo Type</span>
+                            </div>
+                        </div>
+                    )}
+
+                    {type === 'combo_offers' && viewModal.item.includes && viewModal.item.includes.length > 0 && (
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Included Benefits</label>
+                            <div className="flex flex-wrap gap-2">
+                                {viewModal.item.includes.map((inc, i) => (
+                                    <span key={i} className="px-3 py-1.5 bg-primary/5 text-primary text-[10px] font-black rounded-lg border border-border-primary-subtle uppercase tracking-widest">
+                                        {inc}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {type === 'combo_offers' && viewModal.item.links && (
+                        <div className="flex justify-between items-center p-4 bg-bg-subtle border border-border-subtle rounded-xl">
+                            <span className="text-[10px] text-text-secondary uppercase tracking-widest font-bold">Target Action Link</span>
+                            <span className="text-[12px] text-primary font-bold cursor-pointer hover:underline" onClick={() => window.open(viewModal.item.links, '_blank')}>
+                                {viewModal.item.links}
+                            </span>
+                        </div>
+                    )}
+
+                    {type !== 'categories' && (
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">
+                                {type === 'blogs' ? 'Blog Content' : type === 'combo_offers' ? 'Combo Details' : 'Payload Content'}
+                            </label>
+                            <div className="bg-bg-subtle border border-border-subtle rounded-2xl p-5 text-sm text-text-primary leading-relaxed italic">
+                                "{viewModal.item.content || viewModal.item.description}"
+                            </div>
+                        </div>
+                    )}
 
                     <div className="flex justify-between items-center p-4 bg-bg-subtle border border-border-subtle rounded-xl">
                         <div className="flex items-center gap-3">
@@ -710,16 +814,46 @@ const ContentItemManager = ({ type, apiBase }) => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">
-                                            {type === 'blogs' ? 'Article Title' : 'Domain Heading'}
+                                            {type === 'blogs' ? 'Article Title' : type === 'categories' ? 'Category Title' : type === 'combo_offers' ? 'Combo Offer Title' : 'Domain Heading'}
                                         </label>
                                         <input 
                                             type="text" 
                                             className="w-full bg-bg-subtle border border-border-subtle rounded-2xl p-4 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all" 
-                                            placeholder={type === 'blogs' ? 'Enter blog title...' : 'Enter subject...'}
+                                            placeholder={type === 'blogs' ? 'Enter blog title...' : type === 'categories' ? 'Enter category title...' : type === 'combo_offers' ? 'Enter combo offer title...' : 'Enter subject...'}
                                             value={formData.title || ''}
                                             onChange={e => setFormData({...formData, title: e.target.value})}
                                         />
                                     </div>
+                                    {type === 'categories' && (
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Category Type</label>
+                                            <CustomSelect 
+                                                value={formData.type || 'room'}
+                                                onChange={(val) => setFormData({...formData, type: val})}
+                                                options={[
+                                                    { value: 'room', label: 'Room' },
+                                                    { value: 'combo-offer', label: 'Combo Offer' },
+                                                    { value: 'others', label: 'Others' }
+                                                ]}
+                                            />
+                                        </div>
+                                    )}
+                                    {type === 'combo_offers' && (
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Combo Type</label>
+                                            <CustomSelect 
+                                                value={formData.type || ''}
+                                                onChange={(val) => setFormData({...formData, type: val})}
+                                                options={dbCategories.filter(cat => cat.type === 'combo-offer').length > 0
+                                                    ? dbCategories.filter(cat => cat.type === 'combo-offer').map(cat => ({ value: cat.title, label: cat.title }))
+                                                    : [
+                                                        { value: 'Combo Offer', label: 'Combo Offer' },
+                                                        { value: 'Standard Combo', label: 'Standard Combo' }
+                                                      ]
+                                                }
+                                            />
+                                        </div>
+                                    )}
                                     {type === 'facilities' && (
                                         <div className="space-y-2">
                                             <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Icon Class/Name</label>
@@ -767,6 +901,7 @@ const ContentItemManager = ({ type, apiBase }) => {
                                 </div>
                             )}
 
+
                             {type === 'facilities' && (
                                 <div className="space-y-3">
                                     <label className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] ml-1">Cover Image Integration</label>
@@ -810,14 +945,89 @@ const ContentItemManager = ({ type, apiBase }) => {
                                 </div>
                             )}
 
-                            {type !== 'banners' && type !== 'offers' && (
+                            {type === 'combo_offers' && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Price (INR)</label>
+                                        <input 
+                                            type="number" 
+                                            className="w-full bg-bg-subtle border border-border-subtle rounded-2xl p-4 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all" 
+                                            placeholder="Enter combo price..."
+                                            value={formData.price || ''}
+                                            onChange={e => setFormData({...formData, price: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Action Link</label>
+                                        <input 
+                                            type="text" 
+                                            className="w-full bg-bg-subtle border border-border-subtle rounded-2xl p-4 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all" 
+                                            placeholder="e.g. /book, /contact..."
+                                            value={formData.links || ''}
+                                            onChange={e => setFormData({...formData, links: e.target.value})}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {type === 'combo_offers' && (
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Included Benefits</label>
+                                    <div className="flex gap-2">
+                                        <input 
+                                            type="text" 
+                                            id="benefit-input"
+                                            className="flex-1 bg-bg-subtle border border-border-subtle rounded-2xl p-4 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all" 
+                                            placeholder="Type a benefit and press Enter..."
+                                            onKeyDown={e => {
+                                                if (e.key === 'Enter') {
+                                                    e.preventDefault();
+                                                    const val = e.target.value.trim();
+                                                    if (val && !formData.includes.includes(val)) {
+                                                        setFormData({ ...formData, includes: [...formData.includes, val] });
+                                                        e.target.value = '';
+                                                    }
+                                                }
+                                            }}
+                                        />
+                                        <button 
+                                            type="button"
+                                            onClick={() => {
+                                                const el = document.getElementById('benefit-input');
+                                                const val = el?.value.trim();
+                                                if (val && !formData.includes.includes(val)) {
+                                                    setFormData({ ...formData, includes: [...formData.includes, val] });
+                                                    el.value = '';
+                                                }
+                                            }}
+                                            className="px-6 bg-white/5 border border-white/10 rounded-2xl text-[12px] font-bold text-text-primary hover:bg-white/10 transition-all"
+                                        >
+                                            Add
+                                        </button>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                        {formData.includes.map((inc, i) => (
+                                            <span key={i} className="px-3 py-1.5 bg-primary/10 text-primary text-[10px] font-black rounded-lg border border-border-primary-subtle uppercase tracking-widest flex items-center gap-2">
+                                                {inc}
+                                                <X 
+                                                    size={12} 
+                                                    className="cursor-pointer text-text-secondary hover:text-white transition-all" 
+                                                    onClick={() => setFormData({ ...formData, includes: formData.includes.filter(x => x !== inc) })}
+                                                />
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {type !== 'banners' && type !== 'offers' && type !== 'categories' && (
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">
-                                        {type === 'blogs' ? 'Blog Content' : 'Payload Content'}
+                                        {type === 'blogs' ? 'Blog Content' : type === 'combo_offers' ? 'Combo Description' : 'Payload Content'}
                                     </label>
                                     <textarea 
                                         className="w-full bg-bg-subtle border border-border-subtle rounded-[24px] p-5 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all h-32 resize-none leading-relaxed" 
-                                        placeholder={type === 'blogs' ? 'Enter full blog content...' : 'Enter full intelligence payload...'}
+                                        placeholder={type === 'blogs' ? 'Enter full blog content...' : type === 'combo_offers' ? 'Enter combo description...' : 'Enter full intelligence payload...'}
                                         value={formData.content || formData.description || ''}
                                         onChange={e => setFormData({...formData, content: e.target.value, description: e.target.value})}
                                     />

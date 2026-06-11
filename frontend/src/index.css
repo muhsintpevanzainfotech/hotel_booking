@@ -15,6 +15,12 @@
   --bg-primary-subtle: rgba(20, 184, 166, 0.1);
   --glass-bg: rgba(19, 47, 47, 0.8);
   --shadow-inner: inset 0 0 20px rgba(20, 184, 166, 0.05), 0 8px 32px rgba(0,0,0,0.3);
+
+  /* Spacing CSS variables for responsive design */
+  --gap-grid: 16px;
+  --p-section-y: 16px;
+  --p-section-x: 12px;
+  --p-card: 14px;
 }
 
 [data-theme="light"] {
@@ -31,6 +37,24 @@
   --bg-primary-subtle: rgba(13, 148, 136, 0.1);
   --glass-bg: rgba(255, 255, 255, 0.95);
   --shadow-inner: 0 4px 20px rgba(13, 148, 136, 0.12);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gap-grid: 20px;
+    --p-section-y: 24px;
+    --p-section-x: 18px;
+    --p-card: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --gap-grid: 24px;
+    --p-section-y: 32px;
+    --p-section-x: 24px;
+    --p-card: 20px;
+  }
 }
 
 @theme {
@@ -50,11 +74,11 @@
 
   --radius-luxury: 16px;
   
-  /* Strict 4px Grid tokens */
-  --spacing-gap-grid: 24px;
-  --spacing-p-section-y: 32px;
-  --spacing-p-section-x: 24px;
-  --spacing-p-card: 20px;
+  /* Responsive Spacing tokens mapped to CSS custom variables */
+  --spacing-gap-grid: var(--gap-grid);
+  --spacing-p-section-y: var(--p-section-y);
+  --spacing-p-section-x: var(--p-section-x);
+  --spacing-p-card: var(--p-card);
 
   /* Custom Shadow for Inner Glow */
   --shadow-inner-glow: var(--shadow-inner);

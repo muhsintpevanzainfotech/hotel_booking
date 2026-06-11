@@ -70,6 +70,28 @@ const Footer = () => {
 
           {/* Contact Col */}
           <div>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-teal-400 mb-10">{t('Legal & Support', 'कानूनी और सहायता')}</h4>
+            <ul className="space-y-5 text-sm font-bold text-teal-100/60 tracking-widest">
+              {[
+                { to: '/booking-status', label: t('Check Booking', 'बुकिंग देखें') },
+                { to: '/offers', label: t('Exclusive Offers', 'विशेष ऑफर') },
+                { to: '/offers?tab=combos', label: t('Combo Offers', 'कॉम्बो ऑफर') },
+                { to: '/terms-conditions', label: t('Terms & Conditions', 'नियम और शर्तें') },
+                { to: '/privacy-policy', label: t('Refund & Policy', 'धनवापसी और नीति') },
+                { to: '/sitemap', label: t('Sitemap', 'साइटमैप') }
+              ].map((link, i) => (
+                <li key={i}>
+                  <Link to={link.to} className="hover:text-white transition-all flex items-center gap-3 group">
+                    <Check size={14} className="text-teal-400/0 group-hover:text-teal-400 transition-all" />
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Support Col */}
+          <div>
             <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-teal-400 mb-10">{t('Contact', 'संपर्क')}</h4>
             <ul className="space-y-8">
               <li className="flex items-start gap-4 group">
@@ -97,27 +119,6 @@ const Footer = () => {
                 </div>
                 <a href={`mailto:${contact?.email || 'info@lakebreezeresort.com'}`} className="text-teal-100/80 text-sm font-bold tracking-tight hover:text-white transition-colors">{contact?.email || 'info@lakebreezeresort.com'}</a>
               </li>
-            </ul>
-          </div>
-
-          {/* Support Col */}
-          <div>
-            <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-teal-400 mb-10">{t('Legal & Support', 'कानूनी और सहायता')}</h4>
-            <ul className="space-y-5 text-sm font-bold text-teal-100/60 tracking-widest">
-              {[
-                { to: '/booking-status', label: t('Check Booking', 'बुकिंग देखें') },
-                { to: '/offers', label: t('Exclusive Offers', 'विशेष ऑफर') },
-                { to: '/terms-conditions', label: t('Terms & Conditions', 'नियम और शर्तें') },
-                { to: '/privacy-policy', label: t('Refund & Policy', 'धनवापसी और नीति') },
-                { to: '/sitemap', label: t('Sitemap', 'साइटमैप') }
-              ].map((link, i) => (
-                <li key={i}>
-                  <Link to={link.to} className="hover:text-white transition-all flex items-center gap-3 group">
-                    <Check size={14} className="text-teal-400/0 group-hover:text-teal-400 transition-all" />
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
             </ul>
             <div className="mt-10">
               <a href={`https://wa.me/${(contact?.phone || '919876543210').replace(/\D/g, '')}`} className="w-full h-14 bg-[#25D366] text-white rounded-2xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-3 shadow-xl hover:bg-[#20ba5a] active:scale-95 transition-all">
