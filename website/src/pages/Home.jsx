@@ -233,6 +233,99 @@ const RoomCard = ({ room, index, onBookClick, t }) => {
   );
 };
 
+const PricingComboCard = ({ combo, isFeatured, t }) => {
+  const handleCardClick = () => {
+    if (combo.links) {
+      if (combo.links.startsWith('http')) {
+        window.open(combo.links, '_blank');
+      } else {
+        window.location.href = combo.links;
+      }
+    } else {
+      window.location.href = `/contact?subject=Booking ${combo.title}`;
+    }
+  };
+
+  const badgeText = combo.type && String(combo.type).trim() ? combo.type : t('Package', 'पैकेज');
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: isFeatured ? 0.1 : 0.05 }}
+      className={`bg-white rounded-[32px] md:rounded-[40px] border border-neutral-200/60 p-6 md:p-8 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group min-h-[560px] ${
+        isFeatured ? 'ring-2 ring-lime-400 border-lime-200' : ''
+      }`}
+    >
+      <div>
+        {/* Top Header Section (image box inside the card) */}
+        <div className="relative h-[200px] rounded-[24px] sm:rounded-[28px] overflow-hidden p-6 flex flex-col justify-between transition-colors duration-300">
+          {/* Background Image */}
+          <img
+            src={combo.coverImage ? getImageUrl(combo.coverImage) : sitoutImg}
+            alt={combo.title}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
+          />
+          {/* Dark Overlay Gradient inside the image box */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10 z-10" />
+
+          {/* Badge */}
+          <div className="relative z-20 self-start">
+            <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-[9px] font-black text-white uppercase tracking-widest">
+              {badgeText}
+            </span>
+          </div>
+
+          {/* Price */}
+          <div className="relative z-20 flex items-baseline gap-1">
+            <span className="text-3xl sm:text-4xl font-black text-white drop-shadow-md">
+              ₹{combo.price.toLocaleString()}
+            </span>
+            <span className="text-xs font-bold text-white/80">/{t('package', 'पैकेज')}</span>
+          </div>
+        </div>
+
+        {/* Title and Short Description */}
+        <div className="mt-6 space-y-2">
+          <h3 className="text-lg font-black text-[#0F4C4C] leading-snug group-hover:text-teal-800 transition-colors">
+            {combo.title}
+          </h3>
+          <p className="text-[11px] sm:text-xs text-neutral-500 leading-relaxed font-normal">
+            {combo.description}
+          </p>
+        </div>
+      </div>
+
+      <div>
+        {/* Large Button */}
+        <button
+          onClick={handleCardClick}
+          className={`w-full py-4 text-center rounded-full font-black uppercase text-[10px] tracking-widest transition-all shadow-sm active:scale-98 cursor-pointer mt-6 ${
+            isFeatured 
+              ? 'bg-lime-400 hover:bg-lime-350 text-neutral-900 font-black shadow-lime-200/50 shadow-md border border-lime-300/30' 
+              : 'bg-[#0F4C4C] hover:bg-[#155d5d] text-white shadow-teal-900/10'
+          }`}
+        >
+          {t('Book Package Now', 'अभी बुक करें')}
+        </button>
+
+        {/* Checklist */}
+        {combo.includes && combo.includes.length > 0 && (
+          <div className="mt-6 pt-6 border-t border-neutral-100 space-y-3">
+            {combo.includes.slice(0, 4).map((inc, idx) => (
+              <div key={idx} className="flex items-center gap-3">
+                <Check size={14} className="text-teal-600 shrink-0" />
+                <span className="text-[11px] sm:text-xs text-neutral-600 font-semibold">{inc}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+};
+
 const ComboOfferCard = ({ combo, index, t }) => {
   const handleCardClick = () => {
     if (combo.links) {
@@ -255,7 +348,7 @@ const ComboOfferCard = ({ combo, index, t }) => {
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.05 }}
       onClick={handleCardClick}
-      className="relative w-full min-h-[320px] md:h-[380px] rounded-[32px] md:rounded-[40px] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl border border-white/10 transition-all duration-500 group bg-slate-950 flex flex-col justify-between p-5 md:p-6 lg:p-7"
+      className="relative w-full min-h-[320px] md:h-[380px] rounded-[32px] md:rounded-[40px] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl border border-white/10 transition-all duration-500 group bg-slate-950 flex flex-col justify-end p-6 md:p-8"
     >
       {/* Background Cover Image */}
       <img
@@ -267,18 +360,16 @@ const ComboOfferCard = ({ combo, index, t }) => {
       {/* Dark Premium Gradient Overlay - covers full height for readability */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/20 z-10" />
 
-      {/* Top Section: Badge */}
-      <div className="relative z-20 self-start">
-        <div className="inline-flex items-center gap-1 px-2.5 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full">
+      {/* Content Overlay */}
+      <div className="relative z-20 w-full space-y-3 text-white max-w-3xl">
+        {/* Package Type Badge */}
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full self-start">
           <div className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-pulse" />
           <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-white">
             {badgeText}
           </span>
         </div>
-      </div>
 
-      {/* Bottom Section: Title, Price, Desc, Includes, CTA */}
-      <div className="relative z-20 w-full space-y-2 mt-auto">
         {/* Title and Price */}
         <div className="space-y-1">
           <h3 className="text-white text-lg sm:text-xl md:text-2xl font-black tracking-tight leading-tight group-hover:text-teal-300 transition-colors line-clamp-2">
@@ -923,7 +1014,7 @@ const Home = () => {
         )}
       </div>
 
-      {/* 2.5 COMBO OFFERS SECTION */}
+      {/* 2.5 COMBO OFFERS SECTION (BANNER SLIDER) */}
       <div className="max-w-[1400px] mx-auto px-4 py-8 pb-16">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6">
           <div className="space-y-3">
@@ -951,7 +1042,7 @@ const Home = () => {
               spaceBetween: 30,
             }
           }}
-          className="w-full rounded-[40px] md:rounded-[48px] overflow-hidden"
+          className="w-full rounded-[40px] md:rounded-[48px] overflow-hidden shadow-lg"
         >
           {displayComboOffers.map((combo, i) => (
             <SwiperSlide key={combo._id || i}>
@@ -1184,8 +1275,34 @@ const Home = () => {
         </div>
       </section>
 
+      {/* 3.5 COMBO OFFERS SECTION (PRICING CARD STYLE) */}
+      <section className="py-24 bg-[#F8FAFA] border-t border-b border-neutral-200/50">
+        <div className="max-w-[1400px] mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6">
+            <div className="space-y-3">
+              <p className="text-[9px] font-black uppercase tracking-[0.4em] text-teal-600">{t('Exclusive Packages', 'विशेष पैकेज')}</p>
+              <h2 className="text-4xl font-black text-[#0F4C4C] tracking-tight">{t('Combo Offers', 'कॉम्बो ऑफर')}</h2>
+            </div>
+            <Link to="/offers?tab=combos" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all">
+              {t('View All Packages', 'सभी पैकेज देखें')}
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {displayComboOffers.map((combo, i) => (
+              <PricingComboCard
+                key={combo._id || i}
+                combo={combo}
+                isFeatured={i === 1} // Second package (Family Weekend Explorer) is highlighted/featured
+                t={t}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* 4. GALLERY SECTION */}
-      <section className="py-16 bg-[#F8FAFA]">
+      <section className="py-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12 md:mb-16">
             <h2 className="text-4xl font-black text-[#0F4C4C] tracking-tight">{t('The Visual Journal', 'दृश्य पत्रिका')}</h2>
