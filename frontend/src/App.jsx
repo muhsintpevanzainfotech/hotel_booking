@@ -41,7 +41,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:6003/api';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://82.29.165.57:6003/api';
 
 
 const FacilitiesManager = ({ apiBase }) => <ContentItemManager type="facilities" apiBase={apiBase} />;

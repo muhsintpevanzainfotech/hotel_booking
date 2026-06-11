@@ -19,7 +19,7 @@ import {
   deleteNotificationFailure
 } from '../slices/notificationSlice';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:6003/api';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://82.29.165.57:6003/api';
 
 // Selector to get token from state
 const getToken = (state) => state.auth.token;
