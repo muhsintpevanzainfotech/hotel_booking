@@ -13,8 +13,9 @@ import toast from 'react-hot-toast';
 import 'swiper/css';
 import heroVideo from '../assets/images/hero.mp4';
 import bathroomImg from '../assets/images/bathroom.jpeg';
-import bgImg from '../assets/images/bg.jpeg';
+import mainVideo from '../assets/images/Main-video.mp4';
 import coupleImg from '../assets/images/couple.jpeg';
+import frontdesk from '../assets/images/frontdesk.png';
 import familyImg from '../assets/images/family.jpeg';
 import familyroomImg from '../assets/images/familyroom.jpeg';
 import maeterImg from '../assets/images/maeter.jpeg';
@@ -32,7 +33,7 @@ const RoomCard = ({ room, index, onBookClick, t }) => {
   const [isHovered, setIsHovered] = useState(false);
   const timerRef = useRef(null);
 
-  const images = room.images && room.images.length > 0 
+  const images = room.images && room.images.length > 0
     ? room.images.map(img => getImageUrl(img.url))
     : [roomImg];
 
@@ -92,8 +93,8 @@ const RoomCard = ({ room, index, onBookClick, t }) => {
         onMouseLeave={() => setIsHovered(false)}
         animate={{
           backgroundColor: isHovered ? '#ffffff' : '#0b0f19',
-          boxShadow: isHovered 
-            ? '0 30px 60px -15px rgba(15, 23, 42, 0.25)' 
+          boxShadow: isHovered
+            ? '0 30px 60px -15px rgba(15, 23, 42, 0.25)'
             : '0 10px 30px -10px rgba(0, 0, 0, 0.15)',
           border: isHovered ? '1px solid rgba(15, 23, 42, 0.08)' : '1px solid rgba(255, 255, 255, 0.1)'
         }}
@@ -103,7 +104,7 @@ const RoomCard = ({ room, index, onBookClick, t }) => {
       >
         {/* Fixed Outer Image Container - occupies 100% in default, shrinks on hover */}
         <motion.div
-          animate={{ 
+          animate={{
             top: isHovered ? 12 : 0,
             left: isHovered ? 12 : 0,
             right: isHovered ? 12 : 0,
@@ -120,12 +121,12 @@ const RoomCard = ({ room, index, onBookClick, t }) => {
               src={images[currentImageIndex]}
               alt={room.name}
               initial={{ opacity: 0, scale: isHovered ? 1.08 : 1 }}
-              animate={{ 
+              animate={{
                 opacity: 1,
                 scale: isHovered ? 1.08 : 1
               }}
               exit={{ opacity: 0, scale: isHovered ? 1.08 : 1 }}
-              transition={{ 
+              transition={{
                 opacity: { duration: 0.4 },
                 scale: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
               }}
@@ -134,7 +135,7 @@ const RoomCard = ({ room, index, onBookClick, t }) => {
           </AnimatePresence>
 
           {/* Dark Gradient Overlay over image */}
-          <motion.div 
+          <motion.div
             animate={{ opacity: isHovered ? 0.2 : 0.85 }}
             transition={{ duration: 0.5 }}
             className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/45 to-transparent pointer-events-none z-10"
@@ -173,11 +174,10 @@ const RoomCard = ({ room, index, onBookClick, t }) => {
                 <button
                   key={idx}
                   onClick={(e) => handleDotClick(e, idx)}
-                  className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${
-                    currentImageIndex === idx 
-                      ? 'w-3 bg-white' 
-                      : 'w-1 bg-white/40 hover:bg-white/80'
-                  }`}
+                  className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${currentImageIndex === idx
+                    ? 'w-3 bg-white'
+                    : 'w-1 bg-white/40 hover:bg-white/80'
+                    }`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />
               ))}
@@ -196,17 +196,17 @@ const RoomCard = ({ room, index, onBookClick, t }) => {
           <div className="flex flex-col gap-1.5">
             {/* Row 1: Title and Price Badge */}
             <div className="flex justify-between items-center gap-2">
-              <motion.h3 
+              <motion.h3
                 animate={{ color: isHovered ? '#0f172a' : '#ffffff' }}
                 transition={{ duration: 0.5 }}
                 className="text-xs sm:text-sm font-bold tracking-tight truncate leading-tight flex-1"
               >
                 {room.name}
               </motion.h3>
-              <motion.span 
-                animate={{ 
-                  backgroundColor: isHovered ? '#0F4C4C' : '#ffffff', 
-                  color: isHovered ? '#ffffff' : '#0f172a' 
+              <motion.span
+                animate={{
+                  backgroundColor: isHovered ? '#0F4C4C' : '#ffffff',
+                  color: isHovered ? '#ffffff' : '#0f172a'
                 }}
                 transition={{ duration: 0.5 }}
                 className="shrink-0 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-black tracking-tight shadow-sm"
@@ -216,7 +216,7 @@ const RoomCard = ({ room, index, onBookClick, t }) => {
             </div>
 
             {/* Row 2: Short Description */}
-            <motion.p 
+            <motion.p
               animate={{ color: isHovered ? '#475569' : 'rgba(255, 255, 255, 0.8)' }}
               transition={{ duration: 0.5 }}
               className="text-[9px] sm:text-[10px] font-normal leading-relaxed line-clamp-1 overflow-hidden"
@@ -226,26 +226,23 @@ const RoomCard = ({ room, index, onBookClick, t }) => {
 
             {/* Row 3: Category tags (Facilities) - Always visible, smooth color transition */}
             <div className="flex flex-wrap gap-1 sm:gap-1.5">
-              <span className={`text-[7px] sm:text-[8px] font-black uppercase tracking-widest px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border transition-colors duration-350 ${
-                isHovered 
-                  ? 'bg-slate-100 border-slate-200/60 text-slate-600' 
-                  : 'bg-white/10 border-white/10 text-white'
-              }`}>
+              <span className={`text-[7px] sm:text-[8px] font-black uppercase tracking-widest px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border transition-colors duration-350 ${isHovered
+                ? 'bg-slate-100 border-slate-200/60 text-slate-600'
+                : 'bg-white/10 border-white/10 text-white'
+                }`}>
                 {room.capacity || 2} Guests
               </span>
-              <span className={`text-[7px] sm:text-[8px] font-black uppercase tracking-widest px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border transition-colors duration-350 ${
-                isHovered 
-                  ? 'bg-slate-100 border-slate-200/60 text-slate-600' 
-                  : 'bg-white/10 border-white/10 text-white'
-              }`}>
+              <span className={`text-[7px] sm:text-[8px] font-black uppercase tracking-widest px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border transition-colors duration-350 ${isHovered
+                ? 'bg-slate-100 border-slate-200/60 text-slate-600'
+                : 'bg-white/10 border-white/10 text-white'
+                }`}>
                 Lake View
               </span>
               {room.quantity <= 3 && (
-                <span className={`text-[7px] sm:text-[8px] font-black uppercase tracking-widest px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border transition-colors duration-350 ${
-                  isHovered 
-                    ? 'bg-red-50 border-red-100 text-red-600' 
-                    : 'bg-red-500/20 border-red-500/20 text-red-200'
-                }`}>
+                <span className={`text-[7px] sm:text-[8px] font-black uppercase tracking-widest px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border transition-colors duration-350 ${isHovered
+                  ? 'bg-red-50 border-red-100 text-red-600'
+                  : 'bg-red-500/20 border-red-500/20 text-red-200'
+                  }`}>
                   Only {room.quantity} left
                 </span>
               )}
@@ -253,13 +250,13 @@ const RoomCard = ({ room, index, onBookClick, t }) => {
           </div>
 
           {/* Row 4: Book CTA Button */}
-          <motion.div 
+          <motion.div
             animate={{ borderColor: isHovered ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.1)' }}
             transition={{ duration: 0.5 }}
             className="pt-2 border-t"
           >
             <motion.button
-              animate={{ 
+              animate={{
                 scale: isHovered ? 1.02 : 1,
                 backgroundColor: isHovered ? '#0f172a' : '#ffffff',
                 color: isHovered ? '#ffffff' : '#0f172a'
@@ -301,9 +298,8 @@ const PricingComboCard = ({ combo, isFeatured, t }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: isFeatured ? 0.1 : 0.05 }}
-      className={`bg-white rounded-[32px] md:rounded-[40px] border border-neutral-200/60 p-6 md:p-8 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group min-h-[560px] ${
-        isFeatured ? 'ring-2 ring-lime-400 border-lime-200' : ''
-      }`}
+      className={`bg-white rounded-[32px] md:rounded-[40px] border border-neutral-200/60 p-6 md:p-8 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group min-h-[560px] ${isFeatured ? 'ring-2 ring-lime-400 border-lime-200' : ''
+        }`}
     >
       <div>
         {/* Top Header Section (image box inside the card) */}
@@ -348,11 +344,10 @@ const PricingComboCard = ({ combo, isFeatured, t }) => {
         {/* Large Button */}
         <button
           onClick={handleCardClick}
-          className={`w-full py-4 text-center rounded-full font-black uppercase text-[10px] tracking-widest transition-all shadow-sm active:scale-98 cursor-pointer mt-6 ${
-            isFeatured 
-              ? 'bg-lime-400 hover:bg-lime-350 text-neutral-900 font-black shadow-lime-200/50 shadow-md border border-lime-300/30' 
-              : 'bg-[#0F4C4C] hover:bg-[#155d5d] text-white shadow-teal-900/10'
-          }`}
+          className={`w-full py-4 text-center rounded-full font-black uppercase text-[10px] tracking-widest transition-all shadow-sm active:scale-98 cursor-pointer mt-6 ${isFeatured
+            ? 'bg-lime-400 hover:bg-lime-350 text-neutral-900 font-black shadow-lime-200/50 shadow-md border border-lime-300/30'
+            : 'bg-[#0F4C4C] hover:bg-[#155d5d] text-white shadow-teal-900/10'
+            }`}
         >
           {t('Book Package Now', 'अभी बुक करें')}
         </button>
@@ -403,7 +398,7 @@ const ComboOfferCard = ({ combo, index, t }) => {
         alt={combo.title}
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
       />
-      
+
       {/* Responsive Premium Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/20 md:bg-gradient-to-r md:from-slate-950 md:via-slate-950/70 md:to-transparent z-10" />
 
@@ -475,11 +470,10 @@ const ComboOfferCard = ({ combo, index, t }) => {
 
 const PromotionalBannerCard = ({ banner, isHalfWidth, t }) => {
   return (
-    <div className={`relative w-full overflow-hidden shadow-2xl group ${
-      isHalfWidth 
-        ? 'h-[320px] md:h-[380px] rounded-[32px] md:rounded-[40px]' 
-        : 'h-[400px] rounded-[48px]'
-    }`}>
+    <div className={`relative w-full overflow-hidden shadow-2xl group ${isHalfWidth
+      ? 'h-[320px] md:h-[380px] rounded-[32px] md:rounded-[40px]'
+      : 'h-[400px] rounded-[48px]'
+      }`}>
       <img
         src={banner.image ? getImageUrl(banner.image) : sitoutImg}
         alt={banner.title || "Promotion"}
@@ -487,23 +481,20 @@ const PromotionalBannerCard = ({ banner, isHalfWidth, t }) => {
       />
       {/* Premium Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/20 md:bg-gradient-to-r md:from-slate-950 md:via-slate-950/70 md:to-transparent z-10" />
-      
+
       {/* Content Overlay */}
-      <div className={`absolute inset-0 flex items-center z-20 ${
-        isHalfWidth ? 'px-6 md:px-10' : 'px-12 md:px-20'
-      }`}>
-        <div className={`space-y-4 text-white ${
-          isHalfWidth ? 'max-w-md' : 'max-w-xl md:max-w-2xl'
+      <div className={`absolute inset-0 flex items-center z-20 ${isHalfWidth ? 'px-6 md:px-10' : 'px-12 md:px-20'
         }`}>
+        <div className={`space-y-4 text-white ${isHalfWidth ? 'max-w-md' : 'max-w-xl md:max-w-2xl'
+          }`}>
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full border border-white/30">
             <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
             <span className="text-[8px] font-black text-white uppercase tracking-[0.3em]">
               {t('Special Promotion', 'विशेष प्रचार')}
             </span>
           </div>
-          <h2 className={`font-black text-white leading-none tracking-tighter ${
-            isHalfWidth ? 'text-2xl md:text-3xl' : 'text-4xl md:text-5xl'
-          }`}>
+          <h2 className={`font-black text-white leading-none tracking-tighter ${isHalfWidth ? 'text-2xl md:text-3xl' : 'text-4xl md:text-5xl'
+            }`}>
             {banner.title}
           </h2>
           <p className="text-white/80 text-xs md:text-sm font-medium leading-relaxed line-clamp-2 md:line-clamp-3">
@@ -543,7 +534,7 @@ const Home = () => {
       price: 14999,
       description: t('Indulge in a romantic escape designed for couples. Includes a decorated waterfront suite, special backwater sunset cruise, candlelight lakeside dining, and a couple spa session.', 'युगलों के लिए डिज़ाइन किए गए रोमांटिक पलायन का आनंद लें। इसमें एक सजा हुआ वाटरफ्रंट सुइट, विशेष बैकवाटर सनसेट क्रूज़, मोमबत्ती की रोशनी में झील के किनारे भोजन और एक युगल स्पा सत्र शामिल है।'),
       includes: [t('Waterfront Suite', 'वाटरफ्रंट सुइट'), t('Sunset Cruise', 'सनसेट क्रूज़'), t('Candlelight Dinner', 'कैंडललाइट डिनर'), t('Ayurvedic Spa', 'आयुर्वेदिक स्पा')],
-      coverImage: coupleImg,
+      coverImage: frontdesk,
       links: '/contact?subject=Honeymoon Package Booking'
     },
     {
@@ -570,9 +561,9 @@ const Home = () => {
 
   const displayComboOffers = comboOffers.length > 0
     ? [
-        ...comboOffers,
-        ...defaultMockComboOffers.filter(mock => !comboOffers.some(real => real.title === mock.title))
-      ].slice(0, 3)
+      ...comboOffers,
+      ...defaultMockComboOffers.filter(mock => !comboOffers.some(real => real.title === mock.title))
+    ].slice(0, 3)
     : defaultMockComboOffers;
 
   const [exclusiveOffers, setExclusiveOffers] = useState([]);
@@ -839,9 +830,12 @@ const Home = () => {
 
           {/* Clip container for background image and overlays */}
           <div className="absolute inset-0 rounded-[48px] overflow-hidden z-0 pointer-events-none">
-            <img
-              src={bgImg}
-              alt="Luxury villa resort"
+            <video
+              src={mainVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
               className="absolute inset-0 w-full h-full object-cover object-bottom mix-blend-normal z-0"
             />
             {/* Subtle gradient overlay to protect text readability */}
@@ -1046,11 +1040,10 @@ const Home = () => {
               <button
                 key={idx}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-5 py-2.5 rounded-full font-black uppercase text-[9px] tracking-widest transition-all duration-300 whitespace-nowrap cursor-pointer border ${
-                  selectedCategory === cat
-                    ? 'bg-[#0F4C4C] text-white border-[#0F4C4C] shadow-md shadow-[#0F4C4C]/10'
-                    : 'bg-white text-gray-800 border-gray-150 hover:bg-teal-50/50 hover:border-teal-150'
-                }`}
+                className={`px-5 py-2.5 rounded-full font-black uppercase text-[9px] tracking-widest transition-all duration-300 whitespace-nowrap cursor-pointer border ${selectedCategory === cat
+                  ? 'bg-[#0F4C4C] text-white border-[#0F4C4C] shadow-md shadow-[#0F4C4C]/10'
+                  : 'bg-white text-gray-800 border-gray-150 hover:bg-teal-50/50 hover:border-teal-150'
+                  }`}
               >
                 {t(cat, cat)}
               </button>
@@ -1122,8 +1115,8 @@ const Home = () => {
             link: '#',
             isActive: true
           };
-          const displayBanners = activeBanners.length > 0 
-            ? activeBanners 
+          const displayBanners = activeBanners.length > 0
+            ? activeBanners
             : (banners.length > 0 ? [banners[0]] : [mockBanner]);
 
           return displayBanners.length === 1 ? (
@@ -1263,7 +1256,7 @@ const Home = () => {
               </div>
               <div className="relative aspect-[4/3] sm:aspect-[3/4] lg:aspect-[4/5] rounded-[32px] overflow-hidden shadow-lg border border-neutral-100">
                 <img
-                  src={coupleImg}
+                  src={frontdesk}
                   alt="Our Signature Experience"
                   className="w-full h-full object-cover"
                 />

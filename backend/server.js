@@ -11,7 +11,27 @@ const apiRoutes = require('./routes/api');
 const app = express();
 
 // Middleware
-app.use(cors({ origin: true, credentials: true }));
+const allowedOrigins = [
+  'https://dashboard.lakebreezeresorts.com',
+  'https://www.lakebreezeresorts.com',
+  'https://lakebreezeresorts.com',
+  'http://localhost:5173',
+  'http://localhost:6001',
+  'http://localhost:6002',
+  'http://localhost:6003',
+  'http://localhost:3000'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin) || origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  },
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Room = require('../models/Room');
 const Booking = require('../models/Booking');
 const { deleteFile } = require('../utils/fileHelper');
-const { deleteFromCloudinary, isCloudinaryUrl } = require('../utils/cloudinaryHelper');
 
 exports.createRoom = async (req, res) => {
     try {
@@ -83,8 +82,7 @@ exports.updateRoom = async (req, res) => {
             await Promise.all(removedImages.map(async (img) => {
                 const url = (img && typeof img === 'object') ? img.url : img;
                 if (url && typeof url === 'string') {
-                    if (isCloudinaryUrl(url)) await deleteFromCloudinary(url);
-                    else deleteFile(url);
+                    deleteFile(url);
                 }
             }));
         }
@@ -118,8 +116,7 @@ exports.deleteRoom = async (req, res) => {
             await Promise.all(room.images.map(async (img) => {
                 const url = (img && typeof img === 'object') ? img.url : img;
                 if (url && typeof url === 'string') {
-                    if (isCloudinaryUrl(url)) await deleteFromCloudinary(url);
-                    else deleteFile(url);
+                    deleteFile(url);
                 }
             }));
         }

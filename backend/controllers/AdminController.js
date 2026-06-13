@@ -10,7 +10,6 @@ const Offer = require('../models/Offer');
 const Category = require('../models/Category');
 const ComboOffer = require('../models/ComboOffer');
 const { deleteFile } = require('../utils/fileHelper');
-const { deleteFromCloudinary, isCloudinaryUrl } = require('../utils/cloudinaryHelper');
 
 // Enquiry Logic
 exports.createEnquiry = async (req, res) => {
@@ -99,16 +98,14 @@ exports.updateBlog = async (req, res) => {
 
         if (req.body.imageCleared === 'true') {
             if (blog.image) {
-                if (isCloudinaryUrl(blog.image)) await deleteFromCloudinary(blog.image);
-                else deleteFile(blog.image);
+                deleteFile(blog.image);
                 blog.image = '';
             }
         }
 
         if (req.file) {
             if (blog.image) {
-                if (isCloudinaryUrl(blog.image)) await deleteFromCloudinary(blog.image);
-                else deleteFile(blog.image);
+                deleteFile(blog.image);
             }
             blog.image = req.file.path.replace(/\\/g, '/');
         }
@@ -156,16 +153,14 @@ exports.updateTestimonial = async (req, res) => {
 
         if (req.body.imageCleared === 'true') {
             if (testimonial.image) {
-                if (isCloudinaryUrl(testimonial.image)) await deleteFromCloudinary(testimonial.image);
-                else deleteFile(testimonial.image);
+                deleteFile(testimonial.image);
                 testimonial.image = '';
             }
         }
 
         if (req.file) {
             if (testimonial.image) {
-                if (isCloudinaryUrl(testimonial.image)) await deleteFromCloudinary(testimonial.image);
-                else deleteFile(testimonial.image);
+                deleteFile(testimonial.image);
             }
             testimonial.image = req.file.path.replace(/\\/g, '/');
         }
@@ -200,8 +195,7 @@ exports.deleteGallery = async (req, res) => {
     try {
         const item = await Gallery.findById(req.params.id);
         if (item && item.image) {
-            if (isCloudinaryUrl(item.image)) await deleteFromCloudinary(item.image);
-            else deleteFile(item.image);
+            deleteFile(item.image);
         }
         await Gallery.findByIdAndDelete(req.params.id);
         res.json({ message: 'Item deleted' });
@@ -212,8 +206,7 @@ exports.deleteTestimonial = async (req, res) => {
     try {
         const item = await Testimonial.findById(req.params.id);
         if (item && item.image) {
-            if (isCloudinaryUrl(item.image)) await deleteFromCloudinary(item.image);
-            else deleteFile(item.image);
+            deleteFile(item.image);
         }
         await Testimonial.findByIdAndDelete(req.params.id);
         res.json({ message: 'Testimonial removed' });
@@ -304,12 +297,10 @@ exports.deleteFacility = async (req, res) => {
         const item = await Facility.findById(req.params.id);
         if (item) {
             if (item.image) {
-                if (isCloudinaryUrl(item.image)) await deleteFromCloudinary(item.image);
-                else deleteFile(item.image);
+                deleteFile(item.image);
             }
             if (item.coverImage) {
-                if (isCloudinaryUrl(item.coverImage)) await deleteFromCloudinary(item.coverImage);
-                else deleteFile(item.coverImage);
+                deleteFile(item.coverImage);
             }
         }
         await Facility.findByIdAndDelete(req.params.id);
@@ -321,8 +312,7 @@ exports.deleteBlog = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
         if (blog && blog.image) {
-            if (isCloudinaryUrl(blog.image)) await deleteFromCloudinary(blog.image);
-            else deleteFile(blog.image);
+            deleteFile(blog.image);
         }
         await Blog.findByIdAndDelete(req.params.id);
         res.json({ message: 'Blog deleted successfully' });
@@ -358,16 +348,14 @@ exports.updateBanner = async (req, res) => {
 
         if (req.body.imageCleared === 'true') {
             if (banner.image) {
-                if (isCloudinaryUrl(banner.image)) await deleteFromCloudinary(banner.image);
-                else deleteFile(banner.image);
+                deleteFile(banner.image);
                 banner.image = '';
             }
         }
 
         if (req.file) {
             if (banner.image) {
-                if (isCloudinaryUrl(banner.image)) await deleteFromCloudinary(banner.image);
-                else deleteFile(banner.image);
+                deleteFile(banner.image);
             }
             banner.image = req.file.path.replace(/\\/g, '/');
         }
@@ -382,8 +370,7 @@ exports.deleteBanner = async (req, res) => {
     try {
         const item = await Banner.findById(req.params.id);
         if (item && item.image) {
-            if (isCloudinaryUrl(item.image)) await deleteFromCloudinary(item.image);
-            else deleteFile(item.image);
+            deleteFile(item.image);
         }
         await Banner.findByIdAndDelete(req.params.id);
         res.json({ message: 'Banner removed' });
@@ -455,16 +442,14 @@ exports.updateCategory = async (req, res) => {
 
         if (req.body.imageCleared === 'true') {
             if (category.image) {
-                if (isCloudinaryUrl(category.image)) await deleteFromCloudinary(category.image);
-                else deleteFile(category.image);
+                deleteFile(category.image);
                 category.image = '';
             }
         }
 
         if (req.file) {
             if (category.image) {
-                if (isCloudinaryUrl(category.image)) await deleteFromCloudinary(category.image);
-                else deleteFile(category.image);
+                deleteFile(category.image);
             }
             category.image = req.file.path.replace(/\\/g, '/');
         }
@@ -479,8 +464,7 @@ exports.deleteCategory = async (req, res) => {
     try {
         const category = await Category.findById(req.params.id);
         if (category && category.image) {
-            if (isCloudinaryUrl(category.image)) await deleteFromCloudinary(category.image);
-            else deleteFile(category.image);
+            deleteFile(category.image);
         }
         await Category.findByIdAndDelete(req.params.id);
         res.json({ message: 'Category removed' });
@@ -532,16 +516,14 @@ exports.updateComboOffer = async (req, res) => {
 
         if (req.body.coverImageCleared === 'true') {
             if (comboOffer.coverImage) {
-                if (isCloudinaryUrl(comboOffer.coverImage)) await deleteFromCloudinary(comboOffer.coverImage);
-                else deleteFile(comboOffer.coverImage);
+                deleteFile(comboOffer.coverImage);
                 comboOffer.coverImage = '';
             }
         }
 
         if (req.file) {
             if (comboOffer.coverImage) {
-                if (isCloudinaryUrl(comboOffer.coverImage)) await deleteFromCloudinary(comboOffer.coverImage);
-                else deleteFile(comboOffer.coverImage);
+                deleteFile(comboOffer.coverImage);
             }
             comboOffer.coverImage = req.file.path.replace(/\\/g, '/');
         }
@@ -566,8 +548,7 @@ exports.deleteComboOffer = async (req, res) => {
     try {
         const comboOffer = await ComboOffer.findById(req.params.id);
         if (comboOffer && comboOffer.coverImage) {
-            if (isCloudinaryUrl(comboOffer.coverImage)) await deleteFromCloudinary(comboOffer.coverImage);
-            else deleteFile(comboOffer.coverImage);
+            deleteFile(comboOffer.coverImage);
         }
         await ComboOffer.findByIdAndDelete(req.params.id);
         res.json({ message: 'Combo offer removed' });
