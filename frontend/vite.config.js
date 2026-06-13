@@ -18,6 +18,7 @@ export default defineConfig({
     ]
   },
   preview: {
+    port: 6001,
     allowedHosts: [
       'dashboard.lakebreezeresorts.com',
       'api.lakebreezeresorts.com',
