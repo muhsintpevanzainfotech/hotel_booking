@@ -24,6 +24,7 @@ router.get('/analytics', auth, statsCtrl.getDashboardAnalytics);
 // Notifications
 router.get('/notifications', auth, notificationCtrl.getNotifications);
 router.put('/notifications/read', auth, notificationCtrl.markAsRead);
+router.delete('/notifications', auth, notificationCtrl.deleteAll);
 router.delete('/notifications/:id', auth, notificationCtrl.deleteNotification);
 
 // User Management

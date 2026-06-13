@@ -16,7 +16,10 @@ import {
   markNotificationsReadSuccess,
   deleteNotificationRequest,
   deleteNotificationSuccess,
-  deleteNotificationFailure
+  deleteNotificationFailure,
+  clearAllNotificationsRequest,
+  clearAllNotificationsSuccess,
+  clearAllNotificationsFailure
 } from '../slices/notificationSlice';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://82.29.165.57:6003/api';
@@ -259,6 +262,24 @@ function* handleDeleteNotification(action) {
   }
 }
 
+function* handleClearAllNotifications() {
+  try {
+    const token = yield select(getToken);
+    const response = yield call(() => fetch(`${API_BASE}/notifications`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    }));
+    if (response.ok) {
+      yield put(clearAllNotificationsSuccess());
+    } else {
+      const data = yield response.json();
+      yield put(clearAllNotificationsFailure(data.message || 'Failed to clear notifications'));
+    }
+  } catch (e) {
+    yield put(clearAllNotificationsFailure(e.message));
+  }
+}
+
 // Watchers
 function* watchAuth() {
   yield takeEvery('auth/loginRequest', handleLogin);
@@ -286,6 +307,7 @@ function* watchNotifications() {
   yield takeEvery('notifications/fetchNotificationsRequest', handleFetchNotifications);
   yield takeEvery('notifications/markNotificationsReadRequest', handleMarkNotificationsRead);
   yield takeEvery('notifications/deleteNotificationRequest', handleDeleteNotification);
+  yield takeEvery('notifications/clearAllNotificationsRequest', handleClearAllNotifications);
 }
 
 export default function* rootSaga() {

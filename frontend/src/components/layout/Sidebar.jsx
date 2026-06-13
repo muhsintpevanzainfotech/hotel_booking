@@ -33,6 +33,17 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
   const activeTab = location.pathname.split('/')[1] || 'dashboard';
   const { user } = useSelector(state => state.auth);
+  const { list: notifications } = useSelector(state => state.notifications);
+
+  const getUnreadCountForTab = (itemId) => {
+    let type = '';
+    if (itemId === 'bookings') type = 'booking';
+    else if (itemId === 'enquiries') type = 'enquiry';
+    else if (itemId === 'contact_messages') type = 'contact';
+    
+    if (!type) return 0;
+    return notifications.filter(n => !n.isRead && n.type === type).length;
+  };
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutGrid, roles: ['super_admin', 'admin', 'manager'] },
@@ -121,14 +132,19 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 : "text-text-secondary hover:bg-bg-subtle hover:text-white"
             )}
           >
-            <item.icon
-              size={20}
-              strokeWidth={activeTab === item.id ? 2.5 : 2}
-              className={twMerge(
-                "shrink-0 transition-transform group-hover:scale-110",
-                activeTab === item.id ? "text-white" : "text-text-secondary group-hover:text-primary"
+            <div className="relative flex items-center justify-center shrink-0">
+              <item.icon
+                size={20}
+                strokeWidth={activeTab === item.id ? 2.5 : 2}
+                className={twMerge(
+                  "transition-transform group-hover:scale-110",
+                  activeTab === item.id ? "text-white" : "text-text-secondary group-hover:text-primary"
+                )}
+              />
+              {!isOpen && getUnreadCountForTab(item.id) > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-2 h-2 bg-rose-500 rounded-full border border-bg-deep animate-pulse" />
               )}
-            />
+            </div>
             <motion.span
               initial={false}
               animate={{
@@ -136,10 +152,19 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 width: isOpen ? 'auto' : 0,
                 marginLeft: isOpen ? 12 : 0
               }}
-              className="text-[14px] font-medium tracking-wide whitespace-nowrap overflow-hidden"
+              className="text-[14px] font-medium tracking-wide whitespace-nowrap overflow-hidden flex-1 text-left"
             >
               {item.label}
             </motion.span>
+            {isOpen && getUnreadCountForTab(item.id) > 0 && (
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="ml-auto px-1.5 py-0.5 text-[9px] font-black text-white bg-rose-500 rounded-full leading-none min-w-[16px] text-center shrink-0"
+              >
+                {getUnreadCountForTab(item.id)}
+              </motion.span>
+            )}
 
             {!isOpen && (
               <div className="absolute left-[80px] px-3 py-1.5 bg-card-luxury border border-border-subtle rounded-lg text-text-primary text-xs font-semibold opacity-0 group-hover:opacity-100 pointer-events-none transition-all shadow-xl z-50 whitespace-nowrap">

@@ -7,7 +7,8 @@ import { twMerge } from 'tailwind-merge';
 import { 
   fetchNotificationsRequest, 
   markNotificationsReadRequest,
-  deleteNotificationRequest 
+  deleteNotificationRequest,
+  clearAllNotificationsRequest
 } from '../../redux/slices/notificationSlice';
 import { logout } from '../../redux/slices/authSlice';
 
@@ -70,6 +71,10 @@ const Navbar = ({ toggleSidebar, isOpen }) => {
     if (unreadCount > 0) {
       dispatch(markNotificationsReadRequest());
     }
+  };
+
+  const handleClearAll = () => {
+    dispatch(clearAllNotificationsRequest());
   };
 
   const handleNotificationClick = (n) => {
@@ -221,7 +226,7 @@ const Navbar = ({ toggleSidebar, isOpen }) => {
             {notifications.length > 0 && (
                 <div className="p-3 text-center bg-bg-subtle border-t border-border-subtle">
                   <button 
-                    onClick={handleMarkAllRead}
+                    onClick={handleClearAll}
                     className="text-[11px] font-bold text-primary hover:text-accent transition-colors uppercase tracking-widest"
                   >
                     Clear All Alerts

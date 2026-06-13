@@ -9,6 +9,12 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-    port: 6001
+    port: 6001,
+    allowedHosts: [
+      'dashboard.lakebreezeresorts.com',
+      'api.lakebreezeresorts.com',
+      'lakebreezeresorts.com',
+      'www.lakebreezeresorts.com'
+    ]
   }
 })

@@ -2,21 +2,19 @@ const mongoose = require('mongoose');
 const Room = require('../models/Room');
 const Booking = require('../models/Booking');
 const { deleteFile } = require('../utils/fileHelper');
-const { uploadToCloudinary, deleteFromCloudinary, isCloudinaryUrl } = require('../utils/cloudinaryHelper');
+const { deleteFromCloudinary, isCloudinaryUrl } = require('../utils/cloudinaryHelper');
 
 exports.createRoom = async (req, res) => {
     try {
         const { name, description, price, amenities, quantity, type, capacity, imageCategories } = req.body;
         
         const categories = imageCategories ? (typeof imageCategories === 'string' ? JSON.parse(imageCategories) : imageCategories) : [];
-        const images = req.files ? await Promise.all(req.files.map(async (file, index) => {
-            const uploaded = await uploadToCloudinary(file.path, 'hotel_booking/rooms');
-            deleteFile(file.path);
+        const images = req.files ? req.files.map((file, index) => {
             return {
-                url: uploaded.url,
+                url: file.path.replace(/\\/g, '/'),
                 category: categories[index] || 'General'
             };
-        })) : [];
+        }) : [];
         
         const newRoom = new Room({
             name, 
@@ -95,14 +93,12 @@ exports.updateRoom = async (req, res) => {
         let newImages = [];
         if (req.files && req.files.length > 0) {
             const categories = imageCategories ? (typeof imageCategories === 'string' ? JSON.parse(imageCategories) : imageCategories) : [];
-            newImages = await Promise.all(req.files.map(async (file, index) => {
-                const uploaded = await uploadToCloudinary(file.path, 'hotel_booking/rooms');
-                deleteFile(file.path);
+            newImages = req.files.map((file, index) => {
                 return {
-                    url: uploaded.url,
+                    url: file.path.replace(/\\/g, '/'),
                     category: categories[index] || 'General'
                 };
-            }));
+            });
         }
 
         // Set the final images list

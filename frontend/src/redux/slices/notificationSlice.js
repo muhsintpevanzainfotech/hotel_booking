@@ -36,6 +36,17 @@ const notificationSlice = createSlice({
     deleteNotificationFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    },
+    clearAllNotificationsRequest: (state) => {
+      state.loading = true;
+    },
+    clearAllNotificationsSuccess: (state) => {
+      state.loading = false;
+      state.list = [];
+    },
+    clearAllNotificationsFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
@@ -48,7 +59,10 @@ export const {
   markNotificationsReadSuccess,
   deleteNotificationRequest,
   deleteNotificationSuccess,
-  deleteNotificationFailure
+  deleteNotificationFailure,
+  clearAllNotificationsRequest,
+  clearAllNotificationsSuccess,
+  clearAllNotificationsFailure
 } = notificationSlice.actions;
 
 export default notificationSlice.reducer;

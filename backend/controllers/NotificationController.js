@@ -34,3 +34,12 @@ exports.deleteNotification = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.deleteAll = async (req, res) => {
+    try {
+        await Notification.deleteMany({});
+        res.json({ message: 'All notifications deleted' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};

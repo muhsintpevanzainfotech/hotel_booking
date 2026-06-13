@@ -10,7 +10,7 @@ const Offer = require('../models/Offer');
 const Category = require('../models/Category');
 const ComboOffer = require('../models/ComboOffer');
 const { deleteFile } = require('../utils/fileHelper');
-const { uploadToCloudinary, deleteFromCloudinary, isCloudinaryUrl } = require('../utils/cloudinaryHelper');
+const { deleteFromCloudinary, isCloudinaryUrl } = require('../utils/cloudinaryHelper');
 
 // Enquiry Logic
 exports.createEnquiry = async (req, res) => {
@@ -62,9 +62,7 @@ exports.createBlog = async (req, res) => {
         let imageUrl = '';
 
         if (req.file) {
-            const uploaded = await uploadToCloudinary(req.file.path, 'hotel_booking/blogs');
-            imageUrl = uploaded.url;
-            deleteFile(req.file.path);
+            imageUrl = req.file.path.replace(/\\/g, '/');
         }
 
         const blog = new Blog({ ...req.body, slug, image: imageUrl });
@@ -112,9 +110,7 @@ exports.updateBlog = async (req, res) => {
                 if (isCloudinaryUrl(blog.image)) await deleteFromCloudinary(blog.image);
                 else deleteFile(blog.image);
             }
-            const uploaded = await uploadToCloudinary(req.file.path, 'hotel_booking/blogs');
-            blog.image = uploaded.url;
-            deleteFile(req.file.path);
+            blog.image = req.file.path.replace(/\\/g, '/');
         }
 
         Object.assign(blog, req.body);
@@ -132,9 +128,7 @@ exports.createTestimonial = async (req, res) => {
 
         let imageUrl = '';
         if (req.file) {
-            const uploaded = await uploadToCloudinary(req.file.path, 'hotel_booking/testimonials');
-            imageUrl = uploaded.url;
-            deleteFile(req.file.path);
+            imageUrl = req.file.path.replace(/\\/g, '/');
         }
 
         const testimonial = new Testimonial({
@@ -173,9 +167,7 @@ exports.updateTestimonial = async (req, res) => {
                 if (isCloudinaryUrl(testimonial.image)) await deleteFromCloudinary(testimonial.image);
                 else deleteFile(testimonial.image);
             }
-            const uploaded = await uploadToCloudinary(req.file.path, 'hotel_booking/testimonials');
-            testimonial.image = uploaded.url;
-            deleteFile(req.file.path);
+            testimonial.image = req.file.path.replace(/\\/g, '/');
         }
 
         Object.assign(testimonial, req.body);
@@ -188,11 +180,9 @@ exports.updateTestimonial = async (req, res) => {
 exports.uploadGallery = async (req, res) => {
     try {
         console.log('Gallery Upload Files:', req.files);
-        const images = await Promise.all(req.files.map(async (file) => {
-            const uploaded = await uploadToCloudinary(file.path, 'hotel_booking/gallery');
-            deleteFile(file.path);
-            return { image: uploaded.url };
-        }));
+        const images = req.files.map((file) => {
+            return { image: file.path.replace(/\\/g, '/') };
+        });
         const docs = await Gallery.insertMany(images);
         res.status(201).json(docs);
     } catch (error) { 
@@ -243,15 +233,11 @@ exports.createFacility = async (req, res) => {
         let coverImageUrl = '';
 
         if (req.files && req.files.image) {
-            const uploaded = await uploadToCloudinary(req.files.image[0].path, 'hotel_booking/facilities');
-            imageUrl = uploaded.url;
-            deleteFile(req.files.image[0].path);
+            imageUrl = req.files.image[0].path.replace(/\\/g, '/');
         }
 
         if (req.files && req.files.coverImage) {
-            const uploaded = await uploadToCloudinary(req.files.coverImage[0].path, 'hotel_booking/facilities');
-            coverImageUrl = uploaded.url;
-            deleteFile(req.files.coverImage[0].path);
+            coverImageUrl = req.files.coverImage[0].path.replace(/\\/g, '/');
         }
 
         const facility = new Facility({
@@ -292,18 +278,14 @@ exports.updateFacility = async (req, res) => {
                     if (isCloudinaryUrl(facility.image)) await deleteFromCloudinary(facility.image);
                     else deleteFile(facility.image);
                 }
-                const uploaded = await uploadToCloudinary(req.files.image[0].path, 'hotel_booking/facilities');
-                facility.image = uploaded.url;
-                deleteFile(req.files.image[0].path);
+                facility.image = req.files.image[0].path.replace(/\\/g, '/');
             }
             if (req.files.coverImage) {
                 if (facility.coverImage) {
                     if (isCloudinaryUrl(facility.coverImage)) await deleteFromCloudinary(facility.coverImage);
                     else deleteFile(facility.coverImage);
                 }
-                const uploaded = await uploadToCloudinary(req.files.coverImage[0].path, 'hotel_booking/facilities');
-                facility.coverImage = uploaded.url;
-                deleteFile(req.files.coverImage[0].path);
+                facility.coverImage = req.files.coverImage[0].path.replace(/\\/g, '/');
             }
         }
 
@@ -357,9 +339,7 @@ exports.createBanner = async (req, res) => {
     try {
         let imageUrl = '';
         if (req.file) {
-            const uploaded = await uploadToCloudinary(req.file.path, 'hotel_booking/banners');
-            imageUrl = uploaded.url;
-            deleteFile(req.file.path);
+            imageUrl = req.file.path.replace(/\\/g, '/');
         }
 
         const banner = new Banner({
@@ -389,9 +369,7 @@ exports.updateBanner = async (req, res) => {
                 if (isCloudinaryUrl(banner.image)) await deleteFromCloudinary(banner.image);
                 else deleteFile(banner.image);
             }
-            const uploaded = await uploadToCloudinary(req.file.path, 'hotel_booking/banners');
-            banner.image = uploaded.url;
-            deleteFile(req.file.path);
+            banner.image = req.file.path.replace(/\\/g, '/');
         }
 
         Object.assign(banner, req.body);
@@ -458,9 +436,7 @@ exports.createCategory = async (req, res) => {
     try {
         let imageUrl = '';
         if (req.file) {
-            const uploaded = await uploadToCloudinary(req.file.path, 'hotel_booking/categories');
-            imageUrl = uploaded.url;
-            deleteFile(req.file.path);
+            imageUrl = req.file.path.replace(/\\/g, '/');
         }
 
         const category = new Category({
@@ -490,9 +466,7 @@ exports.updateCategory = async (req, res) => {
                 if (isCloudinaryUrl(category.image)) await deleteFromCloudinary(category.image);
                 else deleteFile(category.image);
             }
-            const uploaded = await uploadToCloudinary(req.file.path, 'hotel_booking/categories');
-            category.image = uploaded.url;
-            deleteFile(req.file.path);
+            category.image = req.file.path.replace(/\\/g, '/');
         }
 
         Object.assign(category, req.body);
@@ -529,9 +503,7 @@ exports.createComboOffer = async (req, res) => {
     try {
         let imageUrl = '';
         if (req.file) {
-            const uploaded = await uploadToCloudinary(req.file.path, 'hotel_booking/combo_offers');
-            imageUrl = uploaded.url;
-            deleteFile(req.file.path);
+            imageUrl = req.file.path.replace(/\\/g, '/');
         }
 
         let includes = [];
@@ -571,9 +543,7 @@ exports.updateComboOffer = async (req, res) => {
                 if (isCloudinaryUrl(comboOffer.coverImage)) await deleteFromCloudinary(comboOffer.coverImage);
                 else deleteFile(comboOffer.coverImage);
             }
-            const uploaded = await uploadToCloudinary(req.file.path, 'hotel_booking/combo_offers');
-            comboOffer.coverImage = uploaded.url;
-            deleteFile(req.file.path);
+            comboOffer.coverImage = req.file.path.replace(/\\/g, '/');
         }
 
         if (req.body.includes) {
