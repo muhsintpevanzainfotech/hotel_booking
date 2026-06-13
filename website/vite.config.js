@@ -16,5 +16,13 @@ export default defineConfig({
       'lakebreezeresorts.com',
       'www.lakebreezeresorts.com'
     ]
+  },
+  preview: {
+    allowedHosts: [
+      'dashboard.lakebreezeresorts.com',
+      'api.lakebreezeresorts.com',
+      'lakebreezeresorts.com',
+      'www.lakebreezeresorts.com'
+    ]
   }
 })
