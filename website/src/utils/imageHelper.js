@@ -9,6 +9,7 @@ export const getImageUrl = (url) => {
   ) {
     return url;
   }
-  const serverBase = import.meta.env.VITE_SERVER_URL || '';
+  let serverBase = import.meta.env.VITE_SERVER_URL || '';
+  serverBase = serverBase.replace(/\/api\/?$/, '');
   return `${serverBase}/${url}`;
 };

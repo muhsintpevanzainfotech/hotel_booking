@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "generate-sitemap": "node scripts/generateSitemap.js"
+    "generate-sitemap": "node scripts/generateSitemap.js",
+    "query-db": "node query-facilities.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
