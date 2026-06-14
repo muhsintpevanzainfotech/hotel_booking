@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 
 const Preloader = ({ onFinish }) => {
+  const location = useLocation();
   const [isVisible, setIsVisible] = useState(true);
+
+  if (location.pathname === '/') {
+    return null;
+  }
+
 
   useEffect(() => {
     // Initial scroll lock

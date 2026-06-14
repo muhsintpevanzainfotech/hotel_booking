@@ -24,7 +24,14 @@ const Contact = () => {
   );
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+    if (name === 'name') {
+      value = value.replace(/\b\w/g, char => char.toUpperCase());
+    } else if (name === 'message' || name === 'subject') {
+      if (value.length > 0) {
+        value = value.charAt(0).toUpperCase() + value.slice(1);
+      }
+    }
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 

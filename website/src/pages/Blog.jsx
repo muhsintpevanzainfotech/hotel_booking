@@ -69,60 +69,7 @@ const Blog = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Mock Blog Posts
-  const initialPosts = [
-    {
-      id: 1,
-      slug: 'ultimate-guide-to-hassle-free-hotel-booking',
-      type: 'standard',
-      image: masterbedroomImg,
-      author: 'Robert Fox',
-      date: 'Sep 09, 2026',
-      title: 'The Ultimate Guide to Hassle Free Hotel Booking',
-      description: 'Lorem ipsum dolor sit amet consectetur. Felis velit congue ac aliquam nunc vulputate id. Morbi rutrum aliquet nec malesuada commodo turpis. Integer semper adipiscing nunc eu tempor. Faucibus platea id rhoncus sem varius dui nibh tortor dui amet.',
-      category: 'Hotel Booking',
-      tags: ['Hotel', 'Booking', 'Vacation']
-    },
-    {
-      id: 2,
-      slug: 'top-10-tips-to-find-perfect-hotel',
-      type: 'slider',
-      images: [
-        familyroomImg,
-        roomImg,
-        roomsImg
-      ],
-      author: 'Robert Fox',
-      date: 'Sep 12, 2026',
-      title: 'Top 10 Tips to Find the Perfect Hotel for Your Next Trip',
-      description: 'Lorem ipsum dolor sit amet consectetur. Felis velit congue ac aliquam nunc vulputate id. Morbi rutrum aliquet nec malesuada commodo turpis. Integer semper adipiscing nunc eu tempor. Faucibus platea id rhoncus sem varius dui nibh tortor dui amet.',
-      category: 'Holiday',
-      tags: ['Hotel', 'Trip', 'Planning']
-    },
-    {
-      id: 3,
-      slug: 'wonderful-17-places-in-paris',
-      type: 'video',
-      image: bathroomImg,
-      videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // Placeholder video
-      author: 'Robert Fox',
-      date: 'Sep 18, 2026',
-      title: 'Wonderful 17 places you cannot ignore in Paris',
-      description: 'Lorem ipsum dolor sit amet consectetur. Felis velit congue ac aliquam nunc vulputate id. Morbi rutrum aliquet nec malesuada commodo turpis. Integer semper adipiscing nunc eu tempor. Faucibus platea id rhoncus sem varius dui nibh tortor dui amet.',
-      category: 'Destination',
-      tags: ['Destination', 'Beautiful', 'Road Trip']
-    },
-    {
-      id: 4,
-      slug: 'offers-exclusive-services-and-facilities',
-      type: 'standard',
-      image: sitoutImg,
-      author: 'Robert Fox',
-      date: 'Sep 23, 2026',
-      title: 'Offers Exclusive Services & Facilities to Guests'
-    }
-  ];
-
+  // Sidebar Mock Data
   // Sidebar Mock Data
   const displayPosts = dbPosts;
 

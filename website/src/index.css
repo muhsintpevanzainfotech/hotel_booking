@@ -429,3 +429,55 @@ html {
   display: block;
   width: 100%;
 }
+
+/* Cinematic Loading Animations */
+body.loading-cinematic {
+  overflow: hidden !important;
+}
+
+body.loading-cinematic nav,
+body.loading-cinematic footer,
+body.loading-cinematic .fixed,
+body.loading-cinematic #chatbot-trigger,
+body.loading-cinematic .chatbot-container {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(-10px);
+}
+
+/* Smooth transition for when the cinematic lock is released */
+nav, footer, .fixed {
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+/* Base styling for center energy line sequence */
+.energy-line-vertical {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: linear-gradient(to top, rgba(212, 175, 55, 0.1), #ffffff, #d4af37, #ffffff);
+  box-shadow: 0 0 15px 3px rgba(212, 175, 55, 0.8), 0 0 25px 6px rgba(255, 255, 255, 0.6);
+  z-index: 9999;
+  transform: translateX(-50%);
+  transform-origin: bottom center;
+}
+
+.energy-line-horizontal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  height: 2px;
+  background: linear-gradient(to right, rgba(212, 175, 55, 0.1), #ffffff, #d4af37, #ffffff, rgba(212, 175, 55, 0.1));
+  box-shadow: 0 0 15px 3px rgba(212, 175, 55, 0.8), 0 0 25px 6px rgba(255, 255, 255, 0.6);
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transform-origin: center center;
+}
+
+/* Gold glow details for the expanding reveal frame */
+.cinematic-glow-frame {
+  box-shadow: 0 0 50px rgba(212, 175, 55, 0.2), inset 0 0 30px rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+

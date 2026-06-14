@@ -845,7 +845,7 @@ const ContactSelectForm = ({ onSubmit, roomPrice, checkIn, checkOut }) => {
           required
           placeholder="Jane Doe"
           value={form.guestName}
-          onChange={(e) => setForm(prev => ({ ...prev, guestName: e.target.value }))}
+          onChange={(e) => setForm(prev => ({ ...prev, guestName: e.target.value.replace(/\b\w/g, char => char.toUpperCase()) }))}
           className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 font-medium text-gray-800 outline-none focus:ring-1 focus:ring-[#0F4C4C]"
         />
       </div>
@@ -879,7 +879,7 @@ const ContactSelectForm = ({ onSubmit, roomPrice, checkIn, checkOut }) => {
           placeholder="Extra bed, late check-in, etc."
           rows="1.5"
           value={form.specialRequests}
-          onChange={(e) => setForm(prev => ({ ...prev, specialRequests: e.target.value }))}
+          onChange={(e) => setForm(prev => ({ ...prev, specialRequests: e.target.value.length > 0 ? e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1) : '' }))}
           className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 font-medium text-gray-800 outline-none focus:ring-1 focus:ring-[#0F4C4C] resize-none"
         />
       </div>
@@ -955,7 +955,7 @@ const EnquiryForm = ({ onSubmit }) => {
             required
             placeholder="John Doe"
             value={form.name}
-            onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
+            onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value.replace(/\b\w/g, char => char.toUpperCase()) }))}
             className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 font-medium text-gray-800 outline-none focus:ring-1 focus:ring-[#0F4C4C]"
           />
         </div>
@@ -978,7 +978,7 @@ const EnquiryForm = ({ onSubmit }) => {
           placeholder="How can we help you plan your stay?"
           rows="3"
           value={form.message}
-          onChange={(e) => setForm(prev => ({ ...prev, message: e.target.value }))}
+          onChange={(e) => setForm(prev => ({ ...prev, message: e.target.value.length > 0 ? e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1) : '' }))}
           className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 font-medium text-gray-800 outline-none focus:ring-1 focus:ring-[#0F4C4C] resize-none"
         />
       </div>

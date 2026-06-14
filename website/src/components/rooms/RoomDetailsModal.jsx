@@ -83,7 +83,14 @@ const RoomDetailsModal = ({ isOpen, onClose, room, onBookNow }) => {
     };
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        let { name, value } = e.target;
+        if (name === 'guestName') {
+            value = value.replace(/\b\w/g, char => char.toUpperCase());
+        } else if (name === 'specialRequests') {
+            if (value.length > 0) {
+                value = value.charAt(0).toUpperCase() + value.slice(1);
+            }
+        }
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 

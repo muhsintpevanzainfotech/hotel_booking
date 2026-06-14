@@ -50,10 +50,8 @@ const Gallery = () => {
     setDisplayLimit(prev => prev + 6);
   };
 
-  const fallbackImages = [masterbedroom2Img, masterImg, maeterImg, familyImg, roomsImg, bathroomImg, familyroomImg, masterbedroomImg, roomImg];
-
-  const displayItems = items.length > 0 ? items.slice(0, displayLimit) : fallbackImages.slice(0, displayLimit);
-  const hasMore = items.length > displayLimit || (items.length === 0 && fallbackImages.length > displayLimit);
+  const displayItems = items.slice(0, displayLimit);
+  const hasMore = items.length > displayLimit;
 
   return (
     <div className="bg-[#F8FAFA] min-h-screen">
@@ -97,32 +95,40 @@ const Gallery = () => {
           </div>
         ) : (
           <div className="space-y-16">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {displayItems.map((item, i) => {
-                const isString = typeof item === 'string';
-                const imgSrc = isString ? item : getImageUrl(item.image);
-                
-                return (
-                  <motion.div 
-                    key={isString ? i : item._id} 
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: (i % 3) * 0.1 }}
-                    className="group relative overflow-hidden rounded-[32px] shadow-xl border border-white aspect-square"
-                  >
-                    <img 
-                      src={imgSrc} 
-                      alt="Gallery" 
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                    />
-                    <div className="absolute inset-0 bg-primary/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-8">
-                       <div className="p-4 bg-white/20 rounded-full text-white border border-white/40"><Search size={24} /></div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
+            {displayItems.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {displayItems.map((item, i) => {
+                  const isString = typeof item === 'string';
+                  const imgSrc = isString ? item : getImageUrl(item.image);
+                  
+                  return (
+                    <motion.div 
+                      key={isString ? i : item._id} 
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: (i % 3) * 0.1 }}
+                      className="group relative overflow-hidden rounded-[32px] shadow-xl border border-white aspect-square"
+                    >
+                      <img 
+                        src={imgSrc} 
+                        alt="Gallery" 
+                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                      />
+                      <div className="absolute inset-0 bg-primary/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-8">
+                         <div className="p-4 bg-white/20 rounded-full text-white border border-white/40"><Search size={24} /></div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-20 bg-white rounded-[40px] border border-gray-100 shadow-sm max-w-full">
+                <p className="text-gray-400 text-sm font-semibold uppercase tracking-[0.2em]">
+                  {t('No gallery images available', 'कोई गैलरी चित्र उपलब्ध नहीं हैं')}
+                </p>
+              </div>
+            )}
 
             {hasMore && (
               <div className="flex justify-center">
