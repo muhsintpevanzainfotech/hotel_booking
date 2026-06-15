@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRoomsRequest } from '../redux/slices/roomSlice';
 import { Link, useNavigate } from 'react-router-dom';
-import { Star, Heart, MapPin, Waves, Users, Zap, Shield, Check, Phone, MessageCircle, Home as HomeIcon, Layout, CreditCard, Sparkles, Coffee, Utensils, Wifi, Wind, Car, Camera, Quote, CalendarDays, Bed, User, Baby, Key, ArrowRight, Flag, Play, Pause, Volume2, VolumeX, ChevronLeft, ChevronRight, Tag, Copy, Gift } from 'lucide-react';
+import { Star, Heart, MapPin, Waves, Users, Zap, Shield, Check, Phone, MessageCircle, Home as HomeIcon, Layout, CreditCard, Sparkles, Coffee, Utensils, Wifi, Wind, Car, Camera, Quote, CalendarDays, Bed, User, Baby, Key, ArrowRight, Flag, Play, Pause, Volume2, VolumeX, ChevronLeft, ChevronRight, Tag, Copy, Gift, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
 import { getImageUrl } from '../utils/imageHelper';
@@ -512,6 +512,70 @@ const PromotionalBannerCard = ({ banner, isHalfWidth, t }) => {
   );
 };
 
+const FacilityCard = ({ fac, index, t, onHeightChange }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const IconMap = {
+    pool: Waves, waves: Waves, wind: Wind, coffee: Coffee,
+    utensils: Utensils, dining: Utensils, wifi: Wifi,
+    car: Car, transport: Car, camera: Camera, photography: Camera,
+    map: MapPin, location: MapPin, sparkles: Sparkles,
+    bed: Bed, room: Bed, restaurant: Utensils,
+    tour: MapPin, guide: MapPin, flag: Flag
+  };
+  const IconComponent = IconMap[fac.icon?.toLowerCase()] || Sparkles;
+  
+  const descText = fac.description || fac.content || '';
+  const needsTruncation = descText.length > 120;
+  const displayText = isExpanded ? descText : (needsTruncation ? descText.slice(0, 115) + '...' : descText);
+
+  const toggleExpand = (e) => {
+    e.stopPropagation();
+    setIsExpanded(!isExpanded);
+    if (onHeightChange) {
+      setTimeout(onHeightChange, 100);
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.05 }}
+      className={`bg-white border border-neutral-100/80 rounded-3xl p-6 sm:p-8 flex flex-col justify-between w-full h-auto ${isExpanded ? 'lg:min-h-[240px] lg:h-auto' : 'lg:h-[240px]'} hover:shadow-[0_12px_30px_rgba(15,76,76,0.04)] hover:border-teal-500/20 transition-all duration-300 hover:-translate-y-0.5 group`}
+    >
+      <div className="flex flex-col space-y-4">
+        {/* Modern Premium Icon Box - Placed at Top */}
+        <div className="w-14 h-14 rounded-2xl bg-[#0F4C4C]/5 text-[#0F4C4C] flex items-center justify-center group-hover:bg-[#0F4C4C] group-hover:text-white transition-colors duration-300 shadow-sm shrink-0">
+          {fac.image ? (
+            <img src={getImageUrl(fac.image)} alt={fac.title} className="w-full h-full object-cover rounded-2xl" />
+          ) : (
+            <IconComponent size={24} strokeWidth={1.5} className="group-hover:scale-110 transition-transform duration-300" />
+          )}
+        </div>
+        
+        {/* Typography Hierarchy */}
+        <div className="space-y-1.5 flex-1">
+          <h4 className="text-lg font-bold text-neutral-800 tracking-tight leading-snug group-hover:text-teal-900 transition-colors">
+            {fac.title}
+          </h4>
+          <p className="text-[13px] md:text-sm font-medium text-neutral-500 leading-relaxed transition-all duration-300">
+            {displayText}
+            {needsTruncation && (
+              <button
+                onClick={toggleExpand}
+                className="text-[#0F4C4C] hover:text-teal-600 font-bold ml-1.5 focus:outline-none cursor-pointer underline text-[11px] uppercase tracking-wider inline-block"
+              >
+                {isExpanded ? t('Read Less', 'कम पढ़ें') : t('Read More', 'अधिक पढ़ें')}
+              </button>
+            )}
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 const Home = () => {
   const dispatch = useDispatch();
 
@@ -661,27 +725,51 @@ const Home = () => {
   const [facilities, setFacilities] = useState([]);
   const defaultFacilities = [
     {
-      title: t('Restaurants', 'रेस्तरां'),
-      description: t('The unique flavors will find in our restaurant will bring you one step closer to feeling like a local and homemade.', 'हमारे रेस्तरां में मिलने वाले अनोखे स्वाद आपको घरेलू और स्थानीय महसूस कराने के करीब लाएंगे।'),
-      icon: 'restaurant'
+      title: t('Infinity Pool', 'इन्फिनिटी पूल'),
+      description: t('Dive into luxury with our stunning infinity pool, offering breathtaking views of the backwaters.', 'हमारे शानदार इन्फिनिटी पूल के साथ विलासिता में गोता लगाएँ, जो बैकवाटर्स के लुभावने दृश्य प्रस्तुत करता है।'),
+      icon: 'pool'
     },
     {
-      title: t('24/7 Room Services', '24/7 कमरा सेवा'),
-      description: t('The unique flavors will find in our restaurant will bring you one step closer to feeling like a local and homemade.', 'हमारे रेस्तरां में मिलने वाले अनोखे स्वाद आपको घरेलू और स्थानीय महसूस कराने के करीब लाएंगे।'),
-      icon: 'bed'
+      title: t('Lakeside Dining', 'लेकसाइड डाइनिंग'),
+      description: t('Savor authentic Kerala cuisine and international dishes prepared by signature chefs at our lakefront restaurant.', 'हमारे लेकफ्रंट रेस्तरां में सिग्नेचर शेफ द्वारा तैयार प्रामाणिक केरल व्यंजन और अंतर्राष्ट्रीय व्यंजनों का स्वाद लें।'),
+      icon: 'utensils'
     },
     {
-      title: t('Breakfast', 'नाश्ता'),
-      description: t('The unique flavors will find in our restaurant will bring you one step closer to feeling like a local and homemade.', 'हमारे रेस्तरां में मिलने वाले अनोखे स्वाद आपको घरेलू और स्थानीय महसूस कराने के करीब लाएंगे।'),
-      icon: 'coffee'
+      title: t('Ayurvedic Spa', 'आयुर्वेदिक स्पा'),
+      description: t('Rejuvenate your body and soul with traditional Ayurvedic treatments and therapies from certified experts.', 'प्रमाणित विशेषज्ञों से पारंपरिक आयुर्वेदिक उपचार और थेरेपी के साथ अपने शरीर और आत्मा को तरोताजा करें।'),
+      icon: 'sparkles'
     },
     {
-      title: t('Tour Guide', 'यात्रा गाइड'),
-      description: t('The unique flavors will find in our restaurant will bring you one step closer to feeling like a local and homemade.', 'हमारे रेस्तरां में मिलने वाले अनोखे स्वाद आपको घरेलू और स्थानीय महसूस कराने के करीब लाएंगे।'),
-      icon: 'flag'
+      title: t('High-Speed WiFi', 'हाई-स्पीड वाईफाई'),
+      description: t('Stay seamlessly connected with complimentary high-speed internet access throughout the resort premises.', 'पूरे रिसॉर्ट परिसर में मानार्थ हाई-स्पीड इंटरनेट एक्सेस के साथ निर्बाध रूप से जुड़े रहें।'),
+      icon: 'wifi'
+    },
+    {
+      title: t('Travel Desk', 'यात्रा डेस्क'),
+      description: t('Explore Kumarakom with our curated local sightseeing tours, houseboat cruises, and transport arrangements.', 'हमारे क्यूरेटेड स्थानीय दर्शनीय स्थलों की यात्रा, हाउसबोट परिभ्रमण और परिवहन व्यवस्था के साथ कुमारकोम का अन्वेषण करें।'),
+      icon: 'car'
+    },
+    {
+      title: t('Photography Spot', 'फोटोग्राफी स्पॉट'),
+      description: t('Capture your unforgettable moments against the picturesque backdrop of our resort gardens and water canals.', 'हमारे रिसॉर्ट के बगीचों और पानी की नहरों की सुरम्य पृष्ठभूमि के साथ अपने अविस्मरणीय क्षणों को कैमरे में कैद करें।'),
+      icon: 'camera'
     }
   ];
-  const displayFacilities = facilities.length > 0 ? facilities : defaultFacilities;
+  const displayFacilities = [...facilities];
+  if (displayFacilities.length < 6) {
+    for (const def of defaultFacilities) {
+      if (displayFacilities.length >= 6) break;
+      const isDuplicate = displayFacilities.some(f => {
+        const fTitle = (typeof f.title === 'string' ? f.title : (f.title?.en || f.title?.hi || '')).trim().toLowerCase();
+        const defTitle = (typeof def.title === 'string' ? def.title : (def.title?.en || def.title?.hi || '')).trim().toLowerCase();
+        return fTitle === defTitle || fTitle.includes(defTitle) || defTitle.includes(fTitle);
+      });
+      if (!isDuplicate) {
+        displayFacilities.push(def);
+      }
+    }
+  }
+  const visibleFacilities = displayFacilities;
   const [testimonials, setTestimonials] = useState([]);
   const [galleryItems, setGalleryItems] = useState([]);
   const [banners, setBanners] = useState([]);
@@ -737,6 +825,43 @@ const Home = () => {
 
     fetchContent();
   }, [dispatch]);
+
+  const scrollContainerRef = useRef(null);
+  const [showArrow, setShowArrow] = useState(false);
+
+  const handleScroll = () => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const isDesktop = window.innerWidth >= 1024;
+    const isScrollable = container.scrollHeight > container.clientHeight;
+    const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 15;
+    setShowArrow(isDesktop && isScrollable && !isAtBottom);
+  };
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      handleScroll();
+      const resizeObserver = new ResizeObserver(() => {
+        handleScroll();
+      });
+      resizeObserver.observe(container);
+      const gridEl = container.firstElementChild;
+      if (gridEl) {
+        resizeObserver.observe(gridEl);
+      }
+      container.addEventListener('scroll', handleScroll);
+      window.addEventListener('resize', handleScroll);
+      const timer = setTimeout(handleScroll, 500);
+      return () => {
+        resizeObserver.disconnect();
+        container.removeEventListener('scroll', handleScroll);
+        window.removeEventListener('resize', handleScroll);
+        clearTimeout(timer);
+      };
+    }
+  }, [visibleFacilities]);
+
 
   const navigate = useNavigate();
 
@@ -1366,119 +1491,73 @@ const Home = () => {
           {/* 3. FACILITIES SECTION - SIGNATURE EXPERIENCE */ }
           <section id="facilities" className="bg-white py-20 overflow-hidden">
             <div className="max-w-[1400px] mx-auto px-6">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+              
+              {/* Header: Title, Description, and View All Link */}
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 lg:mb-16 gap-6">
+                <div className="space-y-3 max-w-2xl">
+                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-teal-600">
+                    {t('Exclusive Amenities', 'विशेष सुविधाएं')}
+                  </p>
+                  <h2 className="text-4xl lg:text-5xl font-black text-[#0F4C4C] tracking-tight leading-tight">
+                    {t('Our Signature Experience', 'हमारा हस्ताक्षर अनुभव')}
+                  </h2>
+                  <p className="text-sm font-medium text-neutral-500 leading-relaxed mt-2">
+                    {t(
+                      'We combine technology, trust, and personalized service to redefine the hotel booking experience. With transparent pricing, verified reviews, and exclusive deals.',
+                      'हम होटल बुकिंग के अनुभव को फिर से परिभाषित करने के लिए प्रौद्योगिकी, विश्वास और व्यक्तिगत सेवा को जोड़ते हैं। पारदर्शी मूल्य निर्धारण, सत्यापित समीक्षाओं और विशेष सौदों के साथ।'
+                    )}
+                  </p>
+                </div>
+                <div className="shrink-0 pb-1">
+                  <Link to="/facilities" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all w-fit inline-block">
+                    {t('View All Facilities', 'सभी सुविधाएं देखें')}
+                  </Link>
+                </div>
+              </div>
 
-                {/* Left Column: Title, Description, and Vertical Image (Sticky on Desktop) */}
-                <div className="lg:col-span-5 lg:sticky lg:top-28 flex flex-col justify-between space-y-8">
-                  <div className="space-y-4">
-                    <h2 className="text-4xl md:text-5xl font-black text-[#0F4C4C] tracking-tight leading-tight">
-                      {t('Our Signature Experience', 'हमारा हस्ताक्षर अनुभव')}
-                    </h2>
-                    <p className="text-sm font-medium text-neutral-500 leading-relaxed max-w-md">
-                      {t(
-                        'We combine technology, trust, and personalized service to redefine the hotel booking experience. With transparent pricing, verified reviews, and exclusive deals.',
-                        'हम होटल बुकिंग के अनुभव को फिर से परिभाषित करने के लिए प्रौद्योगिकी, विश्वास और व्यक्तिगत सेवा को जोड़ते हैं। पारदर्शी मूल्य निर्धारण, सत्यापित समीक्षाओं और विशेष सौदों के साथ।'
-                      )}
-                    </p>
-                  </div>
-                  <div className="relative aspect-[4/3] sm:aspect-[3/4] lg:aspect-[4/5] rounded-[32px] overflow-hidden shadow-lg border border-neutral-100">
+              <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch w-full relative">
+
+                {/* Left Column: Vertical Image (Aspect ratio determines layout height on desktop/mobile) */}
+                <div className="w-full lg:w-[35%] aspect-[4/3] sm:aspect-[3/4] lg:aspect-[4/5] shrink-0">
+                  <div className="relative w-full h-full rounded-[32px] overflow-hidden shadow-lg border border-neutral-100">
                     <img
                       src={frontdesk}
                       alt="Our Signature Experience"
-                      className="w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
                   </div>
                 </div>
 
-                {/* Right Column: Facilities Grid in a Rounded Container with Particular Height Scroll */}
-                <div className="lg:col-span-7">
-                  <div
-                    className="bg-neutral-50/50 border border-neutral-100 rounded-[40px] p-8 sm:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.02)] max-h-[600px] overflow-y-auto no-scrollbar"
-                    style={{ scrollBehavior: 'smooth' }}
-                  >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-y-12 gap-x-8 md:gap-x-12">
-                      {/* Left sub-column */}
-                      <div className="space-y-12 md:pr-8 md:border-r md:border-neutral-200/60">
-                        {displayFacilities.filter((_, i) => i % 2 === 0).map((fac, i) => {
-                          const IconMap = {
-                            pool: Waves, waves: Waves, wind: Wind, coffee: Coffee,
-                            utensils: Utensils, dining: Utensils, wifi: Wifi,
-                            car: Car, transport: Car, camera: Camera, photography: Camera,
-                            map: MapPin, location: MapPin, sparkles: Sparkles,
-                            bed: Bed, room: Bed, restaurant: Utensils,
-                            tour: MapPin, guide: MapPin, flag: Flag
-                          };
-                          const IconComponent = IconMap[fac.icon?.toLowerCase()] || Sparkles;
-                          return (
-                            <motion.div
-                              key={i}
-                              initial={{ opacity: 0, y: 20 }}
-                              whileInView={{ opacity: 1, y: 0 }}
-                              viewport={{ once: true }}
-                              transition={{ duration: 0.5, delay: i * 0.1 }}
-                              className="flex flex-col space-y-4 group"
-                            >
-                              <div className="w-16 h-16 rounded-[24px] bg-white border border-neutral-200/60 shadow-sm flex items-center justify-center text-[#0F4C4C] group-hover:scale-105 transition-transform duration-300">
-                                {fac.image ? (
-                                  <img src={getImageUrl(fac.image)} alt={fac.title} className="w-full h-full object-cover rounded-[24px]" />
-                                ) : (
-                                  <IconComponent size={26} strokeWidth={1.5} />
-                                )}
-                              </div>
-                              <div className="space-y-2">
-                                <h4 className="text-xl font-bold text-neutral-800 tracking-tight">
-                                  {fac.title}
-                                </h4>
-                                <p className="text-sm font-medium text-neutral-500 leading-relaxed">
-                                  {fac.description}
-                                </p>
-                              </div>
-                            </motion.div>
-                          );
-                        })}
-                      </div>
+                {/* Right Column: Facilities Grid (Height matched to image, scrollable if overflow) */}
+                <div className="w-full lg:w-[65%] shrink-0 lg:flex lg:flex-col">
+                  <div className="relative w-full lg:flex-1 lg:h-0 lg:min-h-full">
+                    {/* Top fade gradient overlay - only on desktop */}
+                    <div className="hidden lg:block absolute top-1.5 left-1.5 right-1.5 h-16 bg-gradient-to-b from-white via-white/80 to-transparent pointer-events-none z-10 rounded-t-[38px]" />
 
-                      {/* Right sub-column */}
-                      <div className="space-y-12 md:pl-4">
-                        {displayFacilities.filter((_, i) => i % 2 !== 0).map((fac, i) => {
-                          const IconMap = {
-                            pool: Waves, waves: Waves, wind: Wind, coffee: Coffee,
-                            utensils: Utensils, dining: Utensils, wifi: Wifi,
-                            car: Car, transport: Car, camera: Camera, photography: Camera,
-                            map: MapPin, location: MapPin, sparkles: Sparkles,
-                            bed: Bed, room: Bed, restaurant: Utensils,
-                            tour: MapPin, guide: MapPin, flag: Flag
-                          };
-                          const IconComponent = IconMap[fac.icon?.toLowerCase()] || Sparkles;
-                          return (
-                            <motion.div
-                              key={i}
-                              initial={{ opacity: 0, y: 20 }}
-                              whileInView={{ opacity: 1, y: 0 }}
-                              viewport={{ once: true }}
-                              transition={{ duration: 0.5, delay: i * 0.1 }}
-                              className="flex flex-col space-y-4 group"
-                            >
-                              <div className="w-16 h-16 rounded-[24px] bg-white border border-neutral-200/60 shadow-sm flex items-center justify-center text-[#0F4C4C] group-hover:scale-105 transition-transform duration-300">
-                                {fac.image ? (
-                                  <img src={getImageUrl(fac.image)} alt={fac.title} className="w-full h-full object-cover rounded-[24px]" />
-                                ) : (
-                                  <IconComponent size={26} strokeWidth={1.5} />
-                                )}
-                              </div>
-                              <div className="space-y-2">
-                                <h4 className="text-xl font-bold text-neutral-800 tracking-tight">
-                                  {fac.title}
-                                </h4>
-                                <p className="text-sm font-medium text-neutral-500 leading-relaxed">
-                                  {fac.description}
-                                </p>
-                              </div>
-                            </motion.div>
-                          );
-                        })}
+                    {/* Scrollable container with height matched to left column on desktop, auto-height on mobile */}
+                    <div
+                      ref={scrollContainerRef}
+                      onScroll={handleScroll}
+                      className="bg-neutral-50/40 border border-neutral-100/70 rounded-[40px] p-6 sm:p-8 md:p-10 transition-all duration-300 w-full h-auto overflow-visible lg:absolute lg:inset-0 lg:overflow-y-auto no-scrollbar scroll-smooth"
+                    >
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-stretch w-full">
+                        {visibleFacilities.map((fac, i) => (
+                          <FacilityCard key={i} fac={fac} index={i} t={t} onHeightChange={handleScroll} />
+                        ))}
                       </div>
                     </div>
+
+                    {/* Bottom fade gradient overlay - only on desktop */}
+                    <div className="hidden lg:block absolute bottom-1.5 left-1.5 right-1.5 h-16 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-10 rounded-b-[38px]" />
+
+                    {/* Bouncing down indicator arrow */}
+                    {showArrow && (
+                      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center animate-fade">
+                        <div className="bg-white/95 backdrop-blur-sm border border-neutral-100 shadow-md rounded-full p-2.5 flex items-center justify-center text-[#0F4C4C] animate-bounce">
+                          <ChevronDown size={18} className="stroke-[2.5]" />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 

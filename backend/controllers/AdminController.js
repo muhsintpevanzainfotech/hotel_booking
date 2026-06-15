@@ -173,8 +173,40 @@ exports.updateTestimonial = async (req, res) => {
 
 // Gallery
 exports.uploadGallery = async (req, res) => {
+    const fs = require('fs');
+    const path = require('path');
     try {
         console.log('Gallery Upload Files:', req.files);
+        
+        // Validate each file based on type
+        for (const file of req.files) {
+            const ext = path.extname(file.originalname).toLowerCase();
+            const isImage = ['.jpg', '.jpeg', '.png', '.webp'].includes(ext);
+            const isVideo = ['.mp4', '.mov', '.webm'].includes(ext);
+            
+            if (isImage && file.size > 5000000) {
+                // Cleanup files on disk
+                req.files.forEach(f => {
+                    if (fs.existsSync(f.path)) fs.unlinkSync(f.path);
+                });
+                return res.status(400).json({ message: `Image ${file.originalname} exceeds the 5MB size limit.` });
+            }
+            if (isVideo && file.size > 50000000) {
+                // Cleanup files on disk
+                req.files.forEach(f => {
+                    if (fs.existsSync(f.path)) fs.unlinkSync(f.path);
+                });
+                return res.status(400).json({ message: `Video ${file.originalname} exceeds the 50MB size limit.` });
+            }
+            if (!isImage && !isVideo) {
+                // Cleanup files on disk
+                req.files.forEach(f => {
+                    if (fs.existsSync(f.path)) fs.unlinkSync(f.path);
+                });
+                return res.status(400).json({ message: `File ${file.originalname} format is unsupported.` });
+            }
+        }
+
         const images = req.files.map((file) => {
             return { image: file.path.replace(/\\/g, '/') };
         });

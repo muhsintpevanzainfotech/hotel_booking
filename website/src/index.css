@@ -275,6 +275,32 @@ html {
   -ms-overflow-style: none;
 }
 
+/* Luxury Custom Scrollbar */
+.luxury-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.luxury-scrollbar::-webkit-scrollbar-track {
+  background: rgba(15, 76, 76, 0.03);
+  border-radius: 9999px;
+}
+
+.luxury-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(15, 76, 76, 0.2);
+  border-radius: 9999px;
+  transition: background 0.3s ease;
+}
+
+.luxury-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 76, 76, 0.45);
+}
+
+.luxury-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15, 76, 76, 0.2) rgba(15, 76, 76, 0.03);
+}
+
 /* Preloader 3D Styles */
 .preloader-container {
   position: fixed;

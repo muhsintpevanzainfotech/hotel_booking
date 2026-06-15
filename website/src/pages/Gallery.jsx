@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { motion } from 'framer-motion';
-import { Image as ImageIcon, Search } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Image as ImageIcon, Search, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../utils/imageHelper';
 import useSEO from '../hooks/useSEO';
@@ -22,7 +22,13 @@ const Gallery = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [displayLimit, setDisplayLimit] = useState(9);
+  const [lightboxItem, setLightboxItem] = useState(null);
   const { t } = useLanguage();
+
+  const isVideoFile = (url) => {
+    if (!url) return false;
+    return /\.(mp4|mov|webm)$/i.test(url);
+  };
 
   useSEO(
     t('Visual Gallery & Estate Views', 'चित्र दीर्घा', 'ചിത്രശാല'),
@@ -108,14 +114,27 @@ const Gallery = () => {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: (i % 3) * 0.1 }}
-                      className="group relative overflow-hidden rounded-[32px] shadow-xl border border-white aspect-square"
+                      onClick={() => setLightboxItem(imgSrc)}
+                      className="group relative overflow-hidden rounded-[32px] shadow-xl border border-white aspect-square cursor-zoom-in"
                     >
-                      <img 
-                        src={imgSrc} 
-                        alt="Gallery" 
-                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                      />
-                      <div className="absolute inset-0 bg-primary/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-8">
+                      {isVideoFile(imgSrc) ? (
+                        <video 
+                          src={imgSrc} 
+                          className="w-full h-full object-cover" 
+                          muted 
+                          loop 
+                          playsInline
+                          onMouseEnter={(e) => e.target.play().catch(() => {})}
+                          onMouseLeave={(e) => e.target.pause()}
+                        />
+                      ) : (
+                        <img 
+                          src={imgSrc} 
+                          alt="Gallery" 
+                          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-[#0F4C4C]/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-8">
                          <div className="p-4 bg-white/20 rounded-full text-white border border-white/40"><Search size={24} /></div>
                       </div>
                     </motion.div>
@@ -134,7 +153,7 @@ const Gallery = () => {
               <div className="flex justify-center">
                 <button 
                   onClick={handleLoadMore}
-                  className="px-10 py-4 bg-neutral-950 hover:bg-neutral-900 text-white rounded-full font-black uppercase text-[10px] tracking-widest shadow-xl transition-all duration-200 active:scale-95"
+                  className="px-10 py-4 bg-neutral-950 hover:bg-neutral-900 text-white rounded-full font-black uppercase text-[10px] tracking-widest shadow-xl transition-all duration-200 active:scale-95 cursor-pointer"
                 >
                   {t('View More Images', 'अधिक चित्र देखें', 'കൂടുതൽ ചിത്രങ്ങൾ')}
                 </button>
@@ -150,11 +169,57 @@ const Gallery = () => {
            <h2 className="text-3xl font-bold text-primary mb-4">{t('Follow Our Story', 'हमारी कहानी का अनुसरण करें')}</h2>
            <p className="text-gray-400 mb-8">{t('Tag us in your photos to be featured on our social wall.', 'विशेष रूप से प्रदर्शित होने के लिए अपनी तस्वीरों में हमें टैग करें।')}</p>
            <div className="flex justify-center gap-6">
-              <span className="text-xl font-black text-secondary">#LakeBreezeResorts</span>
-              <span className="text-xl font-black text-secondary">#KeralaBackwaters</span>
+              <span className="text-xl font-black text-[#B8860B]">#LakeBreezeResorts</span>
+              <span className="text-xl font-black text-[#B8860B]">#KeralaBackwaters</span>
            </div>
         </div>
       </section>
+
+      {/* Lightbox Modal */}
+      <AnimatePresence>
+        {lightboxItem && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLightboxItem(null)}
+            className="fixed inset-0 z-[2000] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 md:p-8 cursor-zoom-out"
+          >
+            <button
+              onClick={() => setLightboxItem(null)}
+              className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors cursor-pointer"
+              title="Close"
+            >
+              <X size={24} />
+            </button>
+            
+            <motion.div
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-5xl max-h-[85vh] w-full h-full flex items-center justify-center rounded-[32px] overflow-hidden"
+            >
+              {isVideoFile(lightboxItem) ? (
+                <video
+                  src={lightboxItem}
+                  className="max-w-full max-h-[85vh] object-contain rounded-2xl"
+                  controls
+                  autoPlay
+                  loop
+                  playsInline
+                />
+              ) : (
+                <img
+                  src={lightboxItem}
+                  alt="Fullscreen Preview"
+                  className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/10"
+                />
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

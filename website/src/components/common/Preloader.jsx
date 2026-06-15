@@ -1,24 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
 
 const Preloader = ({ onFinish }) => {
-  const location = useLocation();
-  const [isVisible, setIsVisible] = useState(true);
+  // Check if website has already preloaded in this session
+  const [shouldShow] = useState(() => {
+    try {
+      return !sessionStorage.getItem('hasPreloaded');
+    } catch (e) {
+      return true; // Fallback if sessionStorage is disabled or blocked
+    }
+  });
 
-  if (location.pathname === '/') {
-    return null;
-  }
-
+  const [isVisible, setIsVisible] = useState(shouldShow);
 
   useEffect(() => {
+    if (!shouldShow) return;
+
     // Initial scroll lock
     document.body.style.overflow = 'hidden';
 
+    let scrollTimer;
     const timer = setTimeout(() => {
       setIsVisible(false);
+      try {
+        sessionStorage.setItem('hasPreloaded', 'true');
+      } catch (e) {
+        console.warn('Failed to set sessionStorage flag', e);
+      }
+
       // Re-enable scroll after preloader finishes
-      setTimeout(() => {
+      scrollTimer = setTimeout(() => {
         document.body.style.overflow = 'unset';
         if (onFinish) onFinish();
       }, 1200); // Wait for exit animation
@@ -26,9 +37,14 @@ const Preloader = ({ onFinish }) => {
 
     return () => {
       clearTimeout(timer);
+      if (scrollTimer) clearTimeout(scrollTimer);
       document.body.style.overflow = 'unset';
     };
-  }, [onFinish]);
+  }, [shouldShow, onFinish]);
+
+  if (!shouldShow) {
+    return null;
+  }
 
   return (
     <AnimatePresence>

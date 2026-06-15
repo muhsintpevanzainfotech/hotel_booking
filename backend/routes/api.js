@@ -68,7 +68,9 @@ router.put('/contact', auth, checkRole(['super_admin']), adminCtrl.updateContact
 router.post('/blogs', auth, checkRole(['super_admin', 'admin']), upload.single('image'), adminCtrl.createBlog);
 router.patch('/blogs/:id', auth, checkRole(['super_admin', 'admin']), upload.single('image'), adminCtrl.updateBlog);
 router.delete('/blogs/:id', auth, checkRole(['super_admin', 'admin']), adminCtrl.deleteBlog);
-router.post('/gallery', auth, checkRole(['super_admin', 'admin']), upload.array('images', 10), adminCtrl.uploadGallery);
+const { galleryUpload } = upload;
+
+router.post('/gallery', auth, checkRole(['super_admin', 'admin']), galleryUpload.array('images', 10), adminCtrl.uploadGallery);
 router.delete('/gallery/:id', auth, checkRole(['super_admin', 'admin']), adminCtrl.deleteGallery);
 
 router.post('/testimonials', auth, checkRole(['super_admin', 'admin']), upload.single('image'), adminCtrl.createTestimonial);
