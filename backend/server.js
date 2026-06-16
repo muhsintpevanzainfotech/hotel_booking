@@ -13,8 +13,11 @@ const app = express();
 // Middleware
 const allowedOrigins = [
   'https://dashboard.lakebreezeresorts.com',
+  'http://dashboard.lakebreezeresorts.com',
   'https://www.lakebreezeresorts.com',
+  'http://www.lakebreezeresorts.com',
   'https://lakebreezeresorts.com',
+  'http://lakebreezeresorts.com',
   'http://localhost:5173',
   'http://localhost:6001',
   'http://localhost:6002',
