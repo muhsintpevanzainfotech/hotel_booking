@@ -233,7 +233,7 @@ const PriorityActionHub = ({ apiBase }) => {
                             </span>
                           </div>
                           <p className="text-[11px] text-text-secondary font-bold uppercase tracking-wider mt-0.5">
-                            {booking.room?.name || 'Reserved Suite'}
+                            {booking.room?.name || booking.room?.title || 'Reserved Suite'}
                           </p>
                           <p className="text-[11px] text-text-secondary mt-1 flex items-center gap-1 font-medium">
                             <Calendar size={12} className="text-primary" />

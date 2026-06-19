@@ -2,6 +2,7 @@
   "name": "frontend",
   "private": true,
   "version": "0.0.0",
+  "author": "Muhammed Muhsin TP <muhsintp.develop@gmail.com>",
   "type": "module",
   "scripts": {
     "dev": "vite",

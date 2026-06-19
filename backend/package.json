@@ -1,6 +1,7 @@
 {
   "name": "hotel-booking-backend",
   "version": "1.0.0",
+  "author": "Muhammed Muhsin TP <muhsintp.develop@gmail.com>",
   "description": "Backend API for Hotel Booking System",
   "main": "server.js",
   "scripts": {

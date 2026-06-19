@@ -185,6 +185,7 @@ const BookingModal = ({ isOpen, onClose, room }) => {
                                                             className="w-full pl-14 pr-6 py-4 md:py-5 bg-gray-50 border-none rounded-2xl text-sm font-bold text-[#0F4C4C] focus:ring-2 focus:ring-[#0F4C4C] transition-all outline-none"
                                                             placeholderText={t('Select Date', 'तिथि चुनें')}
                                                             minDate={new Date()}
+                                                            dateFormat="dd/MM/yyyy"
                                                             required
                                                         />
                                                     </div>
@@ -199,6 +200,7 @@ const BookingModal = ({ isOpen, onClose, room }) => {
                                                             className="w-full pl-14 pr-6 py-4 md:py-5 bg-gray-50 border-none rounded-2xl text-sm font-bold text-[#0F4C4C] focus:ring-2 focus:ring-[#0F4C4C] transition-all outline-none"
                                                             placeholderText={t('Select Date', 'तिथि चुनें')}
                                                             minDate={formData.checkIn || new Date()}
+                                                            dateFormat="dd/MM/yyyy"
                                                             required
                                                         />
                                                     </div>

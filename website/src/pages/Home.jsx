@@ -253,13 +253,13 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
           </div>
 
           {/* Row 4: Card Actions */}
-          <div className="pt-3 border-t border-gray-100 flex flex-col sm:flex-row gap-3 justify-center items-center w-full">
+          <div className="pt-6 border-t border-gray-100 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center w-full">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onViewClick(room);
               }}
-              className="w-full sm:w-[130px] h-10 rounded-full bg-white border border-slate-200 text-slate-700 hover:text-[#C5A880] hover:border-[#C5A880] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+              className="w-full sm:w-[140px] h-11 rounded-full bg-white border border-slate-200 text-slate-700 hover:text-[#C5A880] hover:border-[#C5A880] font-semibold uppercase text-[9px] tracking-wider hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
             >
               {t('View Details', 'विवरण देखें')}
             </button>
@@ -268,7 +268,7 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
                 e.stopPropagation();
                 onBookClick(room);
               }}
-              className="w-full sm:w-[130px] h-10 rounded-full bg-white border border-[#0F4C4C]/40 text-[#0F4C4C] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md hover:bg-[#C5A880] hover:text-white hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+              className="w-full sm:w-[140px] h-11 rounded-full bg-white border border-[#0F4C4C]/40 text-[#0F4C4C] font-semibold uppercase text-[9px] tracking-wider hover:-translate-y-0.5 hover:shadow-md hover:bg-[#C5A880] hover:text-white hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
             >
               {t('Book Now', 'अभी बुक करें')}
             </button>
@@ -342,34 +342,38 @@ const PricingComboCard = ({ combo, isFeatured, onBookClick, onViewClick, t }) =>
             {combo.description}
           </p>
         </div>
-      </div>
 
-      <div>
-        {/* Actions */}
-        <div className="mt-6 pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-3 justify-center items-center w-full">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onViewClick(combo);
-            }}
-            className="w-full sm:w-[130px] h-10 rounded-full bg-white border border-slate-200 text-slate-700 hover:text-[#C5A880] hover:border-[#C5A880] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
-          >
-            {t('View Details', 'विवरण देखें')}
-          </button>
+        {/* Actions (Placed between description and checklist) */}
+        <div className="mt-6 flex flex-col items-center gap-3 w-full">
           <button
             onClick={(e) => {
               e.stopPropagation();
               onBookClick(combo);
             }}
-            className="w-full sm:w-[130px] h-10 rounded-full bg-white border border-[#0F4C4C]/40 text-[#0F4C4C] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md hover:bg-[#C5A880] hover:text-white hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+            className={`w-full h-12 rounded-full font-black uppercase text-[10px] tracking-[0.2em] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md cursor-pointer flex items-center justify-center ${
+              isFeatured 
+                ? 'bg-[#A3E635] text-neutral-900 hover:bg-[#92cf2e] shadow-sm' 
+                : 'bg-[#0F4C4C] text-white hover:bg-[#093030] shadow-sm'
+            }`}
           >
-            {t('Book Package', 'पैकेज बुक करें')}
+            {t('Book Package Now', 'पैकेज अभी बुक करें', 'ഇപ്പോൾ ബുക്ക് ചെയ്യുക')}
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewClick(combo);
+            }}
+            className="text-[9px] font-black uppercase tracking-[0.2em] text-neutral-400 hover:text-[#0F4C4C] transition-colors pb-0.5 border-b border-transparent hover:border-[#0F4C4C] cursor-pointer mt-1"
+          >
+            {t('View Details', 'विवरण देखें')}
           </button>
         </div>
+      </div>
 
-        {/* Checklist */}
+      <div>
+        {/* Checklist (Placed at the bottom) */}
         {combo.includes && combo.includes.length > 0 && (
-          <div className="mt-6 pt-6 border-t border-neutral-100 space-y-3">
+          <div className="mt-6 space-y-3">
             {combo.includes.slice(0, 4).map((inc, idx) => (
               <div key={idx} className="flex items-center gap-3">
                 <Check size={14} className="text-teal-600 shrink-0" />
@@ -464,13 +468,13 @@ const ComboOfferCard = ({ combo, index, onBookClick, onViewClick, t }) => {
           )}
 
           {/* Card Actions */}
-          <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row gap-3 justify-center items-center w-full">
+          <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center w-full">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onViewClick(combo);
               }}
-              className="w-full sm:w-[130px] h-10 rounded-full bg-white/10 border border-white/20 text-white hover:text-[#C5A880] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+              className="w-full sm:w-[140px] h-11 rounded-full bg-white/10 border border-white/20 text-white hover:text-[#C5A880] font-semibold uppercase text-[9px] tracking-wider hover:-translate-y-0.5 hover:shadow-md hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
             >
               {t('View Details', 'विवरण देखें')}
             </button>
@@ -479,9 +483,9 @@ const ComboOfferCard = ({ combo, index, onBookClick, onViewClick, t }) => {
                 e.stopPropagation();
                 onBookClick(combo);
               }}
-              className="w-full sm:w-[130px] h-10 rounded-full bg-white border border-white text-[#0F4C4C] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md hover:bg-[#C5A880] hover:text-white hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+              className="w-full sm:w-[140px] h-11 rounded-full bg-white border border-white text-[#0F4C4C] font-semibold uppercase text-[9px] tracking-wider hover:-translate-y-0.5 hover:shadow-md hover:bg-[#C5A880] hover:text-white hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
             >
-              {t('Book Package', 'पैकेज बुक करें')}
+              {t('Book Now', 'अभी बुक करें', 'ഇപ്പോൾ ബുക്ക് ചെയ്യുക')}
             </button>
           </div>
         </div>

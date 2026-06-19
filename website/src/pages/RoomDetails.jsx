@@ -475,6 +475,7 @@ const RoomDetails = () => {
                                                         className="w-full pl-12 pr-4 py-3 bg-[#F8FAFA] border border-gray-100 rounded-2xl text-xs font-bold text-[#0F4C4C] focus:ring-2 focus:ring-[#0F4C4C] transition-all outline-none"
                                                         placeholderText={t('Select Date', 'तिथि चुनें')}
                                                         minDate={new Date()}
+                                                        dateFormat="dd/MM/yyyy"
                                                         required
                                                     />
                                                 </div>
@@ -489,6 +490,7 @@ const RoomDetails = () => {
                                                         className="w-full pl-12 pr-4 py-3 bg-[#F8FAFA] border border-gray-100 rounded-2xl text-xs font-bold text-[#0F4C4C] focus:ring-2 focus:ring-[#0F4C4C] transition-all outline-none"
                                                         placeholderText={t('Select Date', 'तिथि चुनें')}
                                                         minDate={formData.checkIn || new Date()}
+                                                        dateFormat="dd/MM/yyyy"
                                                         required
                                                     />
                                                 </div>

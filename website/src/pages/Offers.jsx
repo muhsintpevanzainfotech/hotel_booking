@@ -289,13 +289,13 @@ const Offers = () => {
                       </div>
 
                       {/* Book & View Details Buttons */}
-                      <div className="mt-6 pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-3 justify-center items-center w-full">
+                      <div className="mt-6 pt-6 border-t border-gray-100 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center w-full">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate(`/packages/${slug}`);
                           }}
-                          className="w-full sm:w-[130px] h-10 rounded-full bg-white border border-slate-200 text-slate-700 hover:text-[#C5A880] hover:border-[#C5A880] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+                          className="w-full sm:w-[140px] h-11 rounded-full bg-white border border-slate-200 text-slate-700 hover:text-[#C5A880] hover:border-[#C5A880] font-semibold uppercase text-[9px] tracking-wider hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
                         >
                           {t('View Details', 'विवरण देखें')}
                         </button>
@@ -304,9 +304,9 @@ const Offers = () => {
                             e.stopPropagation();
                             navigate(`/packages/${slug}`);
                           }}
-                          className="w-full sm:w-[130px] h-10 rounded-full bg-white border border-[#0F4C4C]/40 text-[#0F4C4C] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md hover:bg-[#C5A880] hover:text-white hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+                          className="w-full sm:w-[140px] h-11 rounded-full bg-white border border-[#0F4C4C]/40 text-[#0F4C4C] font-semibold uppercase text-[9px] tracking-wider hover:-translate-y-0.5 hover:shadow-md hover:bg-[#C5A880] hover:text-white hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
                         >
-                          {t('Book Package', 'पैकेज बुक करें')}
+                          {t('Book Now', 'अभी बुक करें', 'ഇപ്പോൾ ബുക്ക് ചെയ്യുക')}
                         </button>
                       </div>
                     </div>

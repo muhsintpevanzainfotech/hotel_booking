@@ -360,8 +360,14 @@ const Chatbot = () => {
       if (res.ok && data) {
         setFlowState({ type: 'idle', step: 0, data: {} });
         
-        const checkInFormatted = new Date(data.checkIn).toLocaleDateString();
-        const checkOutFormatted = new Date(data.checkOut).toLocaleDateString();
+        const formatHelper = (d) => {
+          if (!d) return '';
+          const date = new Date(d);
+          if (isNaN(date.getTime())) return '';
+          return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+        };
+        const checkInFormatted = formatHelper(data.checkIn);
+        const checkOutFormatted = formatHelper(data.checkOut);
 
         const statusHTML = (
           <div className="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm text-xs space-y-3 font-poppins mt-2">
@@ -378,7 +384,7 @@ const Chatbot = () => {
               <div>Reference:</div>
               <div className="font-bold text-gray-900 text-right">{data.bookingReference}</div>
               <div>Room:</div>
-              <div className="font-bold text-gray-900 text-right">{data.room?.name || 'Sanctuary'}</div>
+              <div className="font-bold text-gray-900 text-right">{data.room?.name || data.room?.title || 'Sanctuary'}</div>
               <div>Guest Name:</div>
               <div className="font-bold text-gray-900 text-right">{data.guestName}</div>
               <div>Check-in:</div>

@@ -7,6 +7,13 @@ import { useLanguage } from '../context/LanguageContext';
 import useSEO from '../hooks/useSEO';
 import sitoutImg from '../assets/images/sitout.jpeg';
 
+const formatDate = (dateInput) => {
+    if (!dateInput) return '';
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) return '';
+    return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+};
+
 const BookingStatus = () => {
     const [reference, setReference] = useState('');
     const [booking, setBooking] = useState(null);
@@ -51,7 +58,7 @@ const BookingStatus = () => {
 
         setLoading(true);
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_BASE}/bookings/reference/${reference}`);
+            const res = await fetch(`${import.meta.env.VITE_API_BASE}/bookings/reference/${reference.toUpperCase()}`);
             const data = await res.json();
             if (res.ok) {
                 setBooking(data);
@@ -166,21 +173,21 @@ const BookingStatus = () => {
                                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('Check-In', 'चेक-इन')}</p>
                                             <div className="flex items-center gap-3 text-primary font-bold">
                                                 <Calendar size={16} className="text-secondary" />
-                                                <p className="text-lg">{new Date(booking.checkIn).toLocaleDateString()}</p>
+                                                <p className="text-lg">{formatDate(booking.checkIn)}</p>
                                             </div>
                                         </div>
                                         <div className="space-y-2">
                                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('Check-Out', 'चेक-आउट')}</p>
                                             <div className="flex items-center gap-3 text-primary font-bold">
                                                 <Calendar size={16} className="text-secondary" />
-                                                <p className="text-lg">{new Date(booking.checkOut).toLocaleDateString()}</p>
+                                                <p className="text-lg">{formatDate(booking.checkOut)}</p>
                                             </div>
                                         </div>
                                         <div className="space-y-2">
                                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('Accommodation', 'आवास')}</p>
                                             <div className="flex items-center gap-3 text-primary font-bold">
                                                 <MapPin size={16} className="text-secondary" />
-                                                <p className="text-lg">{booking.room?.name || 'Deluxe Room'}</p>
+                                                <p className="text-lg">{booking.room?.name || booking.room?.title || 'Deluxe Room'}</p>
                                             </div>
                                         </div>
                                         <div className="space-y-2">

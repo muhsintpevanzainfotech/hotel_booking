@@ -97,14 +97,27 @@ const RecentBookings = ({ apiBase, role = "User" }) => {
   };
 
   const filteredBookings = useMemo(() => {
-    return bookings.filter(b => {
+    const filtered = bookings.filter(b => {
       const gName = (b.guestName || 'Unknown Guest').toLowerCase();
-      const roomId = (b.room?.name || 'Unknown Suite').toLowerCase();
+      const roomId = (b.room?.name || b.room?.title || 'Unknown Suite').toLowerCase();
       const matchesSearch = gName.includes(searchTerm.toLowerCase()) || 
                            (b.bookingReference || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                            b._id.includes(searchTerm);
       const matchesStatus = statusFilter === 'All' || b.status === statusFilter;
       return matchesSearch && matchesStatus;
+    });
+
+    // Sort descending (newest first) by creation date (using createdAt, fallback to _id or checkIn)
+    return [...filtered].sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt) : null;
+      const dateB = b.createdAt ? new Date(b.createdAt) : null;
+      if (dateA && dateB) {
+        return dateB - dateA;
+      }
+      if (a._id && b._id && a._id.length === 24 && b._id.length === 24) {
+        return b._id.localeCompare(a._id);
+      }
+      return new Date(b.checkIn) - new Date(a.checkIn);
     });
   }, [bookings, searchTerm, statusFilter]);
 
@@ -207,7 +220,7 @@ const RecentBookings = ({ apiBase, role = "User" }) => {
                       </div>
                       <div className="min-w-0">
                         <p className="font-bold text-text-primary truncate tracking-tight text-[15px]">{booking.guestName || 'Unknown Guest'}</p>
-                        <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-wider mt-0.5">{booking.room?.name || 'Removed Suite'}</p>
+                        <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-wider mt-0.5">{booking.room?.name || booking.room?.title || 'Removed Suite'}</p>
                       </div>
                     </div>
                   </td>
@@ -397,7 +410,7 @@ const RecentBookings = ({ apiBase, role = "User" }) => {
                 <div className="grid grid-cols-2 gap-4">
                     <div className="p-4 bg-bg-subtle border border-border-subtle rounded-2xl space-y-1">
                         <p className="text-[10px] text-text-secondary uppercase tracking-widest font-black">Reserved Suite</p>
-                        <p className="text-white font-bold">{viewModal.booking.room?.name || 'N/A'}</p>
+                        <p className="text-white font-bold">{viewModal.booking.room?.name || viewModal.booking.room?.title || 'N/A'}</p>
                     </div>
                     <div className="p-4 bg-bg-subtle border border-border-subtle rounded-2xl space-y-1">
                         <p className="text-[10px] text-text-secondary uppercase tracking-widest font-black">Total Valuation</p>

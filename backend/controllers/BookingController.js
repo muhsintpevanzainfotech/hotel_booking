@@ -1,5 +1,6 @@
 const Booking = require('../models/Booking');
 const Room = require('../models/Room');
+const ComboOffer = require('../models/ComboOffer');
 const Notification = require('../models/Notification');
 
 exports.createBooking = async (req, res) => {
@@ -15,9 +16,26 @@ exports.createBooking = async (req, res) => {
             ]
         });
 
-        const room = await Room.findById(roomId);
-        if (conflict.length >= room.quantity) {
-            return res.status(400).json({ message: 'Room not available for selected dates' });
+        let room = await Room.findById(roomId);
+        let roomModel = 'Room';
+        let limit = 0;
+        let roomName = '';
+
+        if (!room) {
+            room = await ComboOffer.findById(roomId);
+            if (!room) {
+                return res.status(404).json({ message: 'Room or Package not found' });
+            }
+            roomModel = 'ComboOffer';
+            limit = 100; // default large limit for combo packages
+            roomName = room.title;
+        } else {
+            limit = room.quantity;
+            roomName = room.name;
+        }
+
+        if (conflict.length >= limit) {
+            return res.status(400).json({ message: roomModel === 'ComboOffer' ? 'Package not available for selected dates' : 'Room not available for selected dates' });
         }
 
         // Generate Booking Reference
@@ -25,14 +43,15 @@ exports.createBooking = async (req, res) => {
 
         const newBooking = new Booking({
             ...req.body,
+            roomModel,
             bookingReference
         });
         await newBooking.save();
 
         // Create Notification
         await new Notification({
-            title: 'New Room Reservation',
-            message: `${guestName} reserved a ${room.name}.`,
+            title: roomModel === 'ComboOffer' ? 'New Package Reservation' : 'New Room Reservation',
+            message: `${guestName} reserved ${roomModel === 'ComboOffer' ? 'package' : 'a'} ${roomName}.`,
             type: 'booking',
             referenceId: newBooking._id
         }).save();
@@ -45,7 +64,7 @@ exports.createBooking = async (req, res) => {
 
 exports.getAllBookings = async (req, res) => {
     try {
-        let bookings = await Booking.find().populate('room');
+        let bookings = await Booking.find().populate('room').sort({ createdAt: -1 });
         
         // Mock data for demo if empty
         if (bookings.length === 0) {

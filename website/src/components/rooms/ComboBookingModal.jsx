@@ -156,54 +156,30 @@ const ComboBookingModal = ({ isOpen, onClose, combo }) => {
 
         setIsSubmitting(true);
 
-        const checkInStr = formData.checkIn.toLocaleDateString();
-        const checkOutStr = formData.checkOut.toLocaleDateString();
-        
-        // Format subject & message for enquiry endpoint
-        const subject = `Combo Package Inquiry: ${combo.title}`;
-        const message = `
-========================================
-COMBO PACKAGE BOOKING INQUIRY
-========================================
-Package Name: ${combo.title}
-Package Category: ${combo.type || 'Package'}
-Starting Price: ₹${combo.price.toLocaleString()}
-
-GUEST DETAILS:
-Full Name: ${formData.guestName}
-Phone Number: ${formData.phone}
-Email: ${formData.email}
-Check-in Date: ${checkInStr}
-Check-out Date: ${checkOutStr}
-Number of Guests: ${formData.guestsCount}
-
-SPECIAL REQUESTS:
-${formData.specialRequests || 'None'}
-========================================
-        `.trim();
-
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE}/enquiry`, {
+            const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/book`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    name: formData.guestName,
+                    guestName: formData.guestName,
                     email: formData.email,
-                    subject: subject,
-                    message: message,
-                    type: 'enquiry'
+                    phone: formData.phone,
+                    checkIn: formData.checkIn,
+                    checkOut: formData.checkOut,
+                    adults: formData.guestsCount,
+                    children: 0,
+                    specialRequests: formData.specialRequests,
+                    room: combo._id,
+                    totalPrice: combo.price
                 })
             });
 
             const data = await response.json();
             if (response.ok) {
-                setBookingSuccess({
-                    referenceId: 'HB-INQ-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
-                    ...data
-                });
-                toast.success(t('Inquiry submitted successfully!', 'पूछताछ सफलतापूर्वक भेजी गई!'));
+                setBookingSuccess(data);
+                toast.success(t('Booking submitted successfully!', 'बुकिंग सफलतापूर्वक भेजी गई!'));
             } else {
-                toast.error(data.message || t('Submission failed', 'भेजना विफल रहा'));
+                toast.error(data.message || t('Booking failed', 'बुकिंग विफल रही'));
             }
         } catch (err) {
             toast.error(t('Network error', 'नेटवर्क त्रुटि'));
@@ -390,8 +366,8 @@ ${formData.specialRequests || 'None'}
                             <div className="h-full flex flex-col justify-between gap-6">
                                 <div className="space-y-4">
                                     <div className="space-y-1.5">
-                                        <h3 className="text-xl font-black text-[#0F4C4C] tracking-tight">{t('Inquiry Form', 'पूछताछ फॉर्म')}</h3>
-                                        <p className="text-gray-400 text-xs leading-normal">{t('Send a booking inquiry and our luxury travel planners will arrange your customized resort stay.', 'पूछताछ भेजें, और हमारी टीम आपकी बुकिंग प्रक्रिया शुरू करेगी।')}</p>
+                                        <h3 className="text-xl font-black text-[#0F4C4C] tracking-tight">{t('Reserve Package', 'पैकेज बुक करें')}</h3>
+                                        <p className="text-gray-400 text-xs leading-normal">{t('Complete the form details below to reserve your custom package experience.', 'अपना पैकेज अनुभव रिज़र्व करने के लिए नीचे दिए गए विवरण को पूरा करें।')}</p>
                                     </div>
 
                                     {/* Auto-filled Selected Package Card */}
@@ -419,6 +395,7 @@ ${formData.specialRequests || 'None'}
                                                         className="w-full pl-11 pr-3 py-3.5 bg-white border border-neutral-200/40 rounded-2xl text-xs font-bold text-[#0F4C4C] focus:ring-2 focus:ring-[#0F4C4C] transition-all outline-none shadow-sm"
                                                         placeholderText={t('Select Date', 'तिथि चुनें')}
                                                         minDate={new Date()}
+                                                        dateFormat="dd/MM/yyyy"
                                                         required
                                                     />
                                                 </div>
@@ -435,6 +412,7 @@ ${formData.specialRequests || 'None'}
                                                         className="w-full pl-11 pr-3 py-3.5 bg-white border border-neutral-200/40 rounded-2xl text-xs font-bold text-[#0F4C4C] focus:ring-2 focus:ring-[#0F4C4C] transition-all outline-none shadow-sm"
                                                         placeholderText={t('Select Date', 'तिथि चुनें')}
                                                         minDate={formData.checkIn || new Date()}
+                                                        dateFormat="dd/MM/yyyy"
                                                         required
                                                     />
                                                 </div>
@@ -534,9 +512,9 @@ ${formData.specialRequests || 'None'}
                                                 disabled={isSubmitting}
                                                 className="btn-book-now w-full py-4 text-[10px] cursor-pointer"
                                             >
-                                                {isSubmitting ? t('Sending Inquiry...', 'भेज रहा है...') : (
+                                                {isSubmitting ? t('Processing...', 'प्रक्रिया...') : (
                                                     <span className="flex items-center justify-center gap-2">
-                                                        {t('Submit Booking Inquiry', 'पूछताछ भेजें')}
+                                                        {t('Confirm Package Booking', 'पैकेज बुकिंग की पुष्टि करें')}
                                                         <ChevronRight size={14} />
                                                     </span>
                                                 )}
@@ -556,14 +534,14 @@ ${formData.specialRequests || 'None'}
                                     <CheckCircle size={32} />
                                 </div>
                                 <h3 className="text-xl font-black text-[#0F4C4C] tracking-tight leading-tight">
-                                    {t('Inquiry Received!', 'पूछताछ प्राप्त हुई!')}
+                                    {t('Package Reserved!', 'पैकेज बुकिंग पक्की हो गई!')}
                                 </h3>
                                 <p className="text-gray-400 text-xs max-w-xs leading-relaxed">
-                                    {t('Your inquiry for ', 'आपकी पूछताछ ')} <span className="text-[#0F4C4C] font-bold">{combo.title}</span> {t('has been successfully submitted. Our luxury concierge will contact you shortly.', 'सफलतापूर्वक प्राप्त हो गई है। हमारी टीम जल्द ही आपसे संपर्क करेगी।')}
+                                    {t('Your booking for ', 'आपका बुकिंग ')} <span className="text-[#0F4C4C] font-bold">{combo.title}</span> {t('has been successfully submitted. A confirmation email has been sent to you.', 'सफलतापूर्वक प्राप्त हो गई है। आपको एक ईमेल भेजा गया है।')}
                                 </p>
                                 <div className="p-4 bg-white rounded-2xl border border-gray-100 inline-block relative shadow-sm">
-                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-[#0F4C4C] text-white rounded-full text-[7px] font-black uppercase tracking-[0.4em]">{t('Inquiry ID', 'पूछताछ आईडी')}</div>
-                                    <p className="text-base font-mono font-bold text-[#0F4C4C] tracking-tighter">{bookingSuccess.referenceId}</p>
+                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-[#0F4C4C] text-white rounded-full text-[7px] font-black uppercase tracking-[0.4em]">{t('Booking ID', 'बुकिंग आईडी')}</div>
+                                    <p className="text-base font-mono font-bold text-[#0F4C4C] tracking-tighter">{bookingSuccess.bookingReference}</p>
                                 </div>
                                 <div className="pt-6 w-full max-w-[200px]">
                                     <button onClick={onClose} className="btn-book-now w-full py-3.5 text-[9px] cursor-pointer">

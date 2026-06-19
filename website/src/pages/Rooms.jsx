@@ -474,25 +474,31 @@ const Rooms = () => {
                                             </div>
 
                                             {/* Pricing & Buttons at bottom */}
-                                            <div className="border-t border-gray-100 pt-4 mt-4 flex items-center justify-between gap-4">
-                                                <div className="flex flex-col shrink-0">
-                                                    <span className="text-lg md:text-xl font-bold text-[#0F4C4C] tracking-tighter">₹{item.price.toLocaleString()}</span>
-                                                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none">
-                                                        {item.isRoom ? t('per night', 'प्रति रात') : t('per package', 'प्रति पैकेज')}
-                                                    </span>
+                                            <div className="border-t border-gray-100 pt-6 mt-4 flex flex-col gap-4">
+                                                {/* Price block */}
+                                                <div className="flex items-baseline justify-between w-full">
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('Rate details', 'दर विवरण')}</span>
+                                                    <div className="text-right flex items-baseline gap-1">
+                                                        <span className="text-xl font-black text-[#0F4C4C] tracking-tighter">₹{item.price.toLocaleString()}</span>
+                                                        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none">
+                                                            / {item.isRoom ? t('night', 'रात') : t('package', 'पैकेज')}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                                <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                                                
+                                                {/* Buttons */}
+                                                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center w-full">
                                                     <button 
                                                         onClick={() => handleViewClick(item)}
-                                                        className="w-full sm:w-[130px] h-10 rounded-full bg-white border border-slate-200 text-slate-700 hover:text-[#C5A880] hover:border-[#C5A880] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+                                                        className="w-full sm:w-[140px] h-11 rounded-full bg-white border border-slate-200 text-slate-700 hover:text-[#C5A880] hover:border-[#C5A880] font-semibold uppercase text-[9px] tracking-wider hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
                                                     >
                                                         {t('View Details', 'विवरण देखें')}
                                                     </button>
                                                     <button 
                                                         onClick={() => handleBookClick(item)}
-                                                        className="w-full sm:w-[130px] h-10 rounded-full bg-white border border-[#0F4C4C]/40 text-[#0F4C4C] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md hover:bg-[#C5A880] hover:text-white hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+                                                        className="w-full sm:w-[140px] h-11 rounded-full bg-white border border-[#0F4C4C]/40 text-[#0F4C4C] font-semibold uppercase text-[9px] tracking-wider hover:-translate-y-0.5 hover:shadow-md hover:bg-[#C5A880] hover:text-white hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
                                                     >
-                                                        {item.isRoom ? t('Book Now', 'अभी बुक करें') : t('Book Package', 'पैकेज बुक करें')}
+                                                        {t('Book Now', 'अभी बुक करें', 'ഇപ്പോൾ ബുക്ക് ചെയ്യുക')}
                                                     </button>
                                                 </div>
                                             </div>

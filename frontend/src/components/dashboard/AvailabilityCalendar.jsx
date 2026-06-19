@@ -16,6 +16,13 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { Badge, Modal, Button } from '../common/UIComponents';
 
+const formatDate = (dateInput) => {
+  if (!dateInput) return '';
+  const date = new Date(dateInput);
+  if (isNaN(date.getTime())) return '';
+  return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+};
+
 const AvailabilityCalendar = ({ apiBase }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [bookings, setBookings] = useState([]);
@@ -236,7 +243,7 @@ const AvailabilityCalendar = ({ apiBase }) => {
                                 : 'bg-amber-500/10 border-amber-500/20 text-amber-400'}
                             `}
                           >
-                            {booking.room?.name || 'Room'} - {booking.guestName}
+                            {booking.room?.name || booking.room?.title || 'Room'} - {booking.guestName}
                           </div>
                         ))}
                         {day.bookings.length > 4 && (
@@ -300,7 +307,7 @@ const AvailabilityCalendar = ({ apiBase }) => {
                           </div>
                           <div>
                             <p className="font-bold text-white text-[15px]">{booking.guestName}</p>
-                            <p className="text-[10px] text-text-secondary font-black uppercase tracking-widest mt-0.5">{booking.room?.name || 'N/A'}</p>
+                            <p className="text-[10px] text-text-secondary font-black uppercase tracking-widest mt-0.5">{booking.room?.name || booking.room?.title || 'N/A'}</p>
                           </div>
                         </div>
 
@@ -309,13 +316,13 @@ const AvailabilityCalendar = ({ apiBase }) => {
                               <p className="text-[9px] font-black text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
                                 <Clock size={10} className="text-primary" /> Check In
                               </p>
-                              <p className="text-xs font-bold text-white">{new Date(booking.checkIn).toLocaleDateString()}</p>
+                              <p className="text-xs font-bold text-white">{formatDate(booking.checkIn)}</p>
                            </div>
                            <div className="space-y-1">
                               <p className="text-[9px] font-black text-text-secondary uppercase tracking-widest flex items-center gap-1.5">
                                 <Clock size={10} className="text-rose-500" /> Check Out
                               </p>
-                              <p className="text-xs font-bold text-white">{new Date(booking.checkOut).toLocaleDateString()}</p>
+                              <p className="text-xs font-bold text-white">{formatDate(booking.checkOut)}</p>
                            </div>
                         </div>
 
@@ -370,7 +377,7 @@ const AvailabilityCalendar = ({ apiBase }) => {
               <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 bg-bg-subtle border border-border-subtle rounded-2xl space-y-1">
                       <p className="text-[10px] text-text-secondary uppercase tracking-widest font-black">Reserved Suite</p>
-                      <p className="text-white font-bold">{viewModal.booking.room?.name || 'N/A'}</p>
+                      <p className="text-white font-bold">{viewModal.booking.room?.name || viewModal.booking.room?.title || 'N/A'}</p>
                   </div>
                   <div className="p-4 bg-bg-subtle border border-border-subtle rounded-2xl space-y-1">
                       <p className="text-[10px] text-text-secondary uppercase tracking-widest font-black">Total Valuation</p>
@@ -378,11 +385,11 @@ const AvailabilityCalendar = ({ apiBase }) => {
                   </div>
                   <div className="p-4 bg-bg-subtle border border-border-subtle rounded-2xl space-y-1">
                       <p className="text-[10px] text-text-secondary uppercase tracking-widest font-black">Check-In Node</p>
-                      <p className="text-white font-bold">{new Date(viewModal.booking.checkIn).toLocaleDateString()}</p>
+                      <p className="text-white font-bold">{formatDate(viewModal.booking.checkIn)}</p>
                   </div>
                   <div className="p-4 bg-bg-subtle border border-border-subtle rounded-2xl space-y-1">
                       <p className="text-[10px] text-text-secondary uppercase tracking-widest font-black">Check-Out Node</p>
-                      <p className="text-white font-bold">{new Date(viewModal.booking.checkOut).toLocaleDateString()}</p>
+                      <p className="text-white font-bold">{formatDate(viewModal.booking.checkOut)}</p>
                   </div>
                   <div className="p-4 bg-bg-subtle border border-border-subtle rounded-2xl space-y-1">
                       <p className="text-[10px] text-text-secondary uppercase tracking-widest font-black">Occupants</p>

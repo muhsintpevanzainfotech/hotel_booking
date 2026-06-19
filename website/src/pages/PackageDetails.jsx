@@ -256,51 +256,29 @@ const PackageDetails = () => {
 
         setIsSubmitting(true);
         try {
-            const checkInStr = formData.checkIn.toLocaleDateString();
-            const checkOutStr = formData.checkOut.toLocaleDateString();
-            const subject = `Combo Package Inquiry: ${room.title}`;
-            const message = `
-========================================
-COMBO PACKAGE BOOKING INQUIRY
-========================================
-Package Name: ${room.title}
-Package Category: ${room.type || 'Package'}
-Starting Price: ₹${room.price.toLocaleString()}
-
-GUEST DETAILS:
-Full Name: ${formData.guestName}
-Phone Number: ${formData.phone}
-Email: ${formData.email}
-Check-in Date: ${checkInStr}
-Check-out Date: ${checkOutStr}
-Number of Guests: ${formData.adults}
-
-SPECIAL REQUESTS:
-${formData.specialRequests || 'None'}
-========================================
-            `.trim();
-
-            const response = await fetch(`${import.meta.env.VITE_API_BASE}/enquiry`, {
+            const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/book`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    name: formData.guestName,
+                    guestName: formData.guestName,
                     email: formData.email,
-                    subject: subject,
-                    message: message,
-                    type: 'enquiry'
+                    phone: formData.phone,
+                    checkIn: formData.checkIn,
+                    checkOut: formData.checkOut,
+                    adults: formData.adults,
+                    children: 0,
+                    specialRequests: formData.specialRequests,
+                    room: room._id,
+                    totalPrice: room.price
                 })
             });
 
             const data = await response.json();
             if (response.ok) {
-                setBookingSuccess({
-                    bookingReference: 'HB-INQ-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
-                    ...data
-                });
-                toast.success(t('Inquiry submitted successfully!', 'पूछताछ सफलतापूर्वक भेजी गई!'));
+                setBookingSuccess(data);
+                toast.success(t('Booking submitted successfully!', 'बुकिंग सफलतापूर्वक भेजी गई!'));
             } else {
-                toast.error(data.message || t('Submission failed', 'भेजना विफल रहा'));
+                toast.error(data.message || t('Booking failed', 'बुकिंग विफल रही'));
             }
         } catch (err) {
             toast.error(t('Network error', 'नेटवर्क त्रुटि'));
@@ -539,10 +517,10 @@ ${formData.specialRequests || 'None'}
                             <div className="space-y-6">
                                 <div className="space-y-3">
                                     <h3 className="text-xl font-black text-[#0F4C4C] tracking-tight">
-                                        {t('Request Package Details', 'पूछताछ करें')}
+                                        {t('Reserve Package', 'पैकेज बुक करें')}
                                     </h3>
                                     <p className="text-gray-400 text-[11px] leading-relaxed">
-                                        {t('Select your travel dates and details below. Our luxury concierge will verify availability and get back to you.', 'कृपया तिथियां और विवरण दर्ज करें। हमारी टीम उपलब्धता की जांच कर आपसे संपर्क करेगी।')}
+                                        {t('Select your travel dates and details below to reserve your signature package.', 'अपना सिग्नेचर पैकेज रिज़र्व करने के लिए नीचे अपनी यात्रा की तिथियां और विवरण चुनें।')}
                                     </p>
                                 </div>
 
@@ -559,6 +537,7 @@ ${formData.specialRequests || 'None'}
                                                     className="w-full pl-12 pr-4 py-3 bg-[#F8FAFA] border border-gray-100 rounded-2xl text-xs font-bold text-[#0F4C4C] focus:ring-2 focus:ring-[#0F4C4C] transition-all outline-none"
                                                     placeholderText={t('Select Date', 'तिथि चुनें')}
                                                     minDate={new Date()}
+                                                    dateFormat="dd/MM/yyyy"
                                                     required
                                                 />
                                             </div>
@@ -566,13 +545,15 @@ ${formData.specialRequests || 'None'}
                                         <div className="space-y-1">
                                             <label className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1">{t('Check Out', 'प्रस्थान')}</label>
                                             <div className="relative group">
-                                                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 z-10" size={15} />
-                                                <input
-                                                    type="text"
-                                                    readOnly
-                                                    value={formData.checkOut ? formData.checkOut.toLocaleDateString() : ''}
-                                                    placeholder={t('Auto-calculated', 'स्वचालित गणना')}
-                                                    className="w-full pl-12 pr-4 py-3 bg-gray-100 border-none rounded-2xl text-xs font-bold text-[#0F4C4C]/60 cursor-not-allowed outline-none select-none"
+                                                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#0F4C4C] transition-colors z-10" size={15} />
+                                                <DatePicker
+                                                    selected={formData.checkOut}
+                                                    onChange={(date) => handleDateChange('checkOut', date)}
+                                                    className="w-full pl-12 pr-4 py-3 bg-[#F8FAFA] border border-gray-100 rounded-2xl text-xs font-bold text-[#0F4C4C] focus:ring-2 focus:ring-[#0F4C4C] transition-all outline-none"
+                                                    placeholderText={t('Select Date', 'तिथि चुनें')}
+                                                    minDate={formData.checkIn || new Date()}
+                                                    dateFormat="dd/MM/yyyy"
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -701,13 +682,13 @@ ${formData.specialRequests || 'None'}
                                     <CheckCircle size={32} />
                                 </div>
                                 <h3 className="text-xl font-black text-[#0F4C4C] tracking-tight leading-tight">
-                                    {t('Inquiry Received!', 'पूछताछ प्राप्त हुई!')}
+                                    {t('Package Reserved!', 'पैकेज बुकिंग पक्की हो गई!')}
                                 </h3>
                                 <p className="text-gray-550 text-xs max-w-sm leading-relaxed">
-                                    <span>{t('Your inquiry for ', 'आपकी पूछताछ ')} <span className="text-[#0F4C4C] font-bold">{room.title}</span> {t('has been successfully submitted. Our luxury concierge will contact you shortly.', 'सफलतापूर्वक प्राप्त हो गई है। हमारी टीम जल्द ही आपसे संपर्क करेगी।')}</span>
+                                    <span>{t('Your booking for ', 'आपका बुकिंग ')} <span className="text-[#0F4C4C] font-bold">{room.title}</span> {t('has been successfully submitted. A confirmation email has been sent to you.', 'सफलतापूर्वक प्राप्त हो गई है। आपको एक ईमेल भेजा गया है।')}</span>
                                 </p>
                                 <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 inline-block relative">
-                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-[#0F4C4C] text-white rounded-full text-[7px] font-black uppercase tracking-[0.4em]">{t('Inquiry ID', 'पूछताछ आईडी')}</div>
+                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-[#0F4C4C] text-white rounded-full text-[7px] font-black uppercase tracking-[0.4em]">{t('Booking ID', 'बुकिंग आईडी')}</div>
                                     <p className="text-lg font-mono font-bold text-[#0F4C4C] tracking-tighter">{bookingSuccess.bookingReference}</p>
                                 </div>
                                 <div className="pt-4 w-full">

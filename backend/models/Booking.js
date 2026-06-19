@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
-    room: { type: mongoose.Schema.Types.ObjectId, ref: 'Room', required: true },
+    room: { type: mongoose.Schema.Types.ObjectId, required: true, refPath: 'roomModel' },
+    roomModel: { type: String, required: true, enum: ['Room', 'ComboOffer'], default: 'Room' },
     guestName: { type: String, required: true },
     email: { type: String, required: true },
     phone: { type: String, required: true },
