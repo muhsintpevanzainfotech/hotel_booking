@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRoomsRequest } from '../redux/slices/roomSlice';
 import { Link, useNavigate } from 'react-router-dom';
@@ -7,10 +7,11 @@ import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
 import { getImageUrl } from '../utils/imageHelper';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay } from 'swiper/modules';
+import { Autoplay, Navigation } from 'swiper/modules';
 import useSEO from '../hooks/useSEO';
 import toast from 'react-hot-toast';
 import 'swiper/css';
+import 'swiper/css/navigation';
 import heroVideo from '../assets/images/hero.mp4';
 import bathroomImg from '../assets/images/bathroom.jpeg';
 import mainVideo from '../assets/images/Main-video.mp4';
@@ -26,9 +27,11 @@ import roomImg from '../assets/images/room.jpeg';
 import roomsImg from '../assets/images/rooms.jpeg';
 import sitoutImg from '../assets/images/sitout.jpeg';
 import BookingModal from '../components/rooms/BookingModal';
+import ComboBookingModal from '../components/rooms/ComboBookingModal';
+import logoLandscape from '../assets/LOGO LANDSCAPE.png';
 import { AnimatePresence } from 'framer-motion';
 
-const RoomCard = ({ room, index, onBookClick, t }) => {
+const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const timerRef = useRef(null);
@@ -87,7 +90,7 @@ const RoomCard = ({ room, index, onBookClick, t }) => {
   const isDark = index % 2 !== 0;
 
   return (
-    <div className="relative w-full aspect-[4/5] rounded-[28px] z-10">
+    <div className="relative w-full aspect-[4/5] rounded-[28px] z-10" onClick={() => onViewClick(room)}>
       <motion.div
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -249,47 +252,34 @@ const RoomCard = ({ room, index, onBookClick, t }) => {
             </div>
           </div>
 
-          {/* Row 4: Book CTA Button */}
-          <motion.div
-            animate={{ borderColor: isHovered ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.1)' }}
-            transition={{ duration: 0.5 }}
-            className="pt-2 border-t"
-          >
-            <motion.button
-              animate={{
-                scale: isHovered ? 1.02 : 1,
-                backgroundColor: isHovered ? '#0f172a' : '#ffffff',
-                color: isHovered ? '#ffffff' : '#0f172a'
+          {/* Row 4: Card Actions */}
+          <div className="pt-3 border-t border-gray-100 flex flex-col sm:flex-row gap-3 justify-center items-center w-full">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewClick(room);
               }}
-              transition={{ duration: 0.5 }}
+              className="w-full sm:w-[130px] h-10 rounded-full bg-white border border-slate-200 text-slate-700 hover:text-[#C5A880] hover:border-[#C5A880] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+            >
+              {t('View Details', 'विवरण देखें')}
+            </button>
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 onBookClick(room);
               }}
-              className="w-full py-1.5 sm:py-2 rounded-full font-black uppercase text-[7px] sm:text-[8px] tracking-[0.2em] shadow-md transition-colors duration-300 active:scale-[0.98] cursor-pointer"
+              className="w-full sm:w-[130px] h-10 rounded-full bg-white border border-[#0F4C4C]/40 text-[#0F4C4C] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md hover:bg-[#C5A880] hover:text-white hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
             >
               {t('Book Now', 'अभी बुक करें')}
-            </motion.button>
-          </motion.div>
+            </button>
+          </div>
         </div>
       </motion.div>
     </div>
   );
 };
 
-const PricingComboCard = ({ combo, isFeatured, t }) => {
-  const handleCardClick = () => {
-    if (combo.links) {
-      if (combo.links.startsWith('http')) {
-        window.open(combo.links, '_blank');
-      } else {
-        window.location.href = combo.links;
-      }
-    } else {
-      window.location.href = `/contact?subject=Booking ${combo.title}`;
-    }
-  };
-
+const PricingComboCard = ({ combo, isFeatured, onBookClick, onViewClick, t }) => {
   const badgeText = combo.type && String(combo.type).trim() ? combo.type : t('Package', 'पैकेज');
 
   return (
@@ -298,18 +288,32 @@ const PricingComboCard = ({ combo, isFeatured, t }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: isFeatured ? 0.1 : 0.05 }}
-      className={`bg-white rounded-[32px] md:rounded-[40px] border border-neutral-200/60 p-6 md:p-8 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group min-h-[560px] ${isFeatured ? 'ring-2 ring-lime-400 border-lime-200' : ''
-        }`}
+      onClick={() => onViewClick(combo)}
+      className={`bg-white rounded-[32px] md:rounded-[40px] p-6 md:p-8 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group min-h-[560px] h-full border cursor-pointer ${isFeatured ? 'border-transparent' : 'border-neutral-200/60'}`}
     >
+      {/* Active Border Overlay */}
+      {isFeatured && (
+        <div className="absolute inset-0 border-2 border-lime-400 rounded-[inherit] pointer-events-none z-30 shadow-[inset_0_0_12px_rgba(163,230,53,0.15)]" />
+      )}
       <div>
         {/* Top Header Section (image box inside the card) */}
-        <div className="relative h-[200px] rounded-[24px] sm:rounded-[28px] overflow-hidden p-6 flex flex-col justify-between transition-colors duration-300">
-          {/* Background Image */}
-          <img
-            src={combo.coverImage ? getImageUrl(combo.coverImage) : sitoutImg}
-            alt={combo.title}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
-          />
+        <div className="relative h-[200px] rounded-[24px] md:rounded-[32px] overflow-hidden p-6 flex flex-col justify-between transition-colors duration-300">
+          {/* Background Image / Logo Fallback */}
+          {combo.coverImage ? (
+            <img
+              src={getImageUrl(combo.coverImage)}
+              alt={combo.title}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-[#FAF6F0] flex items-center justify-center p-6 select-none">
+              <img 
+                src={logoLandscape} 
+                alt="Lake Breeze Resort Logo" 
+                className="h-10 w-auto object-contain opacity-60" 
+              />
+            </div>
+          )}
           {/* Dark Overlay Gradient inside the image box */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10 z-10" />
 
@@ -341,16 +345,27 @@ const PricingComboCard = ({ combo, isFeatured, t }) => {
       </div>
 
       <div>
-        {/* Large Button */}
-        <button
-          onClick={handleCardClick}
-          className={`w-full py-4 text-center rounded-full font-black uppercase text-[10px] tracking-widest transition-all shadow-sm active:scale-98 cursor-pointer mt-6 ${isFeatured
-            ? 'bg-lime-400 hover:bg-lime-350 text-neutral-900 font-black shadow-lime-200/50 shadow-md border border-lime-300/30'
-            : 'bg-[#0F4C4C] hover:bg-[#155d5d] text-white shadow-teal-900/10'
-            }`}
-        >
-          {t('Book Package Now', 'अभी बुक करें')}
-        </button>
+        {/* Actions */}
+        <div className="mt-6 pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-3 justify-center items-center w-full">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewClick(combo);
+            }}
+            className="w-full sm:w-[130px] h-10 rounded-full bg-white border border-slate-200 text-slate-700 hover:text-[#C5A880] hover:border-[#C5A880] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+          >
+            {t('View Details', 'विवरण देखें')}
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onBookClick(combo);
+            }}
+            className="w-full sm:w-[130px] h-10 rounded-full bg-white border border-[#0F4C4C]/40 text-[#0F4C4C] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md hover:bg-[#C5A880] hover:text-white hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+          >
+            {t('Book Package', 'पैकेज बुक करें')}
+          </button>
+        </div>
 
         {/* Checklist */}
         {combo.includes && combo.includes.length > 0 && (
@@ -368,19 +383,7 @@ const PricingComboCard = ({ combo, isFeatured, t }) => {
   );
 };
 
-const ComboOfferCard = ({ combo, index, t }) => {
-  const handleCardClick = () => {
-    if (combo.links) {
-      if (combo.links.startsWith('http')) {
-        window.open(combo.links, '_blank');
-      } else {
-        window.location.href = combo.links;
-      }
-    } else {
-      window.location.href = `/contact?subject=Booking ${combo.title}`;
-    }
-  };
-
+const ComboOfferCard = ({ combo, index, onBookClick, onViewClick, t }) => {
   const badgeText = combo.type && String(combo.type).trim() ? combo.type : t('Package', 'पैकेज');
 
   return (
@@ -389,15 +392,25 @@ const ComboOfferCard = ({ combo, index, t }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.05 }}
-      onClick={handleCardClick}
+      onClick={() => onViewClick(combo)}
       className="relative w-full h-[360px] md:h-[420px] rounded-[32px] md:rounded-[48px] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl border border-white/10 transition-all duration-500 group bg-slate-950 flex items-center"
     >
-      {/* Background Cover Image */}
-      <img
-        src={combo.coverImage ? getImageUrl(combo.coverImage) : sitoutImg}
-        alt={combo.title}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
-      />
+      {/* Background Cover Image / Logo Fallback */}
+      {combo.coverImage ? (
+        <img
+          src={getImageUrl(combo.coverImage)}
+          alt={combo.title}
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-[#FAF6F0] flex items-center justify-center p-12 select-none">
+          <img 
+            src={logoLandscape} 
+            alt="Lake Breeze Resort Logo" 
+            className="h-16 w-auto object-contain opacity-60" 
+          />
+        </div>
+      )}
 
       {/* Responsive Premium Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/20 md:bg-gradient-to-r md:from-slate-950 md:via-slate-950/70 md:to-transparent z-10" />
@@ -450,16 +463,25 @@ const ComboOfferCard = ({ combo, index, t }) => {
             </div>
           )}
 
-          {/* Book Button */}
-          <div className="pt-2">
+          {/* Card Actions */}
+          <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row gap-3 justify-center items-center w-full">
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                handleCardClick();
+                onViewClick(combo);
               }}
-              className="px-6 py-2.5 md:px-8 md:py-3.5 bg-teal-600 hover:bg-teal-500 text-white rounded-xl font-black uppercase text-[8px] md:text-[9px] tracking-widest transition-all shadow-md active:scale-95 cursor-pointer hover:shadow-teal-600/20"
+              className="w-full sm:w-[130px] h-10 rounded-full bg-white/10 border border-white/20 text-white hover:text-[#C5A880] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
             >
-              {t('Book Package Now', 'अभी पैकेज बुक करें')}
+              {t('View Details', 'विवरण देखें')}
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onBookClick(combo);
+              }}
+              className="w-full sm:w-[130px] h-10 rounded-full bg-white border border-white text-[#0F4C4C] font-semibold uppercase text-[9px] tracking-widest hover:-translate-y-0.5 hover:shadow-md hover:bg-[#C5A880] hover:text-white hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+            >
+              {t('Book Package', 'पैकेज बुक करें')}
             </button>
           </div>
         </div>
@@ -502,7 +524,7 @@ const PromotionalBannerCard = ({ banner, isHalfWidth, t }) => {
           </p>
           <button
             onClick={() => banner.link && (window.location.href = banner.link)}
-            className="px-6 py-3 md:px-8 md:py-4 bg-white text-[#0F4C4C] rounded-xl font-black uppercase text-[8px] md:text-[9px] tracking-widest hover:bg-teal-50 transition-all shadow-xl active:scale-95 cursor-pointer"
+            className="px-6 py-3 md:px-8 md:py-4 bg-white text-[#0F4C4C] hover:bg-[#C5A880] hover:text-white rounded-full font-semibold uppercase text-[9px] tracking-widest transition-all duration-300 shadow-xl hover:-translate-y-[2px] active:translate-y-[1px] active:scale-95 cursor-pointer"
           >
             {t('Explore Now', 'अभी अन्वेषण करें')}
           </button>
@@ -623,13 +645,14 @@ const Home = () => {
   };
 
   const getContainerStyles = () => {
+    const isMobile = window.innerWidth < 768;
     if (animationStep === 'landing') {
       return {
         position: 'relative',
         width: '100%',
-        minHeight: '92vh',
+        minHeight: isMobile ? '42vh' : '92vh',
         zIndex: 0,
-        borderRadius: '48px',
+        borderRadius: isMobile ? '24px' : '48px',
         border: '1px solid rgba(255, 255, 255, 0.1)',
         boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
       };
@@ -671,8 +694,8 @@ const Home = () => {
           left: '50%',
           x: '-50%',
           y: '-50%',
-          width: window.innerWidth < 768 ? '85vw' : '60vw',
-          height: window.innerWidth < 768 ? '50vh' : '60vh',
+          width: isMobile ? '85vw' : '60vw',
+          height: isMobile ? '50vh' : '60vh',
           opacity: 1,
           borderRadius: '24px',
           border: '1px solid rgba(212, 175, 55, 0.3)',
@@ -684,14 +707,14 @@ const Home = () => {
       case 'settled':
         return {
           position: 'fixed',
-          top: window.innerWidth < 768 ? '16px' : '24px',
+          top: isMobile ? '12px' : '24px',
           left: '50%',
           x: '-50%',
           y: '0%',
-          width: window.innerWidth < 768 ? 'calc(100vw - 2rem)' : 'calc(100vw - 4rem)',
-          height: '92vh',
+          width: isMobile ? 'calc(100vw - 1.5rem)' : 'calc(100vw - 4rem)',
+          height: isMobile ? '42vh' : '92vh',
           opacity: 1,
-          borderRadius: '48px',
+          borderRadius: isMobile ? '24px' : '48px',
           border: '1px solid rgba(255, 255, 255, 0.1)',
           boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
           zIndex: 100,
@@ -704,8 +727,19 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [comboOffers, setComboOffers] = useState([]);
+  const [selectedComboCategory, setSelectedComboCategory] = useState('All');
 
-  const displayComboOffers = comboOffers.slice(0, 3);
+  const comboCategories = useMemo(() => {
+    const types = comboOffers
+      .map(combo => combo.type)
+      .filter(type => typeof type === 'string' && type.trim() !== '');
+    return ['All', ...Array.from(new Set(types))];
+  }, [comboOffers]);
+
+  const displayComboOffers = useMemo(() => {
+    if (selectedComboCategory === 'All') return comboOffers;
+    return comboOffers.filter(combo => combo.type === selectedComboCategory);
+  }, [comboOffers, selectedComboCategory]);
 
   const [exclusiveOffers, setExclusiveOffers] = useState([]);
   const [copiedCode, setCopiedCode] = useState(null);
@@ -948,10 +982,27 @@ const Home = () => {
 
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCombo, setSelectedCombo] = useState(null);
+  const [isComboModalOpen, setIsComboModalOpen] = useState(false);
 
   const handleBookClick = (room) => {
-    setSelectedRoom(room);
-    setIsModalOpen(true);
+    const slugify = (text) => text.toString().toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-');
+    navigate(`/rooms/${slugify(room.name)}`);
+  };
+
+  const handleComboBookClick = (combo) => {
+    const slugify = (text) => text.toString().toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-');
+    navigate(`/packages/${slugify(combo.title)}`);
+  };
+
+  const handleViewClick = (room) => {
+    const slugify = (text) => text.toString().toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-');
+    navigate(`/rooms/${slugify(room.name)}`);
+  };
+
+  const handleComboViewClick = (combo) => {
+    const slugify = (text) => text.toString().toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-');
+    navigate(`/packages/${slugify(combo.title)}`);
   };
 
   const handlePlayPause = () => {
@@ -985,7 +1036,7 @@ const Home = () => {
       {/* 1. HERO SECTION */}
       <section 
         className="px-4 py-4 md:px-8 md:py-6 bg-white relative overflow-visible"
-        style={{ minHeight: window.innerWidth < 768 ? 'calc(92vh + 32px)' : 'calc(92vh + 48px)' }}
+        style={{ minHeight: window.innerWidth < 768 ? 'auto' : 'calc(92vh + 48px)' }}
       >
             {/* Cinematic Black Background Overlay */}
             <AnimatePresence>
@@ -1036,7 +1087,7 @@ const Home = () => {
                 borderRadius: { duration: 1.2, ease: [0.16, 1, 0.3, 1] },
                 opacity: { duration: 0.5 }
               }}
-              className="relative min-h-[92vh] bg-gradient-to-b from-[#A5C5E8] to-[#FFFFFF] shadow-md flex flex-col justify-between p-6 sm:p-8 md:p-12 lg:p-16 pb-[280px] sm:pb-48 lg:pb-36 z-10"
+              className="relative min-h-[42vh] md:min-h-[92vh] bg-gradient-to-b from-[#A5C5E8] to-[#FFFFFF] shadow-md flex flex-col justify-center md:justify-between p-6 sm:p-8 md:p-12 lg:p-16 pb-6 md:pb-36 z-10"
             >
 
               {/* Clip container for background image and overlays */}
@@ -1072,7 +1123,7 @@ const Home = () => {
 
               {/* Text Container */}
               <div className="relative z-10 w-full pt-6">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 w-full">
                   <div className="lg:col-span-8 overflow-hidden">
                     <motion.h1
                       initial={{ y: "100%", opacity: 0 }}
@@ -1081,7 +1132,7 @@ const Home = () => {
                         opacity: (animationStep === 'settled' || animationStep === 'landing') ? 1 : 0
                       }}
                       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-                      className="text-white text-5xl sm:text-7xl lg:text-[7.2rem] font-semibold tracking-tight leading-none"
+                      className="text-white text-4xl sm:text-5xl md:text-7xl lg:text-[7.2rem] font-semibold tracking-tight leading-none"
                     >
                       {t('Stay with comfort', 'आराम के साथ रहें')}
                     </motion.h1>
@@ -1094,7 +1145,7 @@ const Home = () => {
                         opacity: (animationStep === 'settled' || animationStep === 'landing') ? 1 : 0
                       }}
                       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-                      className="text-white text-sm leading-relaxed max-w-sm lg:ml-auto"
+                      className="text-white text-xs sm:text-sm leading-relaxed max-w-sm lg:ml-auto mt-2 lg:mt-0"
                     >
                       {t(
                         'Welcome — where comfort meets elegance and every guest feels at home. Our doors are always open to warmth, comfort, and unforgettable memories.',
@@ -1104,9 +1155,10 @@ const Home = () => {
                   </div>
                 </div>
               </div>
+            </motion.div>
 
-              {/* Search/Booking Widget Wrapper - absolute positioned down to overlay bottom border */}
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 z-20 w-[calc(100%-2rem)] max-w-[1080px] px-4">
+            {/* Search/Booking Widget Wrapper - responsive layout (relative/in-flow on mobile, absolute/overlay on desktop) */}
+            <div className="relative md:absolute md:bottom-0 md:left-1/2 md:-translate-x-1/2 md:translate-y-1/2 z-20 w-full md:w-[calc(100%-4rem)] max-w-[1080px] px-0 md:px-4 mt-6 md:mt-0">
                 <motion.div
                   initial={{ y: 80, opacity: 0 }}
                   animate={{
@@ -1264,7 +1316,7 @@ const Home = () => {
                     <div className="mt-6 flex justify-center w-full">
                       <button
                         onClick={handleBookingSubmit}
-                        className="w-full sm:w-auto rounded-full bg-black px-8 sm:px-16 py-4 text-sm font-semibold text-white shadow-xl hover:bg-neutral-900 active:scale-95 transition-all duration-200 whitespace-nowrap z-30"
+                        className="btn-book-now w-full sm:w-auto px-8 sm:px-16 py-4 text-sm z-30 cursor-pointer"
                       >
                         {t('Check Availability', 'खालीपन जांचें')}
                       </button>
@@ -1272,16 +1324,14 @@ const Home = () => {
                   </div>
                 </motion.div>
               </div>
-
-            </motion.div>
           </section>
 
-          {/* 2. ROOM SECTION - REDUCED PADDING */ }
-          <div className="max-w-[1400px] mx-auto px-4 pt-[320px] sm:pt-60 lg:pt-36 pb-8">
+          {/* 2. ROOM SECTION - REDUCED PADDING */}
+          <div className="max-w-[1400px] mx-auto px-4 pt-12 md:pt-36 pb-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6">
               <div className="space-y-3">
-                <p className="text-[9px] font-black uppercase tracking-[0.4em] text-teal-600">{t('Our Sanctuaries', 'हमारे अभयारण्य')}</p>
-                <h2 className="text-4xl font-black text-[#0F4C4C] tracking-tight">{t('Curated Rooms', 'क्यूरेटेड कमरे')}</h2>
+                <p className="text-[9px] font-semibold uppercase tracking-[0.4em] text-teal-600">{t('Our Sanctuaries', 'हमारे अभयारण्य')}</p>
+                <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight">{t('Curated Rooms', 'क्यूरेटेड कमरे')}</h2>
               </div>
 
               {/* Category Filter Tabs */}
@@ -1309,7 +1359,7 @@ const Home = () => {
                   disableOnInteraction: false,
                   pauseOnMouseEnter: true,
                 }}
-                loop={filteredRooms.length > 1}
+                loop={!loading && filteredRooms.length > 3}
                 slidesPerView={1.4}
                 spaceBetween={16}
                 breakpoints={{
@@ -1335,6 +1385,7 @@ const Home = () => {
                         room={room}
                         index={i}
                         onBookClick={handleBookClick}
+                        onViewClick={handleViewClick}
                         t={t}
                       />
                     </SwiperSlide>
@@ -1396,8 +1447,8 @@ const Home = () => {
               <div className="max-w-[1400px] mx-auto px-4 py-8 pb-16">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 md:mb-16 gap-6">
                   <div className="space-y-3">
-                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-teal-600">{t('Special Discounts', 'विशेष छूट')}</p>
-                    <h2 className="text-4xl font-black text-[#0F4C4C] tracking-tight">{t('Exclusive Offers', 'विशेष ऑफर')}</h2>
+                    <p className="text-[9px] font-semibold uppercase tracking-[0.4em] text-teal-600">{t('Special Discounts', 'विशेष छूट')}</p>
+                    <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight">{t('Exclusive Offers', 'विशेष ऑफर')}</h2>
                   </div>
                   <Link to="/offers?tab=promos" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all">
                     {t('View All Offers', 'सभी ऑफर देखें')}
@@ -1459,7 +1510,7 @@ const Home = () => {
 
                         <button
                           onClick={() => window.location.href = `/rooms?code=${offer.code}`}
-                          className="w-full py-3 bg-neutral-950 hover:bg-neutral-900 text-white rounded-full font-black uppercase text-[9px] tracking-widest transition-all duration-200 active:scale-[0.98] shadow-md cursor-pointer text-center"
+                          className="btn-book-now w-full py-3 text-[9px] cursor-pointer"
                         >
                           {t('Book with Offer', 'ऑफर के साथ बुक करें')}
                         </button>
@@ -1495,13 +1546,13 @@ const Home = () => {
               {/* Header: Title, Description, and View All Link */}
               <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 lg:mb-16 gap-6">
                 <div className="space-y-3 max-w-2xl">
-                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-teal-600">
+                  <p className="text-[9px] font-semibold uppercase tracking-[0.4em] text-teal-600">
                     {t('Exclusive Amenities', 'विशेष सुविधाएं')}
                   </p>
-                  <h2 className="text-4xl lg:text-5xl font-black text-[#0F4C4C] tracking-tight leading-tight">
+                  <h2 className="text-4xl lg:text-5xl font-semibold text-[#0F4C4C] tracking-tight leading-tight">
                     {t('Our Signature Experience', 'हमारा हस्ताक्षर अनुभव')}
                   </h2>
-                  <p className="text-sm font-medium text-neutral-500 leading-relaxed mt-2">
+                  <p className="text-sm font-normal text-neutral-500 leading-relaxed mt-2">
                     {t(
                       'We combine technology, trust, and personalized service to redefine the hotel booking experience. With transparent pricing, verified reviews, and exclusive deals.',
                       'हम होटल बुकिंग के अनुभव को फिर से परिभाषित करने के लिए प्रौद्योगिकी, विश्वास और व्यक्तिगत सेवा को जोड़ते हैं। पारदर्शी मूल्य निर्धारण, सत्यापित समीक्षाओं और विशेष सौदों के साथ।'
@@ -1570,32 +1621,101 @@ const Home = () => {
             <div className="max-w-[1400px] mx-auto px-6">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6">
                 <div className="space-y-3">
-                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-teal-600">{t('Exclusive Packages', 'विशेष पैकेज')}</p>
-                  <h2 className="text-4xl font-black text-[#0F4C4C] tracking-tight">{t('Combo Offers', 'कॉम्बो ऑफर')}</h2>
+                  <p className="text-[9px] font-semibold uppercase tracking-[0.4em] text-teal-600">{t('Exclusive Packages', 'विशेष पैकेज')}</p>
+                  <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight">{t('Combo Offers', 'कॉम्बो ऑफर')}</h2>
                 </div>
-                <Link to="/offers?tab=combos" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all">
-                  {t('View All Packages', 'सभी पैकेज देखें')}
-                </Link>
+                <div className="flex items-center gap-6 self-stretch md:self-auto justify-between md:justify-end">
+                  <Link to="/offers?tab=combos" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all">
+                    {t('View All Packages', 'सभी पैकेज देखें')}
+                  </Link>
+                  {/* Custom Swiper Controls */}
+                  <div className="flex items-center gap-3">
+                    <button className="combo-prev-btn p-2.5 bg-white hover:bg-[#0F4C4C] hover:text-white text-[#0F4C4C] border border-[#0F4C4C]/10 rounded-full transition-all shadow-sm active:scale-95 cursor-pointer disabled:opacity-40 disabled:pointer-events-none">
+                      <ChevronLeft size={16} />
+                    </button>
+                    <button className="combo-next-btn p-2.5 bg-white hover:bg-[#0F4C4C] hover:text-white text-[#0F4C4C] border border-[#0F4C4C]/10 rounded-full transition-all shadow-sm active:scale-95 cursor-pointer disabled:opacity-40 disabled:pointer-events-none">
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                </div>
               </div>
 
-              {displayComboOffers.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {displayComboOffers.map((combo, i) => (
-                    <PricingComboCard
-                      key={combo._id || i}
-                      combo={combo}
-                      isFeatured={i === 1} // Second package (Family Weekend Explorer) is highlighted/featured
-                      t={t}
-                    />
+              {/* Category Filter Tabs */}
+              {comboCategories.length > 1 && (
+                <div className="flex items-center gap-3 overflow-x-auto pb-6 pt-2 no-scrollbar -mx-6 px-6 sm:-mx-0 sm:px-0 sm:flex-wrap mb-8">
+                  {comboCategories.map((cat, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedComboCategory(cat)}
+                      className={`px-5 py-2.5 rounded-full font-black uppercase text-[9px] tracking-widest transition-all duration-300 whitespace-nowrap cursor-pointer border ${
+                        selectedComboCategory === cat
+                          ? 'bg-[#0F4C4C] text-white border-[#0F4C4C] shadow-md shadow-[#0F4C4C]/10'
+                          : 'bg-white text-gray-800 border-gray-150 hover:bg-teal-50/50 hover:border-teal-150'
+                      }`}
+                    >
+                      {cat === 'All' ? t('All Experiences', 'सभी अनुभव') : t(cat, cat)}
+                    </button>
                   ))}
                 </div>
-              ) : (
-                <div className="text-center py-12 bg-white rounded-[40px] border border-gray-100 shadow-sm max-w-full">
-                  <p className="text-gray-400 text-sm font-semibold uppercase tracking-[0.2em]">
-                    {t('No combo offers available currently', 'वर्तमान में कोई कॉम्बो ऑफर उपलब्ध नहीं है')}
-                  </p>
-                </div>
               )}
+
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedComboCategory}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  className="w-full"
+                >
+                  {displayComboOffers.length > 0 ? (
+                    <Swiper
+                      modules={[Autoplay, Navigation]}
+                      autoplay={{
+                        delay: 4500,
+                        disableOnInteraction: false,
+                        pauseOnMouseEnter: true,
+                      }}
+                      navigation={{
+                        prevEl: '.combo-prev-btn',
+                        nextEl: '.combo-next-btn',
+                      }}
+                      loop={displayComboOffers.length > 3}
+                      slidesPerView={1.2}
+                      spaceBetween={16}
+                      breakpoints={{
+                        640: {
+                          slidesPerView: 2,
+                          spaceBetween: 24,
+                        },
+                        1024: {
+                          slidesPerView: 3,
+                          spaceBetween: 32,
+                        }
+                      }}
+                      className="w-full pt-6 pb-12 px-2 -mx-2 combo-offers-swiper"
+                    >
+                      {displayComboOffers.map((combo, i) => (
+                        <SwiperSlide key={combo._id || i} className="h-auto">
+                          <PricingComboCard
+                            combo={combo}
+                            isFeatured={i % 3 === 1} // Highlights the middle card in groups of 3
+                            onBookClick={handleComboBookClick}
+                            onViewClick={handleComboViewClick}
+                            t={t}
+                          />
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                  ) : (
+                    <div className="text-center py-12 bg-white rounded-[40px] border border-gray-100 shadow-sm max-w-full">
+                      <p className="text-gray-400 text-sm font-semibold uppercase tracking-[0.2em]">
+                        {t('No combo offers available currently', 'वर्तमान में कोई कॉम्बो ऑफर उपलब्ध नहीं है')}
+                      </p>
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </section>
 
@@ -1603,7 +1723,7 @@ const Home = () => {
           <section className="py-16 bg-white">
             <div className="max-w-[1400px] mx-auto px-4">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12 md:mb-16">
-                <h2 className="text-4xl font-black text-[#0F4C4C] tracking-tight">{t('The Visual Journal', 'दृश्य पत्रिका')}</h2>
+                <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight">{t('The Visual Journal', 'दृश्य पत्रिका')}</h2>
                 <Link to="/gallery" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all">
                   {t('View All', 'सब देखें')}
                 </Link>
@@ -1629,7 +1749,7 @@ const Home = () => {
               <div className="mt-12 flex justify-center">
                 <Link
                   to="/gallery"
-                  className="px-10 py-4 bg-[#0F4C4C] hover:bg-[#2E7D7D] text-white rounded-full font-black uppercase text-[10px] tracking-widest shadow-xl transition-all duration-200 active:scale-95 flex items-center gap-2"
+                  className="btn-book-now px-10 py-4 text-[10px] flex items-center gap-2 cursor-pointer"
                 >
                   {t('View More Gallery', 'अधिक गैलरी देखें')}
                 </Link>
@@ -1705,7 +1825,7 @@ const Home = () => {
             <div className="max-w-[1400px] mx-auto px-4 relative z-10">
               <div className="flex flex-col items-center text-center space-y-8 mb-20">
                 <Quote size={40} className="text-teal-600 opacity-20" />
-                <h2 className="text-4xl font-black text-[#0F4C4C] tracking-tight leading-tight">{t('Echoes of Excellence', 'उत्कृष्टता की प्रतिध्वनि')}</h2>
+                <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight leading-tight">{t('Echoes of Excellence', 'उत्कृष्टता की प्रतिध्वनि')}</h2>
               </div>
               <Swiper
                 modules={[Autoplay]}
@@ -1714,7 +1834,7 @@ const Home = () => {
                   disableOnInteraction: false,
                   pauseOnMouseEnter: true,
                 }}
-                loop={true}
+                loop={testimonials.length > 3}
                 slidesPerView={1.4}
                 spaceBetween={16}
                 breakpoints={{
@@ -1795,7 +1915,7 @@ const Home = () => {
                     disableOnInteraction: false,
                     pauseOnMouseEnter: true,
                   }}
-                  loop={displayBlogs.length > 1}
+                  loop={displayBlogs.length > 3}
                   slidesPerView={1.4}
                   spaceBetween={16}
                   breakpoints={{
@@ -1899,6 +2019,12 @@ const Home = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         room={selectedRoom}
+      />
+
+      <ComboBookingModal
+        isOpen={isComboModalOpen}
+        onClose={() => setIsComboModalOpen(false)}
+        combo={selectedCombo}
       />
     </div >
   );

@@ -27,7 +27,7 @@ const HeroRoomSlider = () => {
           prevEl: '.swiper-button-prev-custom',
         }}
         autoplay={{ delay: 5000 }}
-        loop={true}
+        loop={rooms.slice(0, 5).length > 1}
         className="hero-room-swiper"
       >
         {rooms.slice(0, 5).map((room, index) => (

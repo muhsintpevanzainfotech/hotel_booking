@@ -167,7 +167,24 @@ exports.getRoomById = async (req, res) => {
             room = rooms.find(r => slugify(r.name) === id.toLowerCase());
         }
 
-        if (!room) return res.status(404).json({ message: 'Room not found' });
+        if (!room) {
+            const ComboOffer = require('../models/ComboOffer');
+            if (mongoose.Types.ObjectId.isValid(id)) {
+                room = await ComboOffer.findById(id);
+            } else {
+                const slugify = (text) => text
+                    .toString()
+                    .toLowerCase()
+                    .trim()
+                    .replace(/\s+/g, '-')
+                    .replace(/[^\w\-]+/g, '')
+                    .replace(/\-\-+/g, '-');
+                const combos = await ComboOffer.find();
+                room = combos.find(c => slugify(c.title) === id.toLowerCase());
+            }
+        }
+
+        if (!room) return res.status(404).json({ message: 'Sanctuary not found' });
         res.json(room);
     } catch (error) {
         res.status(500).json({ error: error.message });

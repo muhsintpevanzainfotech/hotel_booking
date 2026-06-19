@@ -13,13 +13,14 @@ import Footer from './components/layout/Footer';
 import Home from './pages/Home';
 import Rooms from './pages/Rooms';
 import RoomDetails from './pages/RoomDetails';
+import PackageDetails from './pages/PackageDetails';
 import Gallery from './pages/Gallery';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import Facilities from './pages/Facilities';
 import BookingStatus from './pages/BookingStatus';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsConditions from './pages/TermsConditions';
-import Facilities from './pages/Facilities';
 import Blog from './pages/Blog';
 import BlogDetails from './pages/BlogDetails';
 import Offers from './pages/Offers';
@@ -54,6 +55,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/rooms" element={<Rooms />} />
             <Route path="/rooms/:id" element={<RoomDetails />} />
+            <Route path="/packages/:id" element={<PackageDetails />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />

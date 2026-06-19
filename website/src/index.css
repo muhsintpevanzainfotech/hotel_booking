@@ -507,3 +507,120 @@ nav, footer, .fixed {
   border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
+/* 
+   ==========================================================================
+   Premium Luxury Resort Typography System
+   ==========================================================================
+*/
+
+/* 1. Global Headings overrides: Forced SemiBold (600), Outfit font, and elegant tracking */
+h1, h2, h3, h4, h5, h6,
+.font-headings {
+  font-family: var(--font-headings) !important;
+  font-weight: 600 !important; /* Force SemiBold (600) weight */
+  letter-spacing: -0.015em !important;
+}
+
+/* Consistent responsive visual hierarchy across all viewports */
+h1 {
+  font-size: clamp(2rem, 5vw, 3.25rem) !important; /* Page Title (e.g. Sanctuaries & Experiences marketplace title) */
+  line-height: 1.15 !important;
+}
+
+h2 {
+  font-size: clamp(1.65rem, 4vw, 2.25rem) !important; /* Section headings */
+  line-height: 1.25 !important;
+}
+
+h3 {
+  font-size: clamp(1.15rem, 2.5vw, 1.35rem) !important; /* Card/Sub-section titles */
+  line-height: 1.35 !important;
+}
+
+h4 {
+  font-size: clamp(1rem, 2vw, 1.15rem) !important;
+  line-height: 1.4 !important;
+}
+
+/* 2. Global description & subtitle text: Regular (400), comfortable line height (relaxed), Inter font */
+p.section-description,
+p.card-description,
+p.hero-description,
+.description-text,
+p[class*="text-neutral-500"],
+p[class*="text-gray-500"],
+p[class*="text-white/80"] {
+  font-family: var(--font-body) !important;
+  font-weight: 400 !important; /* Regular */
+  line-height: 1.7 !important; /* Comfortable line height */
+}
+
+/* Section subtitles / overlines above headings (e.g. "Our Sanctuaries", "Exclusive Amenities") */
+p[class*="tracking-[0.4em]"],
+p[class*="tracking-[0.3em]"],
+.section-subtitle {
+  font-family: var(--font-headings) !important;
+  font-weight: 600 !important; /* SemiBold */
+  font-size: 10px !important;
+  letter-spacing: 0.35em !important;
+  text-transform: uppercase !important;
+  color: var(--color-secondary) !important; /* Premium luxury resort look */
+}
+
+/* Limit card descriptions to 2-3 lines to maintain clean grids and layout */
+.card-desc-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  line-height: 1.7 !important;
+}
+
+.card-desc-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  line-height: 1.7 !important;
+}
+
+/* 
+   ==========================================================================
+   Premium Luxury Booking CTA Button
+   ==========================================================================
+*/
+.btn-book-now {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0F4C4C !important; /* Brand Deep Teal */
+  color: #ffffff !important;
+  font-family: var(--font-body) !important;
+  font-weight: 600 !important; /* SemiBold */
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  border-radius: 9999px !important; /* Modern Pill Shape */
+  box-shadow: 0 4px 14px 0 rgba(15, 76, 76, 0.2) !important;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  cursor: pointer !important;
+  border: 1px solid transparent !important;
+}
+
+.btn-book-now:hover:not(:disabled) {
+  background-color: #C5A880 !important; /* Gold hover */
+  box-shadow: 0 6px 20px 0 rgba(197, 168, 128, 0.3) !important;
+  transform: translateY(-2px) !important; /* Elegant elevation */
+}
+
+.btn-book-now:active:not(:disabled) {
+  transform: translateY(1px) !important;
+  box-shadow: 0 2px 8px 0 rgba(15, 76, 76, 0.15) !important;
+}
+
+.btn-book-now:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  background-color: #9CA3AF !important; /* Standard disabled gray */
+  box-shadow: none !important;
+}
+

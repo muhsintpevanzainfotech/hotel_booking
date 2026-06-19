@@ -308,7 +308,7 @@ const BookingModal = ({ isOpen, onClose, room }) => {
                                             <button 
                                                 type="button" 
                                                 onClick={() => setStep(1)}
-                                                className="flex-1 py-4 bg-white border border-gray-200 text-gray-400 rounded-full font-black uppercase text-xs tracking-widest hover:border-[#0F4C4C] hover:text-[#0F4C4C] transition-all active:scale-95"
+                                                className="flex-1 py-4 bg-white border border-[#C5A880]/30 text-[#0F4C4C] rounded-full font-semibold uppercase text-xs tracking-widest hover:bg-[#FAF6F0] hover:border-[#C5A880] transition-all duration-300 active:scale-95 cursor-pointer"
                                             >
                                                 {t('Back', 'पीछे')}
                                             </button>
@@ -316,7 +316,7 @@ const BookingModal = ({ isOpen, onClose, room }) => {
                                         <button 
                                             type="submit" 
                                             disabled={isSubmitting}
-                                            className="flex-1 bg-[#0F4C4C] text-white py-4 rounded-full font-black uppercase text-xs tracking-[0.25em] shadow-[0_20px_40px_-10px_rgba(15,76,76,0.35)] hover:bg-[#2E7D7D] transition-all active:scale-95 disabled:opacity-50"
+                                            className="btn-book-now flex-1 py-4 text-xs cursor-pointer"
                                         >
                                             {isSubmitting ? t('Processing...', 'प्रक्रिया...') : (
                                                 <span className="flex items-center justify-center gap-3">
@@ -346,7 +346,7 @@ const BookingModal = ({ isOpen, onClose, room }) => {
                                     <p className="text-xl md:text-3xl font-mono font-bold text-[#0F4C4C] tracking-tighter">{bookingSuccess.bookingReference}</p>
                                 </div>
                                 <div className="pt-6 md:pt-16">
-                                    <button onClick={onClose} className="px-10 md:px-14 py-4 md:py-5 bg-[#0F4C4C] text-white rounded-full font-black uppercase text-xs tracking-widest shadow-2xl hover:bg-[#2E7D7D] transition-all active:scale-95">
+                                    <button onClick={onClose} className="btn-book-now px-10 md:px-14 py-4 md:py-5 text-xs cursor-pointer">
                                       {t('Dismiss', 'बंद करें', 'ശരി')}
                                     </button>
                                 </div>
