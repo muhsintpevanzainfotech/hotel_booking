@@ -399,6 +399,7 @@ const RecentBookings = ({ apiBase, role = "User" }) => {
                     <div>
                         <h4 className="text-xl font-bold text-white tracking-tight">{viewModal.booking.guestName || 'Unknown Guest'}</h4>
                         <p className="text-[11px] text-text-secondary uppercase tracking-[0.2em] font-bold">{viewModal.booking.email}</p>
+                        <p className="text-[11px] text-primary font-bold tracking-wider mt-0.5">{viewModal.booking.phone}</p>
                     </div>
                     <div className="ml-auto">
                         <Badge status={viewModal.booking.status === 'Approved' ? 'success' : viewModal.booking.status === 'Pending' ? 'warning' : 'danger'}>
@@ -434,7 +435,19 @@ const RecentBookings = ({ apiBase, role = "User" }) => {
                             {viewModal.booking.paymentStatus || 'Unpaid'}
                         </Badge>
                     </div>
-                    <div className="col-span-2 p-4 bg-bg-subtle border border-border-subtle rounded-2xl space-y-1">
+                    <div className="p-4 bg-bg-subtle border border-border-subtle rounded-2xl space-y-1">
+                        <p className="text-[10px] text-text-secondary uppercase tracking-widest font-black">Contact Number</p>
+                        <p className="text-white font-bold">{viewModal.booking.phone || 'N/A'}</p>
+                    </div>
+                    <div className="p-4 bg-bg-subtle border border-border-subtle rounded-2xl space-y-1">
+                        <p className="text-[10px] text-text-secondary uppercase tracking-widest font-black">Sanctuary Type</p>
+                        <p className="text-white font-bold">{viewModal.booking.roomModel === 'ComboOffer' ? 'Combo Package' : 'Standard Room'}</p>
+                    </div>
+                    <div className="p-4 bg-bg-subtle border border-border-subtle rounded-2xl space-y-1">
+                        <p className="text-[10px] text-text-secondary uppercase tracking-widest font-black">Booking Placed On</p>
+                        <p className="text-white font-bold">{viewModal.booking.createdAt ? new Date(viewModal.booking.createdAt).toLocaleString() : 'N/A'}</p>
+                    </div>
+                    <div className="p-4 bg-bg-subtle border border-border-subtle rounded-2xl space-y-1">
                         <p className="text-[10px] text-text-secondary uppercase tracking-widest font-black">Internal Reference</p>
                         <p className="text-primary font-mono font-bold tracking-tighter text-lg">{viewModal.booking.bookingReference || 'N/A'}</p>
                     </div>

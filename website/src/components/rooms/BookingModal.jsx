@@ -28,6 +28,17 @@ const BookingModal = ({ isOpen, onClose, room }) => {
     const [totalPrice, setTotalPrice] = useState(0);
 
     useEffect(() => {
+        if (isOpen) {
+            document.body.classList.add('modal-open');
+        } else {
+            document.body.classList.remove('modal-open');
+        }
+        return () => {
+            document.body.classList.remove('modal-open');
+        };
+    }, [isOpen]);
+
+    useEffect(() => {
         if (formData.checkIn && formData.checkOut && room) {
             const start = new Date(formData.checkIn);
             const end = new Date(formData.checkOut);

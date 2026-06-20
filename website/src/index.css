@@ -6,7 +6,7 @@
    Using standard CSS variables and properties instead of Tailwind-specific at-rules.
 */
 
-:root {
+@theme {
   --color-primary: #0F4C4C;
   --color-secondary: #2E7D7D;
   --color-background: #F8FAFA;
@@ -622,5 +622,15 @@ p[class*="tracking-[0.3em]"],
   cursor: not-allowed !important;
   background-color: #9CA3AF !important; /* Standard disabled gray */
   box-shadow: none !important;
+}
+
+/* Hide chatbot when modal is open */
+body.modal-open #chatbot-trigger,
+body.modal-open .chatbot-container {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  transform: translateY(10px) !important;
+  transition: all 0.4s ease !important;
 }
 

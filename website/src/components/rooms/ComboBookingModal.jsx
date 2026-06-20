@@ -44,6 +44,17 @@ const ComboBookingModal = ({ isOpen, onClose, combo }) => {
         }
     }, [isOpen, combo]);
 
+    useEffect(() => {
+        if (isOpen) {
+            document.body.classList.add('modal-open');
+        } else {
+            document.body.classList.remove('modal-open');
+        }
+        return () => {
+            document.body.classList.remove('modal-open');
+        };
+    }, [isOpen]);
+
     // Dynamic Metadata Generators based on package title & category
     const details = useMemo(() => {
         if (!combo) return null;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   MessageSquare, Send, X, Calendar, Users, CheckCircle, 
@@ -9,6 +10,7 @@ import toast from 'react-hot-toast';
 import { getImageUrl } from '../../utils/imageHelper';
 
 const Chatbot = () => {
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [rooms, setRooms] = useState([]);
   const [loadingRooms, setLoadingRooms] = useState(false);
@@ -23,6 +25,21 @@ const Chatbot = () => {
   });
 
   const messagesEndRef = useRef(null);
+  const [isModalActive, setIsModalActive] = useState(false);
+
+  useEffect(() => {
+    setIsModalActive(document.body.classList.contains('modal-open'));
+
+    const observer = new MutationObserver(() => {
+      setIsModalActive(document.body.classList.contains('modal-open'));
+    });
+
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const isDetailsPage = location.pathname.includes('/rooms/') || location.pathname.includes('/packages/');
 
   // Initialize chatbot with welcome message
   useEffect(() => {
@@ -541,10 +558,14 @@ const Chatbot = () => {
     }
   };
 
+  if (isDetailsPage || isModalActive) {
+    return null;
+  }
+
   return (
     <>
       {/* Floating Toggle Button */}
-      <div className="fixed bottom-6 right-8 z-[9999]">
+      <div id="chatbot-trigger" className="fixed bottom-6 right-8 z-[9999]">
         <button 
           onClick={() => setIsOpen(!isOpen)}
           className={`w-14 h-14 bg-gradient-to-tr from-[#0F4C4C] to-[#2E7D7D] text-white rounded-full shadow-[0_15px_30px_-5px_rgba(15,76,76,0.5)] hover:shadow-[0_20px_40px_-5px_rgba(15,76,76,0.7)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all group relative border border-white/10`}
@@ -576,7 +597,7 @@ const Chatbot = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
             transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-            className="fixed bottom-[88px] right-4 sm:right-8 z-[9999] w-[calc(100vw-2rem)] sm:w-[380px] h-[calc(100vh-120px)] sm:h-[540px] max-h-[600px] bg-white/95 backdrop-blur-lg rounded-[28px] border border-gray-100 shadow-[0_30px_70px_-15px_rgba(15,76,76,0.3)] overflow-hidden flex flex-col"
+            className="chatbot-container fixed bottom-[88px] right-4 sm:right-8 z-[9999] w-[calc(100vw-2rem)] sm:w-[380px] h-[calc(100vh-120px)] sm:h-[540px] max-h-[600px] bg-white/95 backdrop-blur-lg rounded-[28px] border border-gray-100 shadow-[0_30px_70px_-15px_rgba(15,76,76,0.3)] overflow-hidden flex flex-col"
           >
             {/* Header */}
             <div className="bg-[#0F4C4C] p-4 text-white flex items-center justify-between shadow-md relative">

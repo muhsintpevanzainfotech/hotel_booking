@@ -31,6 +31,46 @@ const Rooms = () => {
 
     const sliderRef = useRef(null);
 
+    const [isStuck, setIsStuck] = useState(false);
+    const [navbarHeight, setNavbarHeight] = useState(80);
+
+    useEffect(() => {
+        const handleScrollAndResize = () => {
+            const navEl = document.querySelector('nav');
+            let currentNavbarHeight = 80;
+            if (navEl) {
+                currentNavbarHeight = navEl.offsetHeight;
+            }
+            
+            setNavbarHeight(prev => {
+                if (prev !== currentNavbarHeight) {
+                    return currentNavbarHeight;
+                }
+                return prev;
+            });
+
+            if (window.innerWidth >= 768) {
+                const filterWrapper = document.getElementById('filter-wrapper');
+                if (filterWrapper) {
+                    const rect = filterWrapper.getBoundingClientRect();
+                    // When sticky is top: currentNavbarHeight, rect.top is exactly currentNavbarHeight when stuck
+                    setIsStuck(rect.top <= (currentNavbarHeight + 5));
+                }
+            } else {
+                setIsStuck(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScrollAndResize);
+        window.addEventListener('resize', handleScrollAndResize);
+        handleScrollAndResize();
+
+        return () => {
+            window.removeEventListener('scroll', handleScrollAndResize);
+            window.removeEventListener('resize', handleScrollAndResize);
+        };
+    }, []);
+
     // Persisted favorites state
     const [favorites, setFavorites] = useState(() => {
         try {
@@ -239,9 +279,19 @@ const Rooms = () => {
                 </div>
             </section>
 
-            {/* Sticky Navigation and Search Bar */}
-            <div className="sticky top-24 z-30 max-w-[1150px] mx-auto px-6 -mt-8">
-                <div className="bg-white/95 backdrop-blur-xl p-5 rounded-[32px] shadow-xl border border-gray-100 flex flex-col gap-4">
+            {/* Filter and Grid Layout Container */}
+            <div className="max-w-[1150px] mx-auto px-6 mt-6 md:mt-8 space-y-6 md:space-y-8">
+                {/* Sticky Navigation and Search Bar */}
+                <div 
+                    id="filter-wrapper"
+                    className="relative md:sticky z-30 w-full transition-all duration-300"
+                    style={{ top: window.innerWidth >= 768 ? `${navbarHeight}px` : 'auto' }}
+                >
+                    <div className={`transition-all duration-500 ease-in-out ${
+                        isStuck 
+                            ? 'bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgba(15,76,76,0.06)] border-neutral-200/80 p-3.5 md:p-4 rounded-[24px]' 
+                            : 'bg-white border-neutral-200/80 p-5 md:p-6 rounded-[32px] shadow-sm'
+                    } border flex flex-col gap-4`}>
                     {/* Top Row: Primary Filter + Search */}
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4 w-full">
                         {/* Primary Filter Pill Control */}
@@ -341,11 +391,11 @@ const Rooms = () => {
                             <ChevronRight size={14} />
                         </button>
                     </div>
+                    </div>
                 </div>
-            </div>
 
-            {/* Grid Layout */}
-            <div className="max-w-[1150px] mx-auto px-6 py-10">
+                {/* Grid Layout */}
+                <div className="pb-10">
                 {isLoading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[1, 2, 3, 4, 5, 6].map((n) => (
@@ -516,6 +566,7 @@ const Rooms = () => {
                     </AnimatePresence>
                 )}
             </div>
+        </div>
 
             <BookingModal 
                 isOpen={isRoomModalOpen} 

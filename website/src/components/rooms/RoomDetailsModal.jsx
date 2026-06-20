@@ -52,6 +52,17 @@ const RoomDetailsModal = ({ isOpen, onClose, room, onBookNow }) => {
         setTotalPrice(0);
     }, [room, isOpen]);
 
+    useEffect(() => {
+        if (isOpen) {
+            document.body.classList.add('modal-open');
+        } else {
+            document.body.classList.remove('modal-open');
+        }
+        return () => {
+            document.body.classList.remove('modal-open');
+        };
+    }, [isOpen]);
+
     // Calculate total price
     useEffect(() => {
         if (formData.checkIn && formData.checkOut && room) {
