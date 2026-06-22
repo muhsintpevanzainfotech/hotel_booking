@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, User, Mail, Phone, Users, CheckCircle, ChevronRight, BookmarkCheck, Sparkles, ShieldCheck } from 'lucide-react';
+import { X, Calendar, User, Mail, Phone, Users, CheckCircle, ChevronRight, BookmarkCheck, Sparkles, ShieldCheck, Tag } from 'lucide-react';
 import toast from 'react-hot-toast';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useLanguage } from '../../context/LanguageContext';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../../utils/imageHelper';
+import { calculateDiscountAmount, validatePromoCode } from '../../utils/promoHelper';
 
 
 const BookingModal = ({ isOpen, onClose, room }) => {
@@ -26,10 +27,35 @@ const BookingModal = ({ isOpen, onClose, room }) => {
     });
 
     const [totalPrice, setTotalPrice] = useState(0);
+    const [offers, setOffers] = useState([]);
+    const [promoInput, setPromoInput] = useState('');
+    const [appliedPromo, setAppliedPromo] = useState(null);
+    const [promoError, setPromoError] = useState('');
+    const [promoDiscount, setPromoDiscount] = useState(0);
+
+    useEffect(() => {
+        const fetchOffers = async () => {
+            try {
+                const res = await fetch(`${import.meta.env.VITE_API_BASE}/offers`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setOffers(data);
+                }
+            } catch (e) {
+                console.error("Failed to fetch offers", e);
+            }
+        };
+        fetchOffers();
+    }, []);
 
     useEffect(() => {
         if (isOpen) {
             document.body.classList.add('modal-open');
+            setStep(1);
+            setPromoInput('');
+            setAppliedPromo(null);
+            setPromoError('');
+            setPromoDiscount(0);
         } else {
             document.body.classList.remove('modal-open');
         }
@@ -44,12 +70,47 @@ const BookingModal = ({ isOpen, onClose, room }) => {
             const end = new Date(formData.checkOut);
             const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
             if (days > 0) {
-                setTotalPrice(days * room.price);
+                const originalTotal = days * room.price;
+                if (appliedPromo) {
+                    const disc = calculateDiscountAmount(appliedPromo.discount, originalTotal);
+                    setPromoDiscount(disc);
+                    setTotalPrice(originalTotal - disc);
+                } else {
+                    setPromoDiscount(0);
+                    setTotalPrice(originalTotal);
+                }
             } else {
                 setTotalPrice(0);
+                setPromoDiscount(0);
             }
         }
-    }, [formData.checkIn, formData.checkOut, room?.price]);
+    }, [formData.checkIn, formData.checkOut, room?.price, appliedPromo]);
+
+    const handleApplyPromo = (e) => {
+        e.preventDefault();
+        setPromoError('');
+        if (!promoInput.trim()) {
+            setAppliedPromo(null);
+            return;
+        }
+        
+        const offer = validatePromoCode(promoInput, offers);
+        if (offer) {
+            setAppliedPromo(offer);
+            toast.success(t('Promo code applied successfully!', 'प्रोमो कोड सफलतापूर्वक लागू किया गया!'));
+        } else {
+            setAppliedPromo(null);
+            setPromoError(t('Invalid or expired promo code', 'अमान्य या समाप्त प्रोमो कोड'));
+            toast.error(t('Invalid promo code', 'अमान्य प्रोमो कोड'));
+        }
+    };
+
+    const handleRemovePromo = () => {
+        setAppliedPromo(null);
+        setPromoInput('');
+        setPromoError('');
+        toast.success(t('Promo code removed', 'प्रोमो कोड हटा दिया गया'));
+    };
 
     const handleInputChange = (e) => {
         let { name, value } = e.target;
@@ -84,7 +145,9 @@ const BookingModal = ({ isOpen, onClose, room }) => {
                 body: JSON.stringify({
                     ...formData,
                     room: room._id,
-                    totalPrice
+                    totalPrice,
+                    promoCode: appliedPromo ? appliedPromo.code : undefined,
+                    discountAmount: promoDiscount
                 })
             });
 
@@ -160,11 +223,23 @@ const BookingModal = ({ isOpen, onClose, room }) => {
                             <motion.div 
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
-                                className="mt-0 md:mt-12 p-3 md:p-8 bg-[#0F4C4C] rounded-2xl md:rounded-3xl text-white shadow-lg md:shadow-2xl relative overflow-hidden shrink-0 ml-auto md:ml-0"
+                                className="mt-0 md:mt-12 p-4 md:p-6 bg-[#0F4C4C] rounded-2xl md:rounded-3xl text-white shadow-lg md:shadow-2xl relative overflow-hidden shrink-0 ml-auto md:ml-0 w-full"
                             >
                                 <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 hidden md:block"></div>
-                                <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest opacity-60 mb-0.5 md:mb-2">{t('Total Price', 'कुल राशि')}</p>
-                                <p className="text-sm md:text-4xl font-black tracking-tighter">₹{totalPrice.toLocaleString()}</p>
+                                {appliedPromo && promoDiscount > 0 ? (
+                                    <div className="space-y-1.5 mb-3 pb-3 border-b border-white/10 text-xs font-bold uppercase tracking-wider">
+                                        <div className="flex justify-between opacity-70 text-[9px]">
+                                            <span>{t('Room Rate', 'कमरे का किराया')}</span>
+                                            <span>₹{(totalPrice + promoDiscount).toLocaleString()}</span>
+                                        </div>
+                                        <div className="flex justify-between text-lime-300 text-[9px]">
+                                            <span>{t('Promo Discount', 'प्रोमो छूट')}</span>
+                                            <span>-₹{promoDiscount.toLocaleString()}</span>
+                                        </div>
+                                    </div>
+                                ) : null}
+                                <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest opacity-60 mb-0.5 md:mb-1">{t('Total Price', 'कुल राशि')}</p>
+                                <p className="text-sm md:text-3xl font-black tracking-tighter">₹{totalPrice.toLocaleString()}</p>
                             </motion.div>
                         )}
                     </div>
@@ -302,6 +377,54 @@ const BookingModal = ({ isOpen, onClose, room }) => {
                                                     placeholder={t('Anything we should know?', 'कुछ भी जो हमें जानना चाहिए?')}
                                                 ></textarea>
                                             </div>
+                                            
+                                            {/* Promo Code Integration */}
+                                            <div className="space-y-3 bg-gray-50 p-5 rounded-[24px] border border-gray-100 shadow-inner">
+                                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1 flex items-center gap-1.5">
+                                                    <Tag size={13} className="text-[#2E7D7D]" />
+                                                    {t('Promo Code / Coupon', 'प्रोमो कोड / कूपन')}
+                                                </label>
+                                                <div className="flex gap-3">
+                                                    <input 
+                                                        type="text" 
+                                                        value={promoInput} 
+                                                        onChange={(e) => setPromoInput(e.target.value)}
+                                                        disabled={!!appliedPromo}
+                                                        placeholder={t('Enter promo code...', 'प्रोमो कोड दर्ज करें...')}
+                                                        className="flex-grow px-5 py-3.5 bg-white border border-gray-100 rounded-2xl text-xs font-bold text-[#0F4C4C] focus:ring-2 focus:ring-[#0F4C4C] outline-none transition-all uppercase placeholder:normal-case disabled:opacity-60"
+                                                    />
+                                                    {appliedPromo ? (
+                                                        <button 
+                                                            type="button" 
+                                                            onClick={handleRemovePromo}
+                                                            className="px-6 py-3.5 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-100 transition-all active:scale-95 cursor-pointer shrink-0"
+                                                        >
+                                                            {t('Remove', 'हटाएं')}
+                                                        </button>
+                                                    ) : (
+                                                        <button 
+                                                            type="button" 
+                                                            onClick={handleApplyPromo}
+                                                            className="px-6 py-3.5 bg-[#0F4C4C] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#2E7D7D] transition-all active:scale-95 cursor-pointer shrink-0"
+                                                        >
+                                                            {t('Apply', 'लागू करें')}
+                                                        </button>
+                                                    )}
+                                                </div>
+                                                {promoError && (
+                                                    <p className="text-rose-500 text-[10px] font-bold uppercase tracking-wider ml-1">{promoError}</p>
+                                                )}
+                                                {appliedPromo && (
+                                                    <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-4 py-2.5 rounded-xl border border-emerald-100 text-[10px] font-black uppercase tracking-wider">
+                                                        <CheckCircle size={14} className="shrink-0" />
+                                                        <span>
+                                                            {appliedPromo.code} {t('applied successfully! (', 'सफलतापूर्वक लागू! (')}
+                                                            {appliedPromo.discount} {t('OFF )', 'छूट )')}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
+
                                             <div className="flex items-start gap-4 p-5 md:p-6 bg-gray-50 rounded-2xl border border-gray-100 group">
                                                 <input 
                                                     type="checkbox" 

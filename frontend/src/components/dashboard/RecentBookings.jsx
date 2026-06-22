@@ -416,6 +416,11 @@ const RecentBookings = ({ apiBase, role = "User" }) => {
                     <div className="p-4 bg-bg-subtle border border-border-subtle rounded-2xl space-y-1">
                         <p className="text-[10px] text-text-secondary uppercase tracking-widest font-black">Total Valuation</p>
                         <p className="text-primary font-black text-lg">₹{viewModal.booking.totalPrice?.toLocaleString()}</p>
+                        {viewModal.booking.promoCode && (
+                            <p className="text-[9px] text-emerald-400 font-bold uppercase tracking-wider mt-1">
+                                Promo: {viewModal.booking.promoCode} (-₹{viewModal.booking.discountAmount?.toLocaleString()})
+                            </p>
+                        )}
                     </div>
                     <div className="p-4 bg-bg-subtle border border-border-subtle rounded-2xl space-y-1">
                         <p className="text-[10px] text-text-secondary uppercase tracking-widest font-black">Check-In Node</p>

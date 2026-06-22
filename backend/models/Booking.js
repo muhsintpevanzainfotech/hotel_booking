@@ -14,7 +14,9 @@ const bookingSchema = new mongoose.Schema({
     totalPrice: { type: Number, default: 0 },
     status: { type: String, enum: ['Pending', 'Approved', 'Rejected', 'Cancelled'], default: 'Pending' },
     paymentStatus: { type: String, enum: ['Unpaid', 'Paid'], default: 'Unpaid' },
-    bookingReference: { type: String, unique: true }
+    bookingReference: { type: String, unique: true },
+    promoCode: { type: String },
+    discountAmount: { type: Number, default: 0 }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Booking', bookingSchema);

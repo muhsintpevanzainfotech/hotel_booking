@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, User, Mail, Phone, Users, CheckCircle, ChevronRight, Sparkles, Check, Info, ShieldCheck, MapPin, Compass, ShieldAlert, Image as ImageIcon } from 'lucide-react';
+import { X, Calendar, User, Mail, Phone, Users, CheckCircle, ChevronRight, Sparkles, Check, Info, ShieldCheck, MapPin, Compass, ShieldAlert, Image as ImageIcon, Tag } from 'lucide-react';
 import toast from 'react-hot-toast';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useLanguage } from '../../context/LanguageContext';
 import { getImageUrl } from '../../utils/imageHelper';
+import { calculateDiscountAmount, validatePromoCode } from '../../utils/promoHelper';
 
 // Import local assets for mock gallery
 import sitoutImg from '../../assets/images/sitout.jpeg';
@@ -28,6 +29,28 @@ const ComboBookingModal = ({ isOpen, onClose, combo }) => {
         specialRequests: ''
     });
 
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [offers, setOffers] = useState([]);
+    const [promoInput, setPromoInput] = useState('');
+    const [appliedPromo, setAppliedPromo] = useState(null);
+    const [promoError, setPromoError] = useState('');
+    const [promoDiscount, setPromoDiscount] = useState(0);
+
+    useEffect(() => {
+        const fetchOffers = async () => {
+            try {
+                const res = await fetch(`${import.meta.env.VITE_API_BASE}/offers`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setOffers(data);
+                }
+            } catch (e) {
+                console.error("Failed to fetch offers", e);
+            }
+        };
+        fetchOffers();
+    }, []);
+
     useEffect(() => {
         if (isOpen) {
             setIsSubmitting(false);
@@ -41,6 +64,10 @@ const ComboBookingModal = ({ isOpen, onClose, combo }) => {
                 guestsCount: 2,
                 specialRequests: ''
             });
+            setPromoInput('');
+            setAppliedPromo(null);
+            setPromoError('');
+            setPromoDiscount(0);
         }
     }, [isOpen, combo]);
 
@@ -142,6 +169,46 @@ const ComboBookingModal = ({ isOpen, onClose, combo }) => {
         };
     }, [combo, t]);
 
+    useEffect(() => {
+        if (combo) {
+            const originalTotal = combo.price;
+            if (appliedPromo) {
+                const disc = calculateDiscountAmount(appliedPromo.discount, originalTotal);
+                setPromoDiscount(disc);
+                setTotalPrice(originalTotal - disc);
+            } else {
+                setPromoDiscount(0);
+                setTotalPrice(originalTotal);
+            }
+        }
+    }, [combo, appliedPromo]);
+
+    const handleApplyPromo = (e) => {
+        e.preventDefault();
+        setPromoError('');
+        if (!promoInput.trim()) {
+            setAppliedPromo(null);
+            return;
+        }
+        
+        const offer = validatePromoCode(promoInput, offers);
+        if (offer) {
+            setAppliedPromo(offer);
+            toast.success(t('Promo code applied successfully!', 'प्रोमो कोड सफलतापूर्वक लागू किया गया!'));
+        } else {
+            setAppliedPromo(null);
+            setPromoError(t('Invalid or expired promo code', 'अमान्य या समाप्त प्रोमो कोड'));
+            toast.error(t('Invalid promo code', 'अमान्य प्रोमो कोड'));
+        }
+    };
+
+    const handleRemovePromo = () => {
+        setAppliedPromo(null);
+        setPromoInput('');
+        setPromoError('');
+        toast.success(t('Promo code removed', 'प्रोमो कोड हटा दिया गया'));
+    };
+
     const handleInputChange = (e) => {
         let { name, value } = e.target;
         if (name === 'guestName') {
@@ -181,7 +248,9 @@ const ComboBookingModal = ({ isOpen, onClose, combo }) => {
                     children: 0,
                     specialRequests: formData.specialRequests,
                     room: combo._id,
-                    totalPrice: combo.price
+                    totalPrice: totalPrice,
+                    promoCode: appliedPromo ? appliedPromo.code : undefined,
+                    discountAmount: promoDiscount
                 })
             });
 
@@ -263,15 +332,29 @@ const ComboBookingModal = ({ isOpen, onClose, combo }) => {
                         </div>
 
                         {/* Starting Price Block */}
-                        <div className="p-5 bg-gradient-to-r from-teal-50/50 to-neutral-50 rounded-2xl border border-neutral-100 flex items-center justify-between shadow-sm">
-                            <div className="space-y-0.5">
-                                <span className="text-[9px] font-black uppercase tracking-widest text-[#2E7D7D]">{t('Price Details', 'दर विवरण')}</span>
-                                <p className="text-xs font-semibold text-gray-500">{t('All-Inclusive Signature Rate', 'सर्व समावेशी सिग्नेचर दर')}</p>
+                        <div className="p-5 bg-gradient-to-r from-teal-50/50 to-neutral-50 rounded-2xl border border-neutral-100 flex flex-col gap-3 shadow-sm">
+                            <div className="flex items-center justify-between">
+                                <div className="space-y-0.5">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-[#2E7D7D]">{t('Price Details', 'दर विवरण')}</span>
+                                    <p className="text-xs font-semibold text-gray-500">{t('All-Inclusive Signature Rate', 'सर्व-समावेशी सिग्नेचर दर')}</p>
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-2xl md:text-3xl font-black text-[#0F4C4C] tracking-tighter">₹{totalPrice.toLocaleString()}</span>
+                                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block leading-none">{t('per package', 'प्रति पैकेज')}</span>
+                                </div>
                             </div>
-                            <div className="text-right">
-                                <span className="text-2xl md:text-3xl font-black text-[#0F4C4C] tracking-tighter">₹{combo.price.toLocaleString()}</span>
-                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block leading-none">{t('per package', 'प्रति पैकेज')}</span>
-                            </div>
+                            {appliedPromo && promoDiscount > 0 && (
+                                <div className="flex flex-col gap-1 border-t border-[#0F4C4C]/10 pt-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                                    <div className="flex justify-between">
+                                        <span>{t('Original Rate', 'मूल दर')}</span>
+                                        <span>₹{combo.price.toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex justify-between text-emerald-600">
+                                        <span>{t('Discount Amount', 'छूट राशि')}</span>
+                                        <span>-₹{promoDiscount.toLocaleString()}</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Description */}
@@ -515,6 +598,68 @@ const ComboBookingModal = ({ isOpen, onClose, combo }) => {
                                                 placeholder={t('Anything we should arrange?', 'क्या हमें कुछ प्रबंधित करना चाहिए?')}
                                             ></textarea>
                                         </div>
+
+                                        {/* Promo Code Integration */}
+                                        <div className="space-y-2 bg-neutral-100/50 p-4 rounded-[20px] border border-neutral-200/30">
+                                            <label className="text-[9px] font-black uppercase tracking-[0.2em] text-[#0F4C4C]/60 ml-1 flex items-center gap-1.5">
+                                                <Tag size={12} className="text-[#2E7D7D]" />
+                                                {t('Promo Code', 'प्रोमो कोड')}
+                                            </label>
+                                            <div className="flex gap-2">
+                                                <input 
+                                                    type="text" 
+                                                    value={promoInput} 
+                                                    onChange={(e) => setPromoInput(e.target.value)}
+                                                    disabled={!!appliedPromo}
+                                                    placeholder={t('Enter promo code...', 'प्रोमो कोड दर्ज करें...')}
+                                                    className="flex-grow px-4 py-3 bg-white border border-neutral-200/40 rounded-xl text-xs font-bold text-[#0F4C4C] focus:ring-2 focus:ring-[#0F4C4C] outline-none transition-all uppercase placeholder:normal-case disabled:opacity-60"
+                                                />
+                                                {appliedPromo ? (
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={handleRemovePromo}
+                                                        className="px-4 py-3 bg-rose-50 border border-rose-100 text-rose-600 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-rose-100 transition-all active:scale-95 cursor-pointer shrink-0"
+                                                    >
+                                                        {t('Remove', 'हटाएं')}
+                                                    </button>
+                                                ) : (
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={handleApplyPromo}
+                                                        className="px-4 py-3 bg-[#0F4C4C] text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-[#2E7D7D] transition-all active:scale-95 cursor-pointer shrink-0"
+                                                    >
+                                                        {t('Apply', 'लागू करें')}
+                                                    </button>
+                                                )}
+                                            </div>
+                                            {promoError && (
+                                                <p className="text-rose-500 text-[9px] font-bold uppercase tracking-wider ml-1">{promoError}</p>
+                                            )}
+                                            {appliedPromo && (
+                                                <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-100 text-[9px] font-bold uppercase tracking-wider">
+                                                    <CheckCircle size={12} className="shrink-0" />
+                                                    <span>
+                                                        {appliedPromo.code} ({appliedPromo.discount} OFF)
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Total price breakdown preview */}
+                                        {appliedPromo && promoDiscount > 0 && (
+                                            <div className="p-3 bg-teal-50 rounded-2xl border border-teal-100 flex items-center justify-between text-[#0F4C4C]">
+                                                <div className="space-y-0.5">
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-[#2E7D7D]">{t('Calculated Price', 'कुल अनुमानित राशि')}</p>
+                                                    <p className="text-[9px] font-bold text-gray-550">
+                                                        {t('Promo discount applied', 'प्रोमो छूट लागू')}
+                                                    </p>
+                                                </div>
+                                                <div className="text-right">
+                                                    <span className="text-xl font-black tracking-tighter">₹{totalPrice.toLocaleString()}</span>
+                                                    <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest block leading-none">{t('Total', 'कुल')}</span>
+                                                </div>
+                                            </div>
+                                        )}
 
                                         {/* Submit Button */}
                                         <div className="pt-2">
