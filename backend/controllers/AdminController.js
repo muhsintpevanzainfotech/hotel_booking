@@ -619,6 +619,29 @@ exports.createVideoTestimonial = async (req, res) => {
     }
 };
 
+exports.updateVideoTestimonial = async (req, res) => {
+    try {
+        const testimonial = await VideoTestimonial.findById(req.params.id);
+        if (!testimonial) return res.status(404).json({ message: 'Video testimonial not found' });
+
+        if (req.file) {
+            if (testimonial.video) {
+                deleteFile(testimonial.video);
+            }
+            testimonial.video = req.file.path.replace(/\\/g, '/');
+        } else if (req.body.imageCleared === 'true') {
+            return res.status(400).json({ message: 'Video file is required' });
+        }
+
+        Object.assign(testimonial, req.body);
+        await testimonial.save();
+        res.json(testimonial);
+    } catch (error) {
+        console.error('Video Testimonial Update Error:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
 exports.deleteVideoTestimonial = async (req, res) => {
     try {
         const item = await VideoTestimonial.findById(req.params.id);

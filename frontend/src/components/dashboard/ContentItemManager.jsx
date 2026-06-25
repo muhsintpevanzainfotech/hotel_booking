@@ -449,12 +449,14 @@ const ContentItemManager = ({ type, apiBase }) => {
                       >
                         <Eye size={16} />
                       </button>
-                      <button 
-                        className="p-2.5 bg-bg-subtle border border-border-subtle rounded-xl text-text-secondary hover:text-cyan-400 hover:bg-cyan-400/5 hover:border-cyan-400/20 transition-all"
-                        onClick={(e) => { e.stopPropagation(); handleEdit(item); }}
-                      >
-                        <Edit3 size={16} />
-                      </button>
+                      {type !== 'video_testimonials' && (
+                        <button 
+                          className="p-2.5 bg-bg-subtle border border-border-subtle rounded-xl text-text-secondary hover:text-cyan-400 hover:bg-cyan-400/5 hover:border-cyan-400/20 transition-all"
+                          onClick={(e) => { e.stopPropagation(); handleEdit(item); }}
+                        >
+                          <Edit3 size={16} />
+                        </button>
+                      )}
                       <div className="w-px h-4 bg-bg-subtle mx-1" />
                       <button 
                         className="p-2.5 bg-bg-subtle border border-border-subtle rounded-xl text-text-secondary hover:text-rose-500 hover:bg-rose-500/5 hover:border-rose-500/20 transition-all"

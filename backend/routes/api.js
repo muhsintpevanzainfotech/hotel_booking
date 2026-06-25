@@ -79,6 +79,7 @@ router.patch('/testimonials/:id', auth, checkRole(['super_admin', 'admin']), upl
 router.delete('/testimonials/:id', auth, checkRole(['super_admin', 'admin']), adminCtrl.deleteTestimonial);
 
 router.post('/video-testimonials', auth, checkRole(['super_admin', 'admin']), galleryUpload.single('video'), adminCtrl.createVideoTestimonial);
+router.patch('/video-testimonials/:id', auth, checkRole(['super_admin', 'admin']), galleryUpload.single('video'), adminCtrl.updateVideoTestimonial);
 router.delete('/video-testimonials/:id', auth, checkRole(['super_admin', 'admin']), adminCtrl.deleteVideoTestimonial);
 
 router.get('/facilities', adminCtrl.getFacilities);
