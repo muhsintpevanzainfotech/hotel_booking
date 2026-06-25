@@ -261,7 +261,8 @@ const Chatbot = () => {
       data: { ...prev.data, room }
     }));
 
-    addBotMessage(`Perfect! You've selected **${room.name}** (₹${room.price.toLocaleString()}/night). Let's choose your check-in and check-out dates:`, null, 'date_select');
+    const displayPrice = room.hasDiscount ? room.finalPrice : room.price;
+    addBotMessage(`Perfect! You've selected **${room.name}** (₹${displayPrice.toLocaleString()}/night). Let's choose your check-in and check-out dates:`, null, 'date_select');
   };
 
   const handleDatesSubmit = (checkIn, checkOut) => {
@@ -282,7 +283,8 @@ const Chatbot = () => {
 
     const diffTime = Math.abs(end - start);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    const totalPrice = diffDays * flowState.data.room.price;
+    const basePrice = flowState.data.room.hasDiscount ? flowState.data.room.finalPrice : flowState.data.room.price;
+    const totalPrice = diffDays * basePrice;
 
     setFlowState(prev => ({
       ...prev,
@@ -522,7 +524,15 @@ const Chatbot = () => {
                   <div className="p-3 flex-1 flex flex-col justify-between space-y-2">
                     <div>
                       <h4 className="font-bold text-primary text-xs line-clamp-1">{room.name}</h4>
-                      <p className="text-[10px] font-black text-secondary">₹{room.price.toLocaleString()} <span className="text-[8px] font-normal text-gray-400">/ night</span></p>
+                      {room.hasDiscount ? (
+                        <p className="text-[10px] font-black text-secondary">
+                          <span className="text-rose-600">₹{room.finalPrice?.toLocaleString()}</span>{" "}
+                          <span className="text-gray-400 line-through text-[8px]">₹{room.price.toLocaleString()}</span>{" "}
+                          <span className="text-[8px] font-normal text-gray-400">/ night</span>
+                        </p>
+                      ) : (
+                        <p className="text-[10px] font-black text-secondary">₹{room.price.toLocaleString()} <span className="text-[8px] font-normal text-gray-400">/ night</span></p>
+                      )}
                       <p className="text-[8px] text-gray-400 font-medium">Cap: {room.capacity} Guests</p>
                     </div>
                     <button 

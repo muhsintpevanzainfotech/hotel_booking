@@ -121,7 +121,8 @@ const RoomDetails = () => {
             const end = new Date(formData.checkOut);
             const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
             if (days > 0) {
-                const originalTotal = days * room.price;
+                const basePrice = room.hasDiscount ? room.finalPrice : room.price;
+                const originalTotal = days * basePrice;
                 if (appliedPromo) {
                     const disc = calculateDiscountAmount(appliedPromo.discount, originalTotal);
                     setPromoDiscount(disc);
@@ -436,9 +437,16 @@ const RoomDetails = () => {
                                     <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">{t('Rate details', 'दर विवरण')}</p>
                                     <p className="text-xs font-bold text-gray-500">{t('Standard Rate Plan', 'मानक दर योजना')}</p>
                                 </div>
-                                <div className="text-right">
-                                    <span className="text-2xl font-black text-[#0F4C4C] tracking-tighter">₹{room.price.toLocaleString()}</span>
-                                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block leading-none">{t('per night', 'प्रति रात')}</span>
+                                <div className="text-right flex flex-col items-end">
+                                    {room.hasDiscount ? (
+                                        <>
+                                            <span className="text-2xl font-black text-rose-600 tracking-tighter">₹{room.finalPrice?.toLocaleString()}</span>
+                                            <span className="text-xs text-gray-400 line-through">₹{room.price.toLocaleString()}</span>
+                                        </>
+                                    ) : (
+                                        <span className="text-2xl font-black text-[#0F4C4C] tracking-tighter">₹{room.price.toLocaleString()}</span>
+                                    )}
+                                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block leading-none mt-1">{t('per night', 'प्रति रात')}</span>
                                 </div>
                             </div>
 

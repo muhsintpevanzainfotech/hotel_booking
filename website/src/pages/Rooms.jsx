@@ -528,8 +528,15 @@ const Rooms = () => {
                                                 {/* Price block */}
                                                 <div className="flex items-baseline justify-between w-full">
                                                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('Rate details', 'दर विवरण')}</span>
-                                                    <div className="text-right flex items-baseline gap-1">
-                                                        <span className="text-xl font-black text-[#0F4C4C] tracking-tighter">₹{item.price.toLocaleString()}</span>
+                                                    <div className="text-right flex items-baseline gap-1.5 flex-wrap justify-end">
+                                                        {item.hasDiscount ? (
+                                                            <>
+                                                                <span className="text-xs text-gray-400 line-through">₹{item.price.toLocaleString()}</span>
+                                                                <span className="text-xl font-black text-rose-600 tracking-tighter">₹{item.finalPrice?.toLocaleString()}</span>
+                                                            </>
+                                                        ) : (
+                                                            <span className="text-xl font-black text-[#0F4C4C] tracking-tighter">₹{item.price.toLocaleString()}</span>
+                                                        )}
                                                         <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none">
                                                             / {item.isRoom ? t('night', 'रात') : t('package', 'पैकेज')}
                                                         </span>

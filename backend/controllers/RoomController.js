@@ -5,8 +5,37 @@ const { deleteFile } = require('../utils/fileHelper');
 
 exports.createRoom = async (req, res) => {
     try {
-        const { name, description, price, amenities, quantity, type, capacity, imageCategories } = req.body;
+        const { name, description, price, amenities, quantity, type, capacity, imageCategories, hasDiscount, discountType, discountValue } = req.body;
         
+        const parsedHasDiscount = hasDiscount === true || hasDiscount === 'true';
+        const parsedDiscountType = discountType || 'Percentage';
+        const parsedDiscountValue = parsedHasDiscount ? (parseFloat(discountValue) || 0) : 0;
+        const parsedPrice = parseFloat(price) || 0;
+
+        if (parsedHasDiscount) {
+            if (parsedDiscountValue < 0) {
+                return res.status(400).json({ message: 'Discount cannot be negative.' });
+            }
+            if (parsedDiscountType === 'Percentage') {
+                if (parsedDiscountValue > 100) {
+                    return res.status(400).json({ message: 'Percentage must be between 0 and 100.' });
+                }
+            } else if (parsedDiscountType === 'Flat Amount') {
+                if (parsedDiscountValue > parsedPrice) {
+                    return res.status(400).json({ message: 'Flat Discount cannot be greater than the Room Price.' });
+                }
+            }
+        }
+
+        let finalPrice = parsedPrice;
+        if (parsedHasDiscount) {
+            if (parsedDiscountType === 'Percentage') {
+                finalPrice = Math.max(0, parsedPrice - (parsedPrice * parsedDiscountValue) / 100);
+            } else if (parsedDiscountType === 'Flat Amount') {
+                finalPrice = Math.max(0, parsedPrice - parsedDiscountValue);
+            }
+        }
+
         const categories = imageCategories ? (typeof imageCategories === 'string' ? JSON.parse(imageCategories) : imageCategories) : [];
         const images = req.files ? req.files.map((file, index) => {
             return {
@@ -18,13 +47,17 @@ exports.createRoom = async (req, res) => {
         const newRoom = new Room({
             name, 
             description, 
-            price, 
+            price: parsedPrice, 
             type,
             capacity,
             amenities: typeof amenities === 'string' ? JSON.parse(amenities) : amenities, 
             facilities: req.body.facilities ? (typeof req.body.facilities === 'string' ? JSON.parse(req.body.facilities) : req.body.facilities) : [],
             quantity, 
-            images
+            images,
+            hasDiscount: parsedHasDiscount,
+            discountType: parsedDiscountType,
+            discountValue: parsedDiscountValue,
+            finalPrice
         });
         
         await newRoom.save();
@@ -47,6 +80,40 @@ exports.updateRoom = async (req, res) => {
     try {
         const room = await Room.findById(req.params.id);
         if (!room) return res.status(404).json({ message: 'Room not found' });
+
+        const currentPrice = req.body.price !== undefined ? parseFloat(req.body.price) : room.price;
+        const currentHasDiscount = req.body.hasDiscount !== undefined ? (req.body.hasDiscount === true || req.body.hasDiscount === 'true') : room.hasDiscount;
+        const currentDiscountType = req.body.discountType !== undefined ? req.body.discountType : room.discountType;
+        const currentDiscountValue = req.body.discountValue !== undefined ? parseFloat(req.body.discountValue) : room.discountValue;
+
+        if (currentHasDiscount) {
+            if (currentDiscountValue < 0) {
+                return res.status(400).json({ message: 'Discount cannot be negative.' });
+            }
+            if (currentDiscountType === 'Percentage') {
+                if (currentDiscountValue > 100) {
+                    return res.status(400).json({ message: 'Percentage must be between 0 and 100.' });
+                }
+            } else if (currentDiscountType === 'Flat Amount') {
+                if (currentDiscountValue > currentPrice) {
+                    return res.status(400).json({ message: 'Flat Discount cannot be greater than the Room Price.' });
+                }
+            }
+        }
+
+        let finalPrice = currentPrice;
+        if (currentHasDiscount) {
+            if (currentDiscountType === 'Percentage') {
+                finalPrice = Math.max(0, currentPrice - (currentPrice * currentDiscountValue) / 100);
+            } else if (currentDiscountType === 'Flat Amount') {
+                finalPrice = Math.max(0, currentPrice - currentDiscountValue);
+            }
+        }
+
+        req.body.hasDiscount = currentHasDiscount;
+        req.body.discountType = currentDiscountType;
+        req.body.discountValue = currentHasDiscount ? currentDiscountValue : 0;
+        req.body.finalPrice = finalPrice;
 
         const { amenities, facilities, imageCategories } = req.body;
         if (amenities) {

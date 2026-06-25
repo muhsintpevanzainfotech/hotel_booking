@@ -70,7 +70,8 @@ const BookingModal = ({ isOpen, onClose, room }) => {
             const end = new Date(formData.checkOut);
             const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
             if (days > 0) {
-                const originalTotal = days * room.price;
+                const basePrice = room.hasDiscount ? room.finalPrice : room.price;
+                const originalTotal = days * basePrice;
                 if (appliedPromo) {
                     const disc = calculateDiscountAmount(appliedPromo.discount, originalTotal);
                     setPromoDiscount(disc);
@@ -84,7 +85,7 @@ const BookingModal = ({ isOpen, onClose, room }) => {
                 setPromoDiscount(0);
             }
         }
-    }, [formData.checkIn, formData.checkOut, room?.price, appliedPromo]);
+    }, [formData.checkIn, formData.checkOut, room?.price, room?.finalPrice, room?.hasDiscount, appliedPromo]);
 
     const handleApplyPromo = (e) => {
         e.preventDefault();
@@ -203,7 +204,15 @@ const BookingModal = ({ isOpen, onClose, room }) => {
                             <div className="min-w-0">
                                 <p className="text-[8px] md:hidden font-black text-[#2E7D7D] uppercase tracking-widest mb-0.5">{t('Your Sanctuary', 'आपका अभयारण्य')}</p>
                                 <h3 className="text-base md:text-3xl font-bold text-[#0F4C4C] tracking-tight truncate md:whitespace-normal md:mb-2">{room.name}</h3>
-                                <p className="text-[#2E7D7D] font-black text-xs md:text-xl tracking-tight leading-none">₹{room.price} <span className="text-[10px] md:text-xs font-normal text-gray-400">/ night</span></p>
+                                {room.hasDiscount ? (
+                                    <div className="flex items-baseline gap-1.5 flex-wrap">
+                                        <span className="text-rose-600 font-black text-xs md:text-xl tracking-tight leading-none">₹{room.finalPrice}</span>
+                                        <span className="text-gray-400 line-through text-[10px] md:text-xs">₹{room.price}</span>
+                                        <span className="text-[10px] md:text-xs font-normal text-gray-400">/ night</span>
+                                    </div>
+                                ) : (
+                                    <p className="text-[#2E7D7D] font-black text-xs md:text-xl tracking-tight leading-none">₹{room.price} <span className="text-[10px] md:text-xs font-normal text-gray-400">/ night</span></p>
+                                )}
                             </div>
                             
                             <div className="hidden md:block space-y-6">

@@ -40,12 +40,45 @@ const RoomManager = ({ apiBase }) => {
     type: 'Rooms',
     capacity: 2,
     amenities: [],
-    facilities: []
+    facilities: [],
+    hasDiscount: false,
+    discountType: 'Percentage',
+    discountValue: 0
   });
   const [imagesState, setImagesState] = useState([]); // Array of { file, url, category, isExisting }
   const [isSaving, setIsSaving] = useState(false);
   const [typeFilter, setTypeFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
+
+  // Real-time calculated final price & validations
+  const validationErrors = useMemo(() => {
+    const errors = {};
+    const priceNum = parseFloat(formData.price) || 0;
+    if (formData.hasDiscount) {
+      const val = parseFloat(formData.discountValue);
+      if (isNaN(val) || val < 0) {
+        errors.discountValue = 'Discount cannot be negative';
+      } else if (formData.discountType === 'Percentage' && val > 100) {
+        errors.discountValue = 'Percentage must be between 0 and 100';
+      } else if (formData.discountType === 'Flat Amount' && val > priceNum) {
+        errors.discountValue = 'Flat Discount cannot be greater than the Room Price';
+      }
+    }
+    return errors;
+  }, [formData.hasDiscount, formData.discountType, formData.discountValue, formData.price]);
+
+  const finalPrice = useMemo(() => {
+    const p = parseFloat(formData.price) || 0;
+    if (!formData.hasDiscount) return p;
+    const val = parseFloat(formData.discountValue) || 0;
+    if (validationErrors.discountValue) return p;
+    if (formData.discountType === 'Percentage') {
+      return Math.max(0, p - (p * val) / 100);
+    } else if (formData.discountType === 'Flat Amount') {
+      return Math.max(0, p - val);
+    }
+    return p;
+  }, [formData.hasDiscount, formData.discountType, formData.discountValue, formData.price, validationErrors]);
 
   const CATEGORIES = ["General", "Bedroom", "Bathroom", "Living Room", "Exterior", "Other"];
   const FACILITIES = [
@@ -113,7 +146,10 @@ const RoomManager = ({ apiBase }) => {
       type: room.type || 'Rooms',
       capacity: room.capacity || 2,
       amenities: Array.isArray(room.amenities) ? room.amenities : [],
-      facilities: room.facilities?.filter(Boolean).map(f => typeof f === 'object' ? f._id : f) || []
+      facilities: room.facilities?.filter(Boolean).map(f => typeof f === 'object' ? f._id : f) || [],
+      hasDiscount: room.hasDiscount || false,
+      discountType: room.discountType || 'Percentage',
+      discountValue: room.discountValue || 0
     });
     setImagesState((room.images || []).map(img => {
       const url = typeof img === 'string' ? img : img?.url;
@@ -131,7 +167,7 @@ const RoomManager = ({ apiBase }) => {
     setIsModalOpen(false);
     setIsEditing(false);
     setCurrentRoomId(null);
-    setFormData({ name: '', description: '', price: '', quantity: 1, type: 'Rooms', capacity: 2, amenities: [], facilities: [] });
+    setFormData({ name: '', description: '', price: '', quantity: 1, type: 'Rooms', capacity: 2, amenities: [], facilities: [], hasDiscount: false, discountType: 'Percentage', discountValue: 0 });
     setImagesState([]);
   };
 
@@ -148,6 +184,9 @@ const RoomManager = ({ apiBase }) => {
 
   const handleSave = async () => {
     if (!formData.name || !formData.price) return toast.error('Name and Price are mandatory');
+    if (Object.keys(validationErrors).length > 0) {
+      return toast.error(Object.values(validationErrors)[0]);
+    }
     
     setIsSaving(true);
     try {
@@ -345,8 +384,17 @@ const RoomManager = ({ apiBase }) => {
                       </Badge>
                   </td>
                   <td className="text-right">
-                      <p className="font-black text-text-primary text-[15px] tracking-tight">₹{room.price}</p>
-                      <p className="text-[10px] text-text-secondary font-bold uppercase tracking-widest mt-0.5">Per Night</p>
+                      {room.hasDiscount ? (
+                          <>
+                              <p className="font-black text-text-primary text-[15px] tracking-tight">₹{room.finalPrice}</p>
+                              <p className="text-[9px] text-rose-500 font-bold uppercase tracking-widest mt-0.5 line-through">₹{room.price}</p>
+                          </>
+                      ) : (
+                          <>
+                              <p className="font-black text-text-primary text-[15px] tracking-tight">₹{room.price}</p>
+                              <p className="text-[10px] text-text-secondary font-bold uppercase tracking-widest mt-0.5">Per Night</p>
+                          </>
+                      )}
                   </td>
                   <td className="pr-8">
                     <div className="flex items-center justify-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
@@ -453,8 +501,17 @@ const RoomManager = ({ apiBase }) => {
                             <p className="text-[11px] text-text-secondary font-black uppercase tracking-[0.2em] mt-1">Property Identification</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-2xl font-black text-primary tracking-tighter">₹{viewModal.room.price}</p>
-                            <p className="text-[9px] text-text-secondary font-bold uppercase tracking-widest">Per Session Cycle</p>
+                            {viewModal.room.hasDiscount ? (
+                                <>
+                                    <p className="text-2xl font-black text-primary tracking-tighter">₹{viewModal.room.finalPrice}</p>
+                                    <p className="text-[9px] text-rose-500 font-bold uppercase tracking-widest line-through">₹{viewModal.room.price}</p>
+                                </>
+                            ) : (
+                                <>
+                                    <p className="text-2xl font-black text-primary tracking-tighter">₹{viewModal.room.price}</p>
+                                    <p className="text-[9px] text-text-secondary font-bold uppercase tracking-widest">Per Session Cycle</p>
+                                </>
+                            )}
                         </div>
                     </div>
 
@@ -574,6 +631,72 @@ const RoomManager = ({ apiBase }) => {
                         placeholder="Price in INR" 
                         value={formData.price}
                         onChange={e => setFormData({...formData, price: e.target.value})}
+                    />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2 col-span-2">
+                    <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Has Discount?</label>
+                    <CustomSelect 
+                        value={formData.hasDiscount ? 'Yes' : 'No'}
+                        onChange={val => setFormData({ ...formData, hasDiscount: val === 'Yes' })}
+                        options={[
+                            { value: 'No', label: 'No' },
+                            { value: 'Yes', label: 'Yes' }
+                        ]}
+                        className="w-full"
+                    />
+                </div>
+            </div>
+
+            <AnimatePresence initial={false}>
+                {formData.hasDiscount && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.25, ease: 'easeInOut' }}
+                        className="grid grid-cols-2 gap-4"
+                    >
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Discount Type</label>
+                            <CustomSelect 
+                                value={formData.discountType}
+                                onChange={val => setFormData({ ...formData, discountType: val })}
+                                options={[
+                                    { value: 'Percentage', label: 'Percentage (%)' },
+                                    { value: 'Flat Amount', label: 'Flat Amount (₹)' }
+                                ]}
+                                className="w-full"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Discount Value</label>
+                            <input 
+                                type="number" 
+                                className="w-full bg-bg-subtle border border-border-subtle rounded-xl p-3 text-sm text-text-primary outline-none focus:border-border-primary-subtle transition-all" 
+                                placeholder={formData.discountType === 'Percentage' ? 'e.g. 10' : 'e.g. 500'} 
+                                value={formData.discountValue}
+                                min="0"
+                                onChange={e => setFormData({...formData, discountValue: e.target.value})}
+                            />
+                            {validationErrors.discountValue && (
+                                <p className="text-rose-500 text-[10px] font-bold uppercase tracking-wider ml-1 mt-1">{validationErrors.discountValue}</p>
+                            )}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <div className="grid grid-cols-1 gap-4">
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">Final Price</label>
+                    <input 
+                        type="text" 
+                        readOnly
+                        className="w-full bg-bg-primary-subtle border border-border-primary-subtle rounded-xl p-3 text-sm text-primary font-black outline-none cursor-not-allowed" 
+                        value={`₹${finalPrice.toLocaleString()}`}
                     />
                 </div>
             </div>

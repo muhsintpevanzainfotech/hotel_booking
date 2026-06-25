@@ -49,7 +49,17 @@ const HeroRoomSlider = () => {
                     <span className="text-[10px] font-bold uppercase tracking-widest text-primary">{t('Luxury Suite', 'लक्जरी सुइट', 'ലക്സറി സ്യൂട്ട്')}</span>
                   </div>
                   <h3>{room.name}</h3>
-                  <p className="price-tag">₹{room.price} <span>/ {t('Night', 'रात', 'രാത്രി')}</span></p>
+                  <p className="price-tag">
+                    {room.hasDiscount ? (
+                      <>
+                        <span className="text-gray-400 line-through text-xs font-semibold mr-1.5">₹{room.price}</span>
+                        ₹{room.finalPrice}
+                      </>
+                    ) : (
+                      `₹${room.price}`
+                    )}
+                    <span>/ {t('Night', 'रात', 'രാത്രി')}</span>
+                  </p>
                   <Link to="/rooms" className="slide-link">
                     {t('View Details', 'विवरण देखें', 'വിവരം കാണുക')} <ArrowRight size={14} />
                   </Link>
