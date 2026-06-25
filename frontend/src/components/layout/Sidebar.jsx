@@ -19,7 +19,8 @@ import {
   Zap,
   Ticket,
   Layers,
-  Gift
+  Gift,
+  Video
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSelector, useDispatch } from 'react-redux';
@@ -53,6 +54,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { id: 'contact_messages', label: 'Contact Messages', icon: Mail, roles: ['super_admin', 'admin'] },
     { id: 'social', label: 'Social Ecosystem', icon: Globe, roles: ['super_admin'] },
     { id: 'testimonials', label: 'Testimonials', icon: MessageCircle, roles: ['super_admin', 'admin'] },
+    { id: 'video-testimonials', label: 'Video Testimonials', icon: Video, roles: ['super_admin', 'admin'] },
     { id: 'gallery', label: 'Gallery', icon: Image, roles: ['super_admin', 'admin'] },
     { id: 'blogs', label: 'Blogs', icon: FileText, roles: ['super_admin', 'admin'] },
     { id: 'banners', label: 'Banners', icon: Zap, roles: ['super_admin', 'admin'] },

@@ -46,6 +46,7 @@ router.get('/contact', adminCtrl.getContact);
 router.get('/blogs', adminCtrl.getBlogs);
 router.get('/blogs/:slug', adminCtrl.getBlogBySlug);
 router.get('/testimonials', adminCtrl.getTestimonials);
+router.get('/video-testimonials', adminCtrl.getVideoTestimonials);
 router.get('/gallery', adminCtrl.getGallery);
 router.get('/banners', adminCtrl.getBanners);
 router.get('/offers', adminCtrl.getOffers);
@@ -76,6 +77,9 @@ router.delete('/gallery/:id', auth, checkRole(['super_admin', 'admin']), adminCt
 router.post('/testimonials', auth, checkRole(['super_admin', 'admin']), upload.single('image'), adminCtrl.createTestimonial);
 router.patch('/testimonials/:id', auth, checkRole(['super_admin', 'admin']), upload.single('image'), adminCtrl.updateTestimonial);
 router.delete('/testimonials/:id', auth, checkRole(['super_admin', 'admin']), adminCtrl.deleteTestimonial);
+
+router.post('/video-testimonials', auth, checkRole(['super_admin', 'admin']), galleryUpload.single('video'), adminCtrl.createVideoTestimonial);
+router.delete('/video-testimonials/:id', auth, checkRole(['super_admin', 'admin']), adminCtrl.deleteVideoTestimonial);
 
 router.get('/facilities', adminCtrl.getFacilities);
 router.post('/facilities', auth, checkRole(['super_admin', 'admin']), upload.fields([{ name: 'image', maxCount: 1 }, { name: 'coverImage', maxCount: 1 }]), adminCtrl.createFacility);

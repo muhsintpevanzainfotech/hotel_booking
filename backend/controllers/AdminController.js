@@ -3,6 +3,7 @@ const Contact = require('../models/Contact');
 const Blog = require('../models/Blog');
 const Facility = require('../models/Facility');
 const Testimonial = require('../models/Testimonial');
+const VideoTestimonial = require('../models/VideoTestimonial');
 const Gallery = require('../models/Gallery');
 const Notification = require('../models/Notification');
 const Banner = require('../models/Banner');
@@ -30,10 +31,10 @@ exports.createEnquiry = async (req, res) => {
 };
 
 exports.getEnquiries = async (req, res) => {
-    try { 
+    try {
         const { type } = req.query;
         const filter = type ? { type } : {};
-        res.json(await Enquiry.find(filter).sort('-createdAt')); 
+        res.json(await Enquiry.find(filter).sort('-createdAt'));
     }
     catch (error) { res.status(500).json({ error: error.message }); }
 };
@@ -134,10 +135,10 @@ exports.createTestimonial = async (req, res) => {
         });
         await testimonial.save();
         res.status(201).json(testimonial);
-    } catch (error) { 
+    } catch (error) {
         console.error('Testimonial Creation Error:', error);
         const status = error.name === 'ValidationError' ? 400 : 500;
-        res.status(status).json({ message: error.message }); 
+        res.status(status).json({ message: error.message });
     }
 };
 
@@ -177,13 +178,13 @@ exports.uploadGallery = async (req, res) => {
     const path = require('path');
     try {
         console.log('Gallery Upload Files:', req.files);
-        
+
         // Validate each file based on type
         for (const file of req.files) {
             const ext = path.extname(file.originalname).toLowerCase();
             const isImage = ['.jpg', '.jpeg', '.png', '.webp'].includes(ext);
             const isVideo = ['.mp4', '.mov', '.webm'].includes(ext);
-            
+
             if (isImage && file.size > 5000000) {
                 // Cleanup files on disk
                 req.files.forEach(f => {
@@ -212,9 +213,9 @@ exports.uploadGallery = async (req, res) => {
         });
         const docs = await Gallery.insertMany(images);
         res.status(201).json(docs);
-    } catch (error) { 
+    } catch (error) {
         console.error('Gallery Upload Error:', error);
-        res.status(500).json({ message: error.message }); 
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -318,7 +319,7 @@ exports.updateFacility = async (req, res) => {
         if (title !== undefined) facility.title = title;
         if (description !== undefined || content !== undefined) facility.description = description || content;
         if (icon !== undefined) facility.icon = icon;
-        
+
         await facility.save();
         res.json(facility);
     } catch (error) { res.status(500).json({ error: error.message }); }
@@ -585,4 +586,48 @@ exports.deleteComboOffer = async (req, res) => {
         await ComboOffer.findByIdAndDelete(req.params.id);
         res.json({ message: 'Combo offer removed' });
     } catch (error) { res.status(500).json({ error: error.message }); }
+};
+
+// Video Testimonials
+exports.getVideoTestimonials = async (req, res) => {
+    try {
+        res.json(await VideoTestimonial.find().sort('-createdAt'));
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.createVideoTestimonial = async (req, res) => {
+    try {
+        // console.log('Video Testimonial File:', req.file);
+
+        let videoUrl = '';
+        if (req.file) {
+            videoUrl = req.file.path.replace(/\\/g, '/');
+        } else {
+            return res.status(400).json({ message: 'Video file is required' });
+        }
+
+        const videoTestimonial = new VideoTestimonial({
+            video: videoUrl
+        });
+        await videoTestimonial.save();
+        res.status(201).json(videoTestimonial);
+    } catch (error) {
+        console.error('Video Testimonial Creation Error:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.deleteVideoTestimonial = async (req, res) => {
+    try {
+        const item = await VideoTestimonial.findById(req.params.id);
+        if (item && item.video) {
+            deleteFile(item.video);
+        }
+        await VideoTestimonial.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Video testimonial removed' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };

@@ -306,7 +306,7 @@ const AvailabilityCalendar = ({ apiBase }) => {
                             {booking.guestName?.charAt(0)}
                           </div>
                           <div>
-                            <p className="font-bold text-white text-[15px]">{booking.guestName}</p>
+                            <p className="font-bold text-white text-[15px] capitalize">{booking.guestName}</p>
                             <p className="text-[10px] text-text-secondary font-black uppercase tracking-widest mt-0.5">{booking.room?.name || booking.room?.title || 'N/A'}</p>
                           </div>
                         </div>
@@ -364,7 +364,7 @@ const AvailabilityCalendar = ({ apiBase }) => {
                       {viewModal.booking.guestName?.charAt(0)}
                   </div>
                   <div>
-                      <h4 className="text-xl font-bold text-white tracking-tight">{viewModal.booking.guestName}</h4>
+                      <h4 className="text-xl font-bold text-white tracking-tight capitalize">{viewModal.booking.guestName}</h4>
                       <p className="text-[11px] text-text-secondary uppercase tracking-[0.2em] font-bold">{viewModal.booking.email}</p>
                   </div>
                   <div className="ml-auto">

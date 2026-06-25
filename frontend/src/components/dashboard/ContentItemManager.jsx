@@ -24,7 +24,8 @@ import {
   Link as LinkIcon,
   Palette,
   Layers,
-  Gift
+  Gift,
+  Video
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -58,6 +59,7 @@ const ContentItemManager = ({ type, apiBase }) => {
   const config = {
     blogs: { title: 'Blog Engine', icon: FileText, endpoint: '/blogs' },
     testimonials: { title: 'Guest Reviews', icon: Star, endpoint: '/testimonials' },
+    video_testimonials: { title: 'Video Testimonials', icon: Video, endpoint: '/video-testimonials' },
     facilities: { title: 'Hotel Facilities', icon: Briefcase, endpoint: '/facilities' },
     banners: { title: 'Promotional Banners', icon: Zap, endpoint: '/banners' },
     offers: { title: 'Special Offers', icon: Ticket, endpoint: '/offers' },
@@ -161,6 +163,8 @@ const ContentItemManager = ({ type, apiBase }) => {
         setPreviewUrl(getImageUrl(item.coverImage, apiBase));
     } else if (item.image) {
         setPreviewUrl(getImageUrl(item.image, apiBase));
+    } else if (item.video) {
+        setPreviewUrl(getImageUrl(item.video, apiBase));
     } else {
         setPreviewUrl(null);
     }
@@ -208,6 +212,8 @@ const ContentItemManager = ({ type, apiBase }) => {
             if (selectedFile) {
                 if (type === 'combo_offers') {
                     fd.append('coverImage', selectedFile);
+                } else if (type === 'video_testimonials') {
+                    fd.append('video', selectedFile);
                 } else {
                     fd.append('image', selectedFile);
                 }
@@ -381,8 +387,14 @@ const ContentItemManager = ({ type, apiBase }) => {
                 >
                   <td className="pl-8">
                     <div className="flex items-center gap-4">
-                      {item.coverImage || item.image ? (
-                        <img src={getImageUrl(item.coverImage || item.image, apiBase)} alt="" className="w-10 h-10 rounded-xl object-cover border border-border-subtle" />
+                      {item.coverImage || item.image || item.video ? (
+                        item.video ? (
+                          <div className="w-10 h-10 rounded-xl overflow-hidden border border-border-subtle bg-black flex items-center justify-center">
+                            <video src={getImageUrl(item.video, apiBase)} className="w-full h-full object-cover" />
+                          </div>
+                        ) : (
+                          <img src={getImageUrl(item.coverImage || item.image, apiBase)} alt="" className="w-10 h-10 rounded-xl object-cover border border-border-subtle" />
+                        )
                       ) : (
                         <div className="w-10 h-10 rounded-xl bg-bg-subtle border border-border-subtle flex items-center justify-center text-text-secondary">
                           <active.icon size={16} />
@@ -390,11 +402,11 @@ const ContentItemManager = ({ type, apiBase }) => {
                       )}
                       <div className="space-y-1">
                         <p className="font-bold text-text-primary tracking-tight leading-tight text-[15px] group-hover:text-primary transition-colors">
-                            {item.title || item.name}
+                            {type === 'video_testimonials' ? "Video Testimonial" : (item.title || item.name)}
                             {item.role && <span className="text-[10px] text-primary/60 ml-2 font-black uppercase tracking-widest">{item.role}</span>}
                         </p>
                         <p className="text-[11px] text-text-secondary font-medium uppercase tracking-wider line-clamp-1 w-[380px] opacity-60 group-hover:opacity-100 transition-opacity">
-                          {item.content || item.description}
+                          {type === 'video_testimonials' ? item.video : (item.content || item.description)}
                         </p>
                       </div>
                     </div>
@@ -522,20 +534,28 @@ const ContentItemManager = ({ type, apiBase }) => {
       >
         {viewModal.item && (
             <div className="space-y-6">
-                {(viewModal.item.coverImage || viewModal.item.image) && (
-                    <div className="w-full h-64 rounded-3xl overflow-hidden border border-border-subtle relative group">
-                        <img src={getImageUrl(viewModal.item.coverImage || viewModal.item.image, apiBase)} className="w-full h-full object-cover" alt="intelligence" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/80 to-transparent" />
-                        <div className="absolute bottom-6 left-6 right-6">
-                            <Badge status="success">Operational Asset</Badge>
-                        </div>
+                {(viewModal.item.coverImage || viewModal.item.image || viewModal.item.video) && (
+                    <div className="w-full h-64 rounded-3xl overflow-hidden border border-border-subtle relative group bg-black">
+                        {viewModal.item.video ? (
+                            <video src={getImageUrl(viewModal.item.video, apiBase)} className="w-full h-full object-contain" controls />
+                        ) : (
+                            <img src={getImageUrl(viewModal.item.coverImage || viewModal.item.image, apiBase)} className="w-full h-full object-cover" alt="intelligence" />
+                        )}
+                        {!viewModal.item.video && (
+                            <>
+                                <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/80 to-transparent pointer-events-none" />
+                                <div className="absolute bottom-6 left-6 right-6 pointer-events-none">
+                                    <Badge status="success">Operational Asset</Badge>
+                                </div>
+                            </>
+                        )}
                     </div>
                 )}
                 
                 <div className="space-y-4">
                     <div className="space-y-1">
                         <h4 className="text-xl font-bold text-white tracking-tight leading-tight">
-                            {viewModal.item.title || viewModal.item.name}
+                            {type === 'video_testimonials' ? "Video Testimonial" : (viewModal.item.title || viewModal.item.name)}
                         </h4>
                         {viewModal.item.role && (
                             <p className="text-[11px] text-primary font-black uppercase tracking-[0.2em]">{viewModal.item.role}</p>
@@ -597,7 +617,7 @@ const ContentItemManager = ({ type, apiBase }) => {
                         </div>
                     )}
 
-                    {type !== 'categories' && (
+                    {type !== 'categories' && type !== 'video_testimonials' && (
                         <div className="space-y-2">
                             <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest ml-1">
                                 {type === 'blogs' ? 'Blog Content' : type === 'combo_offers' ? 'Combo Details' : 'Payload Content'}
@@ -638,7 +658,64 @@ const ContentItemManager = ({ type, apiBase }) => {
         }
       >
         <div className="space-y-8 max-w-[580px] mx-auto py-2">
-            {type === 'testimonials' ? (
+            {type === 'video_testimonials' ? (
+                <>
+                    {/* Visual Asset Section - Video Drag & Drop */}
+                    <div className="space-y-3">
+                        <label className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] ml-1 flex items-center gap-2">
+                            <Camera size={14} className="text-primary" /> Video Testimonial Upload
+                        </label>
+                        <div 
+                            className={`relative group transition-all duration-500 ${dragActive ? 'scale-[1.02]' : ''}`}
+                            onDragEnter={handleDrag}
+                            onDragLeave={handleDrag}
+                            onDragOver={handleDrag}
+                            onDrop={handleDrop}
+                        >
+                            <input 
+                                type="file" 
+                                className="hidden" 
+                                id="testimonial-video"
+                                onChange={e => setSelectedFile(e.target.files[0])}
+                                accept="video/*"
+                            />
+                            <label 
+                                htmlFor="testimonial-video" 
+                                className={`flex flex-col items-center justify-center gap-4 py-12 border-2 border-dashed rounded-[32px] cursor-pointer transition-all duration-500 ${
+                                    dragActive 
+                                    ? 'border-primary bg-bg-primary-subtle' 
+                                    : 'border-border-subtle bg-bg-subtle hover:border-border-primary-subtle hover:bg-bg-subtle'
+                                }`}
+                            >
+                                {previewUrl ? (
+                                    <div className="relative w-full px-6 flex flex-col items-center">
+                                        <div className="w-full max-w-[240px] rounded-2xl overflow-hidden border border-border-primary shadow-2xl relative z-10 bg-black aspect-[9/16]">
+                                            <video src={previewUrl} className="w-full h-full object-cover" controls />
+                                        </div>
+                                        <button 
+                                            type="button"
+                                            onClick={(e) => { e.preventDefault(); setSelectedFile(null); if (isEditing) { setPreviewUrl(null); setImageCleared(true); } }}
+                                            className="absolute top-2 right-10 bg-rose-500 text-white p-2 rounded-full z-20 shadow-lg hover:scale-110 transition-transform"
+                                        >
+                                            <X size={16} />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center gap-4">
+                                        <div className="w-16 h-16 bg-bg-subtle rounded-full flex items-center justify-center text-text-secondary border border-border-subtle group-hover:text-primary group-hover:border-border-primary-subtle transition-all">
+                                            <Upload size={28} />
+                                        </div>
+                                        <div className="text-center">
+                                            <p className="text-[13px] font-bold text-text-primary tracking-tight">Drop Video or Browse</p>
+                                            <p className="text-[10px] text-text-secondary uppercase tracking-[0.1em] mt-1 font-medium">MP4, MOV or WEBM • Maximum 50MB</p>
+                                        </div>
+                                    </div>
+                                )}
+                            </label>
+                        </div>
+                    </div>
+                </>
+            ) : type === 'testimonials' ? (
                 <>
                     {/* Visual Asset Section - Prominent Drag & Drop */}
                     <div className="space-y-3">

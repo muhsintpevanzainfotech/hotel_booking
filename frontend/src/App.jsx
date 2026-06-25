@@ -199,6 +199,7 @@ function App() {
                   <Route path="/enquiries" element={<EnquiryManager apiBase={API_BASE} type="enquiry" title="Guest Enquiries" />} />
                   <Route path="/contact_messages" element={<EnquiryManager apiBase={API_BASE} type="contact" title="Contact Messages" />} />
                   <Route path="/testimonials" element={<ContentItemManager type="testimonials" apiBase={API_BASE} />} />
+                  <Route path="/video-testimonials" element={<ContentItemManager type="video_testimonials" apiBase={API_BASE} />} />
                   <Route path="/settings" element={<SiteSettings apiBase={API_BASE} />} />
                   <Route path="/social" element={<SocialManager apiBase={API_BASE} />} />
                   <Route path="/facilities" element={<FacilitiesManager apiBase={API_BASE} />} />

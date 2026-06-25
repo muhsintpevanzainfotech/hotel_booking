@@ -602,6 +602,73 @@ const FacilityCard = ({ fac, index, t, onHeightChange }) => {
   );
 };
 
+const ReelVideoPlayer = ({ videoSrc }) => {
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+
+  const handlePlayPause = (e) => {
+    e.stopPropagation();
+    if (!videoRef.current) return;
+    if (isPlaying) {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      videoRef.current.play().catch(err => console.log("Play interrupted:", err));
+      setIsPlaying(true);
+    }
+  };
+
+  const handleMuteUnmute = (e) => {
+    e.stopPropagation();
+    if (!videoRef.current) return;
+    videoRef.current.muted = !isMuted;
+    setIsMuted(!isMuted);
+  };
+
+  return (
+    <div 
+      onClick={handlePlayPause}
+      className="relative aspect-[9/16] w-full rounded-[24px] overflow-hidden bg-black group/reel cursor-pointer shadow-lg border border-gray-100/10"
+    >
+      <video
+        ref={videoRef}
+        src={videoSrc}
+        loop
+        muted={isMuted}
+        playsInline
+        className="w-full h-full object-cover animate-fade-in"
+      />
+      {/* Play/Pause Center Overlay */}
+      <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover/reel:bg-black/30 transition-all duration-300 pointer-events-none z-10">
+        {!isPlaying && (
+          <button 
+            onClick={handlePlayPause}
+            className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white transition-all duration-300 hover:scale-110 hover:bg-white/25 active:scale-95 shadow-lg pointer-events-auto cursor-pointer"
+            aria-label="Play Reel"
+          >
+            <Play size={20} className="fill-white text-white translate-x-0.5" />
+          </button>
+        )}
+      </div>
+
+      {/* sound overlay control */}
+      <div className="absolute bottom-4 right-4 z-20">
+        <button
+          onClick={handleMuteUnmute}
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/40 backdrop-blur-md text-white hover:scale-105 hover:bg-black/60 active:scale-95 transition-all cursor-pointer"
+          aria-label={isMuted ? "Unmute reel" : "Mute reel"}
+        >
+          {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+        </button>
+      </div>
+
+      {/* Subtle bottom gradient to mimic reels interface overlay */}
+      <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/50 to-transparent pointer-events-none z-10" />
+    </div>
+  );
+};
+
 const Home = () => {
   const dispatch = useDispatch();
 
@@ -809,6 +876,7 @@ const Home = () => {
   }
   const visibleFacilities = displayFacilities;
   const [testimonials, setTestimonials] = useState([]);
+  const [videoTestimonials, setVideoTestimonials] = useState([]);
   const [galleryItems, setGalleryItems] = useState([]);
   const [banners, setBanners] = useState([]);
   const [blogs, setBlogs] = useState([]);
@@ -829,7 +897,7 @@ const Home = () => {
 
     const fetchContent = async () => {
       try {
-        const [facRes, testRes, galRes, banRes, blogRes, comboRes, offerRes, catRes] = await Promise.all([
+        const [facRes, testRes, galRes, banRes, blogRes, comboRes, offerRes, catRes, videoRes] = await Promise.all([
           fetch(`${import.meta.env.VITE_API_BASE}/facilities`),
           fetch(`${import.meta.env.VITE_API_BASE}/testimonials`),
           fetch(`${import.meta.env.VITE_API_BASE}/gallery`),
@@ -837,11 +905,13 @@ const Home = () => {
           fetch(`${import.meta.env.VITE_API_BASE}/blogs`),
           fetch(`${import.meta.env.VITE_API_BASE}/combo-offers`),
           fetch(`${import.meta.env.VITE_API_BASE}/offers`),
-          fetch(`${import.meta.env.VITE_API_BASE}/categories`)
+          fetch(`${import.meta.env.VITE_API_BASE}/categories`),
+          fetch(`${import.meta.env.VITE_API_BASE}/video-testimonials`)
         ]);
 
         if (facRes.ok) setFacilities(await facRes.json());
         if (testRes.ok) setTestimonials(await testRes.json());
+        if (videoRes.ok) setVideoTestimonials(await videoRes.json());
         if (galRes.ok) {
           const gallery = await galRes.json();
           setGalleryItems(gallery.slice(0, 6));
@@ -1445,86 +1515,7 @@ const Home = () => {
             })()}
           </div>
 
-          {/* 2.7 EXCLUSIVE OFFERS SECTION */ }
-          {
-            exclusiveOffers.length > 0 && (
-              <div className="max-w-[1400px] mx-auto px-4 py-8 pb-16">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 md:mb-16 gap-6">
-                  <div className="space-y-3">
-                    <p className="text-[9px] font-semibold uppercase tracking-[0.4em] text-teal-600">{t('Special Discounts', 'विशेष छूट')}</p>
-                    <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight">{t('Exclusive Offers', 'विशेष ऑफर')}</h2>
-                  </div>
-                  <Link to="/offers?tab=promos" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all">
-                    {t('View All Offers', 'सभी ऑफर देखें')}
-                  </Link>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {exclusiveOffers.slice(0, 3).map((offer, i) => (
-                    <motion.div
-                      key={offer._id || i}
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1, duration: 0.5 }}
-                      className="bg-white rounded-[40px] border border-gray-100 shadow-[0_15px_40px_rgba(0,0,0,0.03)] hover:shadow-2xl hover:border-teal-100 transition-all duration-300 p-8 flex flex-col justify-between relative overflow-hidden group h-[360px]"
-                    >
-                      <div className="absolute inset-y-0 right-0 w-24 opacity-[0.03] group-hover:opacity-10 group-hover:scale-125 transition-all duration-500 pointer-events-none">
-                        <Zap size={140} className="text-[#0F4C4C] absolute top-10 right-4" />
-                      </div>
-
-                      <div>
-                        <div className="flex items-center justify-between mb-6">
-                          <div className="w-12 h-12 bg-teal-50 rounded-2xl flex items-center justify-center text-[#0F4C4C] group-hover:bg-[#0F4C4C] group-hover:text-white transition-colors duration-300 shadow-sm">
-                            <Tag size={20} />
-                          </div>
-                          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 text-[#0F4C4C] rounded-full text-[9px] font-black uppercase tracking-wider">
-                            <Zap size={10} />
-                            {t('Promo Deal', 'प्रोमो डील')}
-                          </div>
-                        </div>
-
-                        <h3 className="text-xl font-black text-[#0F4C4C] mb-2 leading-tight tracking-tight group-hover:text-teal-800 transition-colors">
-                          {offer.title}
-                        </h3>
-                        <p className="text-3xl font-black text-teal-600 mb-4 tracking-tighter">
-                          {offer.discount}
-                        </p>
-                        <p className="text-gray-500 text-xs leading-relaxed line-clamp-2">
-                          {offer.description}
-                        </p>
-                      </div>
-
-                      <div className="pt-4 border-t border-gray-50 mt-4 flex flex-col gap-3">
-                        {offer.code && (
-                          <div className="flex items-center justify-between bg-[#F8FAFA] px-4 py-2.5 rounded-2xl border border-gray-100">
-                            <div className="flex flex-col">
-                              <span className="text-[7.5px] font-bold text-gray-400 uppercase tracking-wider">{t('Promo Code', 'प्रोमो कोड')}</span>
-                              <span className="text-xs font-black text-[#0F4C4C] tracking-widest">{offer.code}</span>
-                            </div>
-                            <button
-                              onClick={() => handleCopyCode(offer.code)}
-                              className="text-[#0F4C4C] hover:text-teal-600 p-1.5 rounded-lg hover:bg-white transition-all cursor-pointer"
-                              title="Copy Code"
-                            >
-                              {copiedCode === offer.code ? <Check size={14} className="text-green-600" /> : <Copy size={14} />}
-                            </button>
-                          </div>
-                        )}
-
-                        <button
-                          onClick={() => window.location.href = `/rooms?code=${offer.code}`}
-                          className="btn-book-now w-full py-3 text-[9px] cursor-pointer"
-                        >
-                          {t('Book with Offer', 'ऑफर के साथ बुक करें')}
-                        </button>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            )
-          }
 
 
           {/* PREMIUM MARQUEE - FULL WIDTH */ }
@@ -1822,6 +1813,53 @@ const Home = () => {
               </div>
             </div>
           </section>
+
+          {/* 5.5 WE SAID REELS SECTION */}
+          {videoTestimonials.length > 0 && (
+            <section className="py-16 bg-[#F8FAFA] relative overflow-hidden">
+              <div className="max-w-[1400px] mx-auto px-4 relative z-10">
+                <div className="flex flex-col items-center text-center space-y-3 mb-12">
+                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-teal-600">
+                    {t('Visual Guest Stories', 'दृश्य अतिथि कहानियां')}
+                  </p>
+                  <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight leading-tight">
+                    {t('What Our Clients Say', 'हमारे ग्राहक क्या कहते हैं')}
+                  </h2>
+                </div>
+
+                <Swiper
+                  modules={[Navigation]}
+                  navigation={true}
+                  loop={videoTestimonials.length > 4}
+                  slidesPerView={1.2}
+                  spaceBetween={20}
+                  breakpoints={{
+                    480: {
+                      slidesPerView: 1.8,
+                      spaceBetween: 20,
+                    },
+                    768: {
+                      slidesPerView: 2.8,
+                      spaceBetween: 24,
+                    },
+                    1024: {
+                      slidesPerView: 4,
+                      spaceBetween: 28,
+                    }
+                  }}
+                  className="w-full premium-reels-swiper pb-4"
+                >
+                  {videoTestimonials.map((reel) => (
+                    <SwiperSlide key={reel._id} className="h-auto">
+                      <div className="p-1">
+                        <ReelVideoPlayer videoSrc={getImageUrl(reel.video)} />
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
+            </section>
+          )}
 
           {/* 5. TESTIMONIAL SECTION */ }
           <section className="py-16 bg-white relative overflow-hidden">

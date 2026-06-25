@@ -78,6 +78,27 @@ const RecentBookings = ({ apiBase, role = "User" }) => {
     }
   };
 
+  const handleUpdatePaymentStatus = async (id, paymentStatus) => {
+    try {
+      const res = await fetch(`${apiBase}/bookings/${id}`, {
+        method: 'PATCH',
+        headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ paymentStatus })
+      });
+      if (res.ok) {
+        toast.success(`Payment marked as ${paymentStatus}`);
+        fetchBookings();
+      } else {
+        toast.error('Failed to update payment status');
+      }
+    } catch (err) {
+      toast.error('Network protocol error');
+    }
+  };
+
   const handleDelete = async () => {
     try {
       const res = await fetch(`${apiBase}/bookings/${deleteModal.id}`, {
@@ -219,7 +240,7 @@ const RecentBookings = ({ apiBase, role = "User" }) => {
                         {(booking.guestName || 'G').charAt(0).toUpperCase()}
                       </div>
                       <div className="min-w-0">
-                        <p className="font-bold text-text-primary truncate tracking-tight text-[15px]">{booking.guestName || 'Unknown Guest'}</p>
+                        <p className="font-bold text-text-primary truncate tracking-tight text-[15px] capitalize">{booking.guestName || 'Unknown Guest'}</p>
                         <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-wider mt-0.5">{booking.room?.name || booking.room?.title || 'Removed Suite'}</p>
                       </div>
                     </div>
@@ -250,13 +271,38 @@ const RecentBookings = ({ apiBase, role = "User" }) => {
                       >
                         <Eye size={16} />
                       </button>
-                      <div className="w-px h-4 bg-bg-subtle mx-1" />
-                      <button 
-                        onClick={() => setDeleteModal({ open: true, id: booking._id })}
-                        className="p-2.5 bg-bg-subtle border border-border-subtle rounded-xl text-text-secondary hover:text-rose-500 hover:bg-rose-500/5 hover:border-rose-500/20 transition-all" title="Terminate Entry"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      
+                      {booking.status === 'Pending' && (
+                        <>
+                          <div className="w-px h-4 bg-bg-subtle mx-0.5" />
+                          <button 
+                            onClick={() => handleUpdateStatus(booking._id, 'Approved')}
+                            className="p-2.5 bg-bg-subtle border border-border-subtle rounded-xl text-text-secondary hover:text-emerald-500 hover:bg-emerald-500/5 hover:border-emerald-500/20 transition-all" title="Accept Booking"
+                          >
+                            <CheckCircle size={16} />
+                          </button>
+                          
+                          <div className="w-px h-4 bg-bg-subtle mx-0.5" />
+                          <button 
+                            onClick={() => handleUpdateStatus(booking._id, 'Rejected')}
+                            className="p-2.5 bg-bg-subtle border border-border-subtle rounded-xl text-text-secondary hover:text-rose-500 hover:bg-rose-500/5 hover:border-rose-500/20 transition-all" title="Reject Booking"
+                          >
+                            <X size={16} />
+                          </button>
+                        </>
+                      )}
+
+                      {booking.paymentStatus !== 'Paid' && (
+                        <>
+                          <div className="w-px h-4 bg-bg-subtle mx-0.5" />
+                          <button 
+                            onClick={() => handleUpdatePaymentStatus(booking._id, 'Paid')}
+                            className="p-2.5 bg-bg-subtle border border-border-subtle rounded-xl text-text-secondary hover:text-amber-500 hover:bg-amber-500/5 hover:border-amber-500/20 transition-all" title="Mark as Paid"
+                          >
+                            <DollarSign size={16} />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </motion.tr>
@@ -397,7 +443,7 @@ const RecentBookings = ({ apiBase, role = "User" }) => {
                         {(viewModal.booking.guestName || 'G').charAt(0).toUpperCase()}
                     </div>
                     <div>
-                        <h4 className="text-xl font-bold text-white tracking-tight">{viewModal.booking.guestName || 'Unknown Guest'}</h4>
+                        <h4 className="text-xl font-bold text-white tracking-tight capitalize">{viewModal.booking.guestName || 'Unknown Guest'}</h4>
                         <p className="text-[11px] text-text-secondary uppercase tracking-[0.2em] font-bold">{viewModal.booking.email}</p>
                         <p className="text-[11px] text-primary font-bold tracking-wider mt-0.5">{viewModal.booking.phone}</p>
                     </div>

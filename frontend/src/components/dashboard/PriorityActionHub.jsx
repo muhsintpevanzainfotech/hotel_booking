@@ -225,7 +225,7 @@ const PriorityActionHub = ({ apiBase }) => {
                         </div>
                         <div className="min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-bold text-text-primary text-[14px]">
+                            <span className="font-bold text-text-primary text-[14px] capitalize">
                               {booking.guestName}
                             </span>
                             <span className={`px-2 py-0.5 text-[9px] font-black rounded-md uppercase tracking-wider ${priority.color}`}>
