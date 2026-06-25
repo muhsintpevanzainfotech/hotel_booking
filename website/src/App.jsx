@@ -27,7 +27,6 @@ import Offers from './pages/Offers';
 import NotFound from './pages/NotFound';
 
 // Components
-import Preloader from './components/common/Preloader';
 import useContact from './hooks/useContact';
 import Chatbot from './components/common/Chatbot';
 
@@ -45,7 +44,6 @@ function App() {
   const { contact } = useContact();
   return (
     <Router>
-      <Preloader />
       <Toaster position="bottom-right" />
       <ScrollToTop />
       <div className="flex flex-col min-h-screen">
