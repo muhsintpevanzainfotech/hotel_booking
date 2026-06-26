@@ -185,6 +185,19 @@ const RoomDetails = () => {
         return getImageUrl(imgObj.url || imgObj);
     };
 
+    const getDiscountBadgeText = () => {
+        if (!room || !room.hasDiscount) return null;
+        const type = room.discountType ? String(room.discountType).toLowerCase() : '';
+        const val = room.discountValue || 0;
+        if (type.includes('percentage') || type.includes('percent')) {
+            return `${val}% OFF`;
+        }
+        if (type.includes('flat') || type.includes('amount')) {
+            return `₹${val.toLocaleString('en-IN')} OFF`;
+        }
+        return null;
+    };
+
     useSEO(
         room ? (room.title || room.name) : t('Luxury Sanctuary Details', 'कमरे का विवरण'),
         room ? room.description : t('Explore the specifications and reserve your stay at Lake Breeze Resorts.', 'कमरे का विवरण देखें और अपनी बुकिंग करें।')
@@ -440,8 +453,15 @@ const RoomDetails = () => {
                                 <div className="text-right flex flex-col items-end">
                                     {room.hasDiscount ? (
                                         <>
-                                            <span className="text-2xl font-black text-rose-600 tracking-tighter">₹{room.finalPrice?.toLocaleString()}</span>
-                                            <span className="text-xs text-gray-400 line-through">₹{room.price.toLocaleString()}</span>
+                                            <span className="text-2xl font-black text-[#0F4C4C] tracking-tighter">₹{room.finalPrice?.toLocaleString()}</span>
+                                            <div className="flex items-center gap-2 mt-0.5 justify-end">
+                                                <span className="text-xs text-gray-400 line-through">₹{room.price.toLocaleString()}</span>
+                                                {getDiscountBadgeText() && (
+                                                    <span className="bg-[#0F4C4C] text-white text-[8px] font-black uppercase px-2 py-0.5 rounded-full shadow-sm">
+                                                        {getDiscountBadgeText()}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </>
                                     ) : (
                                         <span className="text-2xl font-black text-[#0F4C4C] tracking-tighter">₹{room.price.toLocaleString()}</span>

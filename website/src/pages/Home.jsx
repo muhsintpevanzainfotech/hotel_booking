@@ -36,9 +36,16 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
   const [isHovered, setIsHovered] = useState(false);
   const timerRef = useRef(null);
 
-  const images = room.images && room.images.length > 0
-    ? room.images.map(img => getImageUrl(img.url))
-    : [roomImg];
+  // Support both room.image (mapped) and room.images (original array)
+  const images = useMemo(() => {
+    if (room.image) {
+      return [getImageUrl(room.image)];
+    }
+    if (room.images && room.images.length > 0) {
+      return room.images.map(img => getImageUrl(img?.url || img));
+    }
+    return [roomImg];
+  }, [room.image, room.images]);
 
   useEffect(() => {
     if (isHovered && images.length > 1) {
@@ -87,10 +94,21 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
     if (timerRef.current) clearInterval(timerRef.current);
   };
 
-  const isDark = index % 2 !== 0;
+  const getDiscountBadgeText = () => {
+    if (!room.hasDiscount) return null;
+    const type = room.discountType ? String(room.discountType).toLowerCase() : '';
+    const val = room.discountValue || 0;
+    if (type.includes('percentage') || type.includes('percent')) {
+      return `${val}% OFF`;
+    }
+    if (type.includes('flat') || type.includes('amount')) {
+      return `₹${val.toLocaleString('en-IN')} OFF`;
+    }
+    return null;
+  };
 
   return (
-    <div className="relative w-full aspect-[4/5] rounded-[28px] z-10" onClick={() => onViewClick(room)}>
+    <div className="relative w-full aspect-[4/5] rounded-[20px] z-10" onClick={() => onViewClick(room)}>
       <motion.div
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -102,7 +120,7 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
           border: isHovered ? '1px solid rgba(15, 23, 42, 0.08)' : '1px solid rgba(255, 255, 255, 0.1)'
         }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute inset-0 rounded-[28px] overflow-hidden cursor-pointer flex flex-col justify-start"
+        className="absolute inset-0 rounded-[20px] overflow-hidden cursor-pointer flex flex-col justify-start"
         style={{ transformOrigin: 'top center', willChange: 'background-color, box-shadow' }}
       >
         {/* Fixed Outer Image Container - occupies 100% in default, shrinks on hover */}
@@ -111,18 +129,18 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
             top: isHovered ? 12 : 0,
             left: isHovered ? 12 : 0,
             right: isHovered ? 12 : 0,
-            bottom: isHovered ? '36%' : '0%',
-            borderRadius: isHovered ? 20 : 28
+            bottom: isHovered ? '38%' : '0%',
+            borderRadius: isHovered ? 16 : 20
           }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="absolute overflow-hidden z-10 w-auto"
           style={{ transformOrigin: 'top center', willChange: 'top, left, right, bottom, border-radius' }}
         >
-          <AnimatePresence>
+          <AnimatePresence mode="wait">
             <motion.img
               key={currentImageIndex}
               src={images[currentImageIndex]}
-              alt={room.name}
+              alt={room.roomName || room.name}
               initial={{ opacity: 0, scale: isHovered ? 1.08 : 1 }}
               animate={{
                 opacity: 1,
@@ -134,6 +152,7 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
                 scale: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
               }}
               className="absolute inset-0 w-full h-full object-cover"
+              style={{ transformOrigin: 'bottom center' }}
             />
           </AnimatePresence>
 
@@ -144,122 +163,163 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
             className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/45 to-transparent pointer-events-none z-10"
           />
 
+          {/* Top Left Tags: Discount Badge & Room Type */}
+          <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
+            {room.hasDiscount && getDiscountBadgeText() && (
+              <div className="bg-[#0F4C4C] text-white text-[9px] font-black uppercase tracking-wider px-2.5 py-1.5 rounded-full shadow-sm">
+                {getDiscountBadgeText()}
+              </div>
+            )}
+            {room.type && (
+              <div className="px-2.5 py-1.5 bg-black/35 backdrop-blur-md border border-white/10 rounded-full text-[9px] font-bold uppercase tracking-widest text-white shadow-sm">
+                {room.type}
+              </div>
+            )}
+          </div>
+
           {/* Carousel manual arrows (Chevrons, visible on hover) */}
           {images.length > 1 && (
             <>
-              <motion.button
+              <button
                 onClick={handlePrevClick}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : -10 }}
-                transition={{ duration: 0.3 }}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white border border-white/10 hover:bg-black/60 transition-colors z-20 cursor-pointer"
+                className={`absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/95 text-neutral-800 shadow-md flex items-center justify-center hover:bg-white transition-all z-20 cursor-pointer ${
+                  isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
+                }`}
+                style={{ transition: 'all 0.3s ease' }}
                 aria-label="Previous image"
               >
-                <ChevronLeft size={14} />
-              </motion.button>
-              <motion.button
+                <ChevronLeft size={16} />
+              </button>
+              <button
                 onClick={handleNextClick}
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 10 }}
-                transition={{ duration: 0.3 }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white border border-white/10 hover:bg-black/60 transition-colors z-20 cursor-pointer"
+                className={`absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/95 text-neutral-800 shadow-md flex items-center justify-center hover:bg-white transition-all z-20 cursor-pointer ${
+                  isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-2'
+                }`}
+                style={{ transition: 'all 0.3s ease' }}
                 aria-label="Next image"
               >
-                <ChevronRight size={14} />
-              </motion.button>
+                <ChevronRight size={16} />
+              </button>
             </>
           )}
 
-          {/* Carousel dot indicators (always visible at bottom of image) */}
+          {/* Carousel dot indicators (always visible at top of image if multiple) */}
           {images.length > 1 && (
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1 z-20 px-2 py-1 bg-black/30 backdrop-blur-md rounded-full">
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 flex gap-1 z-20 px-2 py-1 bg-black/20 backdrop-blur-sm rounded-full">
               {images.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={(e) => handleDotClick(e, idx)}
-                  className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${currentImageIndex === idx
-                    ? 'w-3 bg-white'
-                    : 'w-1 bg-white/40 hover:bg-white/80'
-                    }`}
+                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    currentImageIndex === idx ? 'w-3.5 bg-white' : 'w-1.5 bg-white/50 hover:bg-white/80'
+                  }`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />
               ))}
             </div>
           )}
-
-          {/* Product Category Tag - Small luxury indicator at the top left of the image */}
-          <div className="absolute top-4 left-4 px-2.5 py-1 bg-black/35 backdrop-blur-md border border-white/10 rounded-full text-[7px] font-bold uppercase tracking-widest text-white z-20 shadow-sm">
-            {room.type}
-          </div>
         </motion.div>
 
-        {/* Content Panel (Fixed position, non-animating content) - 32% height */}
-        <div className="absolute bottom-0 left-0 right-0 h-[32%] px-4 pb-4 pt-1.5 z-20 flex flex-col justify-between">
-          {/* Group texts and tags to prevent weird whitespace stretching */}
+        {/* Content Panel (Fixed position) - 34% height */}
+        <div className="absolute bottom-0 left-0 right-0 h-[34%] px-5 pb-4 pt-1.5 z-20 flex flex-col justify-between">
           <div className="flex flex-col gap-1.5">
-            {/* Row 1: Title and Price Badge */}
-            <div className="flex justify-between items-center gap-2">
+            {/* Row 1: Title (left) & Price (right) */}
+            <div className="flex justify-between items-baseline gap-4 w-full">
+              {/* Room Name */}
               <motion.h3
                 animate={{ color: isHovered ? '#0f172a' : '#ffffff' }}
                 transition={{ duration: 0.5 }}
-                className="text-xs sm:text-sm font-bold tracking-tight truncate leading-tight flex-1"
+                className="text-sm font-bold tracking-tight truncate leading-tight font-headings flex-1"
               >
-                {room.name}
+                {room.roomName || room.name}
               </motion.h3>
-              <motion.span
-                animate={{
-                  backgroundColor: isHovered ? '#0F4C4C' : '#ffffff',
-                  color: isHovered ? '#ffffff' : '#0f172a'
-                }}
-                transition={{ duration: 0.5 }}
-                className="shrink-0 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-black tracking-tight shadow-sm"
-              >
-                ₹{room.price.toLocaleString()}
-              </motion.span>
+
+              {/* Price Section */}
+              <div className="flex flex-col items-end shrink-0 leading-none">
+                {room.hasDiscount ? (
+                  <>
+                    <motion.span 
+                      animate={{ color: isHovered ? '#94a3b8' : 'rgba(255, 255, 255, 0.5)' }}
+                      className="line-through text-xs font-semibold mb-0.5"
+                    >
+                      ₹{Number(room.price).toLocaleString('en-IN')}
+                    </motion.span>
+                    <div className="flex items-baseline gap-1">
+                      <motion.span 
+                        animate={{ color: isHovered ? '#0F4C4C' : '#ffffff' }}
+                        className="text-base sm:text-lg font-black"
+                      >
+                        ₹{Number(room.finalPrice).toLocaleString('en-IN')}
+                      </motion.span>
+                      <motion.span 
+                        animate={{ color: isHovered ? '#64748b' : 'rgba(255, 255, 255, 0.6)' }}
+                        className="text-[9px] uppercase font-bold tracking-wider"
+                      >
+                        / {t('Night', 'रात', 'രാത്രി')}
+                      </motion.span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-baseline gap-1">
+                    <motion.span 
+                      animate={{ color: isHovered ? '#0F4C4C' : '#ffffff' }}
+                      className="text-base sm:text-lg font-black"
+                    >
+                      ₹{Number(room.price).toLocaleString('en-IN')}
+                    </motion.span>
+                    <motion.span 
+                      animate={{ color: isHovered ? '#64748b' : 'rgba(255, 255, 255, 0.6)' }}
+                      className="text-[9px] uppercase font-bold tracking-wider"
+                    >
+                      / {t('Night', 'रात', 'രാത്രി')}
+                    </motion.span>
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Row 2: Short Description */}
+            {/* Short Description */}
             <motion.p
               animate={{ color: isHovered ? '#475569' : 'rgba(255, 255, 255, 0.8)' }}
               transition={{ duration: 0.5 }}
-              className="text-[9px] sm:text-[10px] font-normal leading-relaxed line-clamp-1 overflow-hidden"
+              className="text-xs font-normal leading-relaxed line-clamp-2 overflow-hidden h-[2.5rem]"
             >
-              {room.description || t('Experience unparalleled luxury and serenity in our premium resort room designed for ultimate comfort.', 'അംതിമ് आराम के लिए डिज़ाइन किए गए हमारे premium റിസോർട്ട് മുറിയിൽ അതിവിശിഷ്ടമായ സൗകര്യം അനുഭവിക്കുക.')}
+              {room.shortDescription || room.description || t('Experience unparalleled luxury and serenity in our premium resort room designed for ultimate comfort.', 'अंतिम् आराम के लिए डिज़ाइन किए गए हमारे premium റിസോർട്ട് മുറിയിൽ അതിവിശിഷ്ടമായ സൗകര്യം അനുഭവിക്കുക.')}
             </motion.p>
 
-            {/* Row 3: Category tags (Facilities) - Always visible, smooth color transition */}
-            <div className="flex flex-wrap gap-1 sm:gap-1.5">
-              <span className={`text-[7px] sm:text-[8px] font-black uppercase tracking-widest px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border transition-colors duration-350 ${isHovered
-                ? 'bg-slate-100 border-slate-200/60 text-slate-600'
-                : 'bg-white/10 border-white/10 text-white'
-                }`}>
+            {/* Row 3: Guests, Capacity & Star Rating */}
+            <div className="flex items-center gap-3">
+              <span className={`text-[8px] sm:text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border transition-colors duration-350 ${
+                isHovered
+                  ? 'bg-slate-100 border-slate-200/60 text-slate-600'
+                  : 'bg-white/10 border-white/10 text-white'
+              }`}>
                 {room.capacity || 2} Guests
               </span>
-              <span className={`text-[7px] sm:text-[8px] font-black uppercase tracking-widest px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border transition-colors duration-350 ${isHovered
-                ? 'bg-slate-100 border-slate-200/60 text-slate-600'
-                : 'bg-white/10 border-white/10 text-white'
-                }`}>
-                Lake View
-              </span>
-              {room.quantity <= 3 && (
-                <span className={`text-[7px] sm:text-[8px] font-black uppercase tracking-widest px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border transition-colors duration-350 ${isHovered
-                  ? 'bg-red-50 border-red-100 text-red-600'
-                  : 'bg-red-500/20 border-red-500/20 text-red-200'
-                  }`}>
-                  Only {room.quantity} left
-                </span>
-              )}
+              <div className="flex items-center gap-1.5">
+                <Star size={10} className={isHovered ? "text-amber-500 fill-amber-500" : "text-white fill-white"} />
+                <motion.span 
+                  animate={{ color: isHovered ? '#64748b' : 'rgba(255, 255, 255, 0.7)' }}
+                  className="text-[9px] font-black uppercase tracking-widest"
+                >
+                  {room.rating || '5.0'}
+                </motion.span>
+              </div>
             </div>
           </div>
 
-          {/* Row 4: Card Actions */}
-          <div className="pt-6 border-t border-gray-100 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center w-full">
+          {/* Card Actions (View Details & Book Now) */}
+          <div className="flex gap-3 w-full pt-2">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onViewClick(room);
               }}
-              className="w-full sm:w-[140px] h-11 rounded-full bg-white border border-slate-200 text-slate-700 hover:text-[#C5A880] hover:border-[#C5A880] font-semibold uppercase text-[9px] tracking-wider hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+              className={`flex-1 py-2.5 rounded-full border text-[9px] font-black uppercase tracking-widest transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center ${
+                isHovered
+                  ? 'bg-white border-neutral-300 text-neutral-600 hover:text-[#0F4C4C] hover:border-[#0F4C4C] hover:shadow-sm'
+                  : 'bg-white/10 border-white/25 text-white hover:bg-white/20'
+              }`}
             >
               {t('View Details', 'विवरण देखें')}
             </button>
@@ -268,7 +328,11 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
                 e.stopPropagation();
                 onBookClick(room);
               }}
-              className="w-full sm:w-[140px] h-11 rounded-full bg-white border border-[#0F4C4C]/40 text-[#0F4C4C] font-semibold uppercase text-[9px] tracking-wider hover:-translate-y-0.5 hover:shadow-md hover:bg-[#C5A880] hover:text-white hover:border-[#C5A880] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center"
+              className={`flex-1 py-2.5 rounded-full border text-[9px] font-black uppercase tracking-widest transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center ${
+                isHovered
+                  ? 'bg-[#0F4C4C] border-[#0F4C4C] text-white hover:bg-[#2E7D7D] hover:border-[#2E7D7D] hover:shadow-md'
+                  : 'bg-white/20 border-white/40 text-white hover:bg-white/30'
+              }`}
             >
               {t('Book Now', 'अभी बुक करें')}
             </button>
