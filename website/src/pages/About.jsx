@@ -21,10 +21,62 @@ const About = () => {
   );
 
   const milestones = [
-    { year: '2018', title: t('The Vision', 'दृष्टिकोण', 'കാഴ്ചപ്പാട്'), desc: t('Founded in Wayanad and Calicut with a focus on immersive hospitality.', 'शानदार आतिथ्य पर ध्यान देने के साथ वायनाड और कोझिकोड में स्थापना।', 'വയനാട്ടിലും കോഴിക്കോട്ടും സമാനതകളില്ലാത്ത ഹോസ്പിറ്റാലിറ്റിയോടെ തുടക്കം കുറിച്ചു.') },
-    { year: '2020', title: t('Expansion', 'विस्तार', 'വ്യാപനം'), desc: t('Added luxurious accommodations and expanded to premium cottages.', 'शानदार आवास जोड़े और प्रीमियम कॉटेज का विस्तार किया।', 'ആഡംബര താമസസൗകര്യങ്ങളും പ്രീമിയം കോട്ടേജുകളും കൂട്ടിച്ചേർത്തു.') },
-    { year: '2023', title: t('Excellence Award', 'उत्कृष्टता पुरस्कार', 'അംഗീകാരം'), desc: t('Voted #1 Resort in the region for connection and well-being.', 'जुड़ाव और कल्याण के लिए क्षेत्र में #1 रिज़ॉर्ट चुना गया।', 'പ്രാദേശിക തലത്തിൽ ഏറ്റവും മികച്ച റിസോർട്ടായി തിരഞ്ഞെടുക്കപ്പെട്ടു.') },
-    { year: '2026', title: t('Timeless Escapes', 'कालातीत पलायन', 'ശാശ്വത അനുഭവങ്ങൾ'), desc: t('Continuing our unwavering commitment to extraordinary experiences.', 'असाधारण अनुभवों के प्रति हमारी अटूट प्रतिबद्धता को जारी रखना।', 'അസാധാരണമായ അനുഭവങ്ങളോടുള്ള ഞങ്ങളുടെ പ്രതിജ്ഞാബദ്ധത തുടരുന്നു.') },
+    {
+      year: '2018',
+      title: t('The Vision', 'दृष्टिकोण', 'കാഴ്ചപ്പാട്'),
+      subheading: t(
+        'Our Vision — Crafting Extraordinary Hospitality Experiences.',
+        'हमारा दृष्टिकोण — असाधारण आतिथ्य अनुभवों का निर्माण।',
+        'ഞങ്ങളുടെ കാഴ്ചപ്പാട് — അസാധാരണമായ ഹോസ്പിറ്റാലിറ്റി അനുഭവങ്ങൾ രൂപപ്പെടുത്തുന്നു.'
+      ),
+      desc: t(
+        "At Lake Breeze Resort, our vision is to redefine luxury hospitality by creating unforgettable experiences where nature, comfort, and elegance exist in perfect harmony. We aspire to be one of Kerala's most preferred luxury destinations, offering exceptional stays, personalized service, and memorable moments for every guest. Every detail is thoughtfully designed to provide a peaceful escape from everyday life while celebrating the beauty of nature and modern luxury.",
+        "लेक ब्रीज रिसॉर्ट में, हमारा दृष्टिकोण प्रकृति, आराम और लालित्य के सही तालमेल के साथ अविस्मरणीय अनुभवों का निर्माण करके लक्जरी आतिथ्य को फिर से परिभाषित करना है। हम केरल के सबसे पसंदीदा लक्जरी गंतव्यों में से एक बनने की इच्छा रखते हैं, जो हर मेहमान के लिए असाधारण प्रवास, व्यक्तिगत सेवा और यादगार क्षण प्रदान करते हैं। प्रकृति और आधुनिक लक्जरी की सुंदरता का जश्न मनाते हुए रोजमर्रा की जिंदगी से एक शांतिपूर्ण पलायन प्रदान करने के लिए हर विवरण को सोच-समझकर डिज़ाइन किया गया है।",
+        "ലേക്ക് ബ്രീസ് റിസോർട്ടിൽ, പ്രകൃതിയും സുഖസൗകര്യങ്ങളും ചാരുതയും സമന്വയിക്കുന്ന അവിസ്മരണീയമായ അനുഭവങ്ങൾ സൃഷ്ടിച്ചുകൊണ്ട് ആഡംബര ഹോസ്പിറ്റാലിറ്റിയെ പുനർനിർവചിക്കുക എന്നതാണ് ഞങ്ങളുടെ കാഴ്ചപ്പാട്. ഓരോ അതിഥിക്കും അസാധാരണമായ താമസവും വ്യക്തിഗത സേവനവും അവിസ്മരണീയമായ നിമിഷങ്ങളും വാഗ്ദാനം ചെയ്യുന്ന കേരളത്തിലെ ഏറ്റവും പ്രിയപ്പെട്ട ആഡംബര ലക്ഷ്യസ്ഥാനങ്ങളിൽ ഒന്നാകാൻ ഞങ്ങൾ ആഗ്രഹിക്കുന്നു. പ്രകൃതിയുടെ ഭംഗിയും ആധുനിക ആഡംബരവും ആഘോഷിക്കുന്നതോടൊപ്പം ദൈനംദിന ജീവിതത്തിൽ നിന്ന് സമാധാനപരമായ ഒരു രക്ഷപ്പെടൽ നൽകുന്നതിനാണ് ഓരോ വിശദാംശങ്ങളും രൂപകൽപ്പന ചെയ്തിരിക്കുന്നത്."
+      )
+    },
+    {
+      year: '2020',
+      title: t('Expansion', 'विस्तार', 'വ്യാപനം'),
+      subheading: t(
+        'Expansion — Growing with Purpose, Inspired by Excellence.',
+        'विस्तार — उत्कृष्टता से प्रेरित, उद्देश्य के साथ विकास।',
+        'വ്യാപനം — ലക്ഷ്യബോധത്തോടെയുള്ള വളർച്ച, മികവിലൂടെയുള്ള പ്രചോദനം.'
+      ),
+      desc: t(
+        "Driven by our commitment to excellence, Lake Breeze Resort continues to grow by introducing new luxury accommodations, world-class amenities, and enhanced guest experiences. Our vision for expansion focuses on creating innovative spaces for leisure, celebrations, and corporate gatherings while preserving the natural beauty that defines our resort. Every new development reflects our dedication to delivering unmatched comfort, quality, and hospitality.",
+        "उत्कृष्टता के प्रति हमारी प्रतिबद्धता से प्रेरित होकर, लेक ब्रीज रिसॉर्ट नए लक्जरी आवासों, विश्व स्तरीय सुविधाओं और बेहतर अतिथि अनुभवों को शुरू करके लगातार बढ़ रहा है। हमारे विस्तार का दृष्टिकोण हमारे रिसॉर्ट को परिभाषित करने वाली प्राकृतिक सुंदरता को संरक्षित करते हुए अवकाश, समारोहों और कॉर्पोरेट समारोहों के लिए अभिनव स्थान बनाने पर केंद्रित है। हर नया विकास बेजोड़ आराम, गुणवत्ता और आतिथ्य प्रदान करने के प्रति हमारे समर्पण को दर्शाता है।",
+        "മികവിനോടുള്ള ഞങ്ങളുടെ പ്രതിജ്ഞാബദ്ധതയിലൂടെ, ലേക്ക് ബ്രീസ് റിസോർട്ട് പുതിയ ആഡംബര താമസസൗകര്യങ്ങളും ലോകോത്തര സൗകര്യങ്ങളും മികച്ച അതിഥി അനുഭവങ്ങളും അവതരിപ്പിച്ചുകൊണ്ട് വളർച്ച തുടരുന്നു. വിപുലീകരണത്തിനായുള്ള ഞങ്ങളുടെ കാഴ്ചപ്പാട്, റിസോർട്ടിന്റെ പ്രകൃതിഭംഗി നിലനിർത്തിക്കൊണ്ടുതന്നെ വിനോദങ്ങൾക്കും ആഘോഷങ്ങൾക്കും കോർപ്പറേറ്റ് ഒത്തുചേരലുകൾക്കുമായി നൂതനമായ ഇടങ്ങൾ സൃഷ്ടിക്കുന്നതിൽ ശ്രദ്ധ കേന്ദ്രീകരിക്കുന്നു. ഓരോ പുതിയ വികസനവും സമാനതകളില്ലാത്ത സുഖസൗകര്യങ്ങളും ഗുണനിലവാരവും ഹോസ്പിറ്റാലിറ്റിയും നൽകാനുള്ള ഞങ്ങളുടെ സമർപ്പണത്തെ പ്രതിഫലിപ്പിക്കുന്നു."
+      )
+    },
+    {
+      year: '2023',
+      title: t('Excellence Award', 'उत्कृष्टता पुरस्कार', 'അംഗീകാരം'),
+      subheading: t(
+        'Excellence Award — Recognized for Hospitality Beyond Expectations.',
+        'उत्कृष्टता पुरस्कार — उम्मीदों से परे आतिथ्य के लिए मान्यता प्राप्त।',
+        'എക്സലൻസ് അവാർഡ് — പ്രതീക്ഷകൾക്കപ്പുറമുള്ള ഹോസ്പിറ്റാലിറ്റിക്കുള്ള അംഗീകാരം.'
+      ),
+      desc: t(
+        "Excellence is at the heart of everything we do. Every recognition and achievement we receive reflects our unwavering commitment to outstanding hospitality, premium facilities, and exceptional guest satisfaction. These milestones inspire us to continuously raise our standards and provide experiences that exceed expectations, making every stay at Lake Breeze Resort truly remarkable.",
+        "उत्कृष्टता हमारे हर काम के केंद्र में है। हमें मिलने वाली हर मान्यता और उपलब्धि उत्कृष्ट आतिथ्य, प्रीमियम सुविधाओं और असाधारण अतिथि संतुष्टि के प्रति हमारी अटूट प्रतिबद्धता को दर्शाती है। ये मील के पत्थर हमें अपने मानकों को लगातार बढ़ाने और उम्मीदों से परे अनुभव प्रदान करने के लिए प्रेरित करते हैं, जिससे लेक ब्रीज रिसॉर्ट में हर प्रवास वास्तव में उल्लेखनीय हो जाता है।",
+        "മികവാണ് ഞങ്ങളുടെ എല്ലാ പ്രവർത്തനങ്ങളുടെയും കാതൽ. ഞങ്ങൾക്ക് ലഭിക്കുന്ന ഓരോ അംഗീകാരവും അവാർഡും മികച്ച ഹോസ്പിറ്റാലിറ്റിയോടും പ്രീമിയം സൗകര്യങ്ങളോടും അതിഥി സംതൃപ്തിയോടുമുള്ള ഞങ്ങളുടെ പ്രതിജ്ഞാബദ്ധതയെ പ്രതിഫലിപ്പിക്കുന്നു. ഈ നാഴികക്കല്ലുകൾ ഞങ്ങളുടെ നിലവാരം ഉയർത്തുന്നതിനും പ്രതീക്ഷകൾക്കപ്പുറമുള്ള അനുഭവങ്ങൾ നൽകുന്നതിനും ലേക്ക് ബ്രീസ് റിസോർട്ടിലെ ഓരോ താമസവും അവിസ്മരണീയമാക്കുന്നതിനും ഞങ്ങളെ പ്രചോദിപ്പിക്കുന്നു."
+      )
+    },
+    {
+      year: '2026',
+      title: t('Timeless Escapes', 'कालातीत पलायन', 'ശാശ്വത അനുഭവങ്ങൾ'),
+      subheading: t(
+        'Timeless Escapes — Where Every Stay Becomes a Lasting Memory.',
+        'कालातीत पलायन — जहां हर प्रवास एक स्थायी स्मृति बन जाता है।',
+        'ശാശ്വത അനുഭവങ്ങൾ — ഓരോ താമസവും അവിസ്മരണീയമായ ഓർമ്മയാകുന്നു.'
+      ),
+      desc: t(
+        "Discover a destination where every moment becomes a cherished memory. At Lake Breeze Resort, timeless escapes are crafted through breathtaking natural surroundings, luxurious accommodations, exceptional hospitality, and unforgettable experiences. Whether you're planning a romantic getaway, a family vacation, a friends' retreat, or a corporate event, every visit promises relaxation, joy, and memories that last a lifetime.",
+        "एक ऐसे गंतव्य की खोज करें जहां हर पल एक संजोई हुई याद बन जाता है। लेक ब्रीज रिसॉर्ट में, लुभावने प्राकृतिक परिवेश, शानदार आवास, असाधारण आतिथ्य और अविस्मरणीय अनुभवों के माध्यम से कालातीत पलायन तैयार किया जाता है। चाहे आप एक रोमांटिक छुट्टी की योजना बना रहे हों, एक पारिवारिक अवकाश, दोस्तों का मिलन, या एक कॉर्पोरेट कार्यक्रम, हर यात्रा विश्राम, खुशी और जीवन भर रहने वाली यादों का वादा करती है।",
+        "ഓരോ നിമിഷവും വിലയേറിയ ഓർമ്മയായി മാറുന്ന ഒരു ലക്ഷ്യസ്ഥാനം കണ്ടെത്തൂ. ലേക്ക് ബ്രീസ് റിസോർട്ടിൽ, ശാശ്വതമായ അനുഭവങ്ങൾ സൃഷ്ടിക്കുന്നത് മനോഹരമായ പ്രകൃതിഭംഗിയിലൂടെയും ആഡംബര താമസസൗകര്യങ്ങളിലൂടെയും മികച്ച ഹോസ്പിറ്റാലിറ്റിയിലൂടെയുമാണ്. നിങ്ങൾ ഒരു റൊമാന്റിക് യാത്രയോ, കുടുംബത്തോടൊപ്പമുള്ള അവധിക്കാലമോ, സുഹൃത്തുക്കളുടെ ഒത്തുചേരലോ, അല്ലെങ്കിൽ ഒരു കോർപ്പറേറ്റ് പരിപാടിയോ ആസൂത്രണം ചെയ്യുകയാണെങ്കിലും, ഓരോ സന്ദർശനവും വിശ്രമവും സന്തോഷവും ജീവിതകാലം മുഴുവൻ നിലനിൽക്കുന്ന ഓർമ്മകളും വാഗ്ദാനം ചെയ്യുന്നു."
+      )
+    },
   ];
 
   return (
@@ -279,21 +331,24 @@ const About = () => {
 
       {/* Timeline Section */}
       <section className="py-16 md:py-16 bg-[#F8FAFA]">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <div className="space-y-12">
+        <div className="max-w-[1000px] mx-auto px-6">
+          <div className="space-y-8">
             {milestones.map((m, idx) => (
               <motion.div 
                 key={idx}
-                initial={{ opacity: 0, x: idx % 2 === 0 ? -20 : 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="flex flex-col md:flex-row gap-6 md:gap-12 items-start md:items-center"
+                transition={{ delay: idx * 0.1 }}
+                className="p-6 md:p-8 bg-white border border-gray-100 rounded-[24px] shadow-sm hover:shadow-md transition-all duration-300"
               >
-                <div className="text-3xl md:text-5xl font-black text-[#0F4C4C]/10 md:w-32">{m.year}</div>
-                <div className="flex-1 p-6 md:p-8 bg-white border border-gray-100 rounded-[24px] shadow-sm">
-                  <h5 className="text-xl font-bold text-[#0F4C4C] mb-2">{m.title}</h5>
-                  <p className="text-gray-500 text-sm md:text-base">{m.desc}</p>
-                </div>
+                <h5 className="text-xl md:text-2xl font-bold text-[#0F4C4C] mb-1">{m.title}</h5>
+                {m.subheading && (
+                  <div className="text-xs sm:text-sm font-semibold text-teal-600 mb-3 tracking-wide bg-teal-50/50 px-3 py-1 rounded-lg border border-teal-100/50 w-fit">
+                    {m.subheading}
+                  </div>
+                )}
+                <p className="text-gray-500 text-sm md:text-base leading-relaxed">{m.desc}</p>
               </motion.div>
             ))}
           </div>

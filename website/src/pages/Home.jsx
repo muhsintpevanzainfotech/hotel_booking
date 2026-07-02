@@ -14,7 +14,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import heroVideo from '../assets/images/hero.mp4';
 import bathroomImg from '../assets/images/bathroom.jpeg';
-import mainVideo from '../assets/images/Main-video.mp4';
+import mainVideo from '../assets/images/hero-main-video.mp4';
 import coupleImg from '../assets/images/couple.jpeg';
 import frontdesk from '../assets/images/frontdesk.png';
 import familyImg from '../assets/images/family.jpeg';
@@ -182,9 +182,8 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
             <>
               <button
                 onClick={handlePrevClick}
-                className={`absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/95 text-neutral-800 shadow-md flex items-center justify-center hover:bg-white transition-all z-20 cursor-pointer ${
-                  isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
-                }`}
+                className={`absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/95 text-neutral-800 shadow-md flex items-center justify-center hover:bg-white transition-all z-20 cursor-pointer ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
+                  }`}
                 style={{ transition: 'all 0.3s ease' }}
                 aria-label="Previous image"
               >
@@ -192,9 +191,8 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
               </button>
               <button
                 onClick={handleNextClick}
-                className={`absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/95 text-neutral-800 shadow-md flex items-center justify-center hover:bg-white transition-all z-20 cursor-pointer ${
-                  isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-2'
-                }`}
+                className={`absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/95 text-neutral-800 shadow-md flex items-center justify-center hover:bg-white transition-all z-20 cursor-pointer ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-2'
+                  }`}
                 style={{ transition: 'all 0.3s ease' }}
                 aria-label="Next image"
               >
@@ -210,9 +208,8 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
                 <button
                   key={idx}
                   onClick={(e) => handleDotClick(e, idx)}
-                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                    currentImageIndex === idx ? 'w-3.5 bg-white' : 'w-1.5 bg-white/50 hover:bg-white/80'
-                  }`}
+                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${currentImageIndex === idx ? 'w-3.5 bg-white' : 'w-1.5 bg-white/50 hover:bg-white/80'
+                    }`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />
               ))}
@@ -238,20 +235,20 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
               <div className="flex flex-col items-end shrink-0 leading-none">
                 {room.hasDiscount ? (
                   <>
-                    <motion.span 
+                    <motion.span
                       animate={{ color: isHovered ? '#94a3b8' : 'rgba(255, 255, 255, 0.5)' }}
                       className="line-through text-xs font-semibold mb-0.5"
                     >
                       ₹{Number(room.price).toLocaleString('en-IN')}
                     </motion.span>
                     <div className="flex items-baseline gap-1">
-                      <motion.span 
+                      <motion.span
                         animate={{ color: isHovered ? '#0F4C4C' : '#ffffff' }}
                         className="text-base sm:text-lg font-black"
                       >
                         ₹{Number(room.finalPrice).toLocaleString('en-IN')}
                       </motion.span>
-                      <motion.span 
+                      <motion.span
                         animate={{ color: isHovered ? '#64748b' : 'rgba(255, 255, 255, 0.6)' }}
                         className="text-[9px] uppercase font-bold tracking-wider"
                       >
@@ -261,13 +258,13 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
                   </>
                 ) : (
                   <div className="flex items-baseline gap-1">
-                    <motion.span 
+                    <motion.span
                       animate={{ color: isHovered ? '#0F4C4C' : '#ffffff' }}
                       className="text-base sm:text-lg font-black"
                     >
                       ₹{Number(room.price).toLocaleString('en-IN')}
                     </motion.span>
-                    <motion.span 
+                    <motion.span
                       animate={{ color: isHovered ? '#64748b' : 'rgba(255, 255, 255, 0.6)' }}
                       className="text-[9px] uppercase font-bold tracking-wider"
                     >
@@ -289,16 +286,15 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
 
             {/* Row 3: Guests, Capacity & Star Rating */}
             <div className="flex items-center gap-3">
-              <span className={`text-[8px] sm:text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border transition-colors duration-350 ${
-                isHovered
+              <span className={`text-[8px] sm:text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border transition-colors duration-350 ${isHovered
                   ? 'bg-slate-100 border-slate-200/60 text-slate-600'
                   : 'bg-white/10 border-white/10 text-white'
-              }`}>
+                }`}>
                 {room.capacity || 2} Guests
               </span>
               <div className="flex items-center gap-1.5">
                 <Star size={10} className={isHovered ? "text-amber-500 fill-amber-500" : "text-white fill-white"} />
-                <motion.span 
+                <motion.span
                   animate={{ color: isHovered ? '#64748b' : 'rgba(255, 255, 255, 0.7)' }}
                   className="text-[9px] font-black uppercase tracking-widest"
                 >
@@ -315,11 +311,10 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
                 e.stopPropagation();
                 onViewClick(room);
               }}
-              className={`flex-1 py-2.5 rounded-full border text-[9px] font-black uppercase tracking-widest transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center ${
-                isHovered
+              className={`flex-1 py-2.5 rounded-full border text-[9px] font-black uppercase tracking-widest transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center ${isHovered
                   ? 'bg-white border-neutral-300 text-neutral-600 hover:text-[#0F4C4C] hover:border-[#0F4C4C] hover:shadow-sm'
                   : 'bg-white/10 border-white/25 text-white hover:bg-white/20'
-              }`}
+                }`}
             >
               {t('View Details', 'विवरण देखें')}
             </button>
@@ -328,11 +323,10 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
                 e.stopPropagation();
                 onBookClick(room);
               }}
-              className={`flex-1 py-2.5 rounded-full border text-[9px] font-black uppercase tracking-widest transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center ${
-                isHovered
+              className={`flex-1 py-2.5 rounded-full border text-[9px] font-black uppercase tracking-widest transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center ${isHovered
                   ? 'bg-[#0F4C4C] border-[#0F4C4C] text-white hover:bg-[#2E7D7D] hover:border-[#2E7D7D] hover:shadow-md'
                   : 'bg-white/20 border-white/40 text-white hover:bg-white/30'
-              }`}
+                }`}
             >
               {t('Book Now', 'अभी बुक करें')}
             </button>
@@ -371,10 +365,10 @@ const PricingComboCard = ({ combo, isFeatured, onBookClick, onViewClick, t }) =>
             />
           ) : (
             <div className="absolute inset-0 bg-[#FAF6F0] flex items-center justify-center p-6 select-none">
-              <img 
-                src={logoLandscape} 
-                alt="Lake Breeze Resort Logo" 
-                className="h-10 w-auto object-contain opacity-60" 
+              <img
+                src={logoLandscape}
+                alt="Lake Breeze Resort Logo"
+                className="h-10 w-auto object-contain opacity-60"
               />
             </div>
           )}
@@ -414,11 +408,10 @@ const PricingComboCard = ({ combo, isFeatured, onBookClick, onViewClick, t }) =>
               e.stopPropagation();
               onBookClick(combo);
             }}
-            className={`w-full h-12 rounded-full font-black uppercase text-[10px] tracking-[0.2em] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md cursor-pointer flex items-center justify-center ${
-              isFeatured 
-                ? 'bg-[#A3E635] text-neutral-900 hover:bg-[#92cf2e] shadow-sm' 
+            className={`w-full h-12 rounded-full font-black uppercase text-[10px] tracking-[0.2em] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md cursor-pointer flex items-center justify-center ${isFeatured
+                ? 'bg-[#A3E635] text-neutral-900 hover:bg-[#92cf2e] shadow-sm'
                 : 'bg-[#0F4C4C] text-white hover:bg-[#093030] shadow-sm'
-            }`}
+              }`}
           >
             {t('Book Package Now', 'पैकेज अभी बुक करें', 'ഇപ്പോൾ ബുക്ക് ചെയ്യുക')}
           </button>
@@ -472,10 +465,10 @@ const ComboOfferCard = ({ combo, index, onBookClick, onViewClick, t }) => {
         />
       ) : (
         <div className="absolute inset-0 bg-[#FAF6F0] flex items-center justify-center p-12 select-none">
-          <img 
-            src={logoLandscape} 
-            alt="Lake Breeze Resort Logo" 
-            className="h-16 w-auto object-contain opacity-60" 
+          <img
+            src={logoLandscape}
+            alt="Lake Breeze Resort Logo"
+            className="h-16 w-auto object-contain opacity-60"
           />
         </div>
       )}
@@ -613,7 +606,7 @@ const FacilityCard = ({ fac, index, t, onHeightChange }) => {
     tour: MapPin, guide: MapPin, flag: Flag
   };
   const IconComponent = IconMap[fac.icon?.toLowerCase()] || Sparkles;
-  
+
   const descText = fac.description || fac.content || '';
   const needsTruncation = descText.length > 120;
   const displayText = isExpanded ? descText : (needsTruncation ? descText.slice(0, 115) + '...' : descText);
@@ -643,7 +636,7 @@ const FacilityCard = ({ fac, index, t, onHeightChange }) => {
             <IconComponent size={24} strokeWidth={1.5} className="group-hover:scale-110 transition-transform duration-300" />
           )}
         </div>
-        
+
         {/* Typography Hierarchy */}
         <div className="space-y-1.5 flex-1">
           <h4 className="text-lg font-bold text-neutral-800 tracking-tight leading-snug group-hover:text-teal-900 transition-colors">
@@ -691,7 +684,7 @@ const ReelVideoPlayer = ({ videoSrc }) => {
   };
 
   return (
-    <div 
+    <div
       onClick={handlePlayPause}
       className="relative aspect-[9/16] w-full rounded-[24px] overflow-hidden bg-black group/reel cursor-pointer shadow-lg border border-gray-100/10"
     >
@@ -706,7 +699,7 @@ const ReelVideoPlayer = ({ videoSrc }) => {
       {/* Play/Pause Center Overlay */}
       <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover/reel:bg-black/30 transition-all duration-300 pointer-events-none z-10">
         {!isPlaying && (
-          <button 
+          <button
             onClick={handlePlayPause}
             className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white transition-all duration-300 hover:scale-110 hover:bg-white/25 active:scale-95 shadow-lg pointer-events-auto cursor-pointer"
             aria-label="Play Reel"
@@ -1172,418 +1165,418 @@ const Home = () => {
   return (
     <div className="bg-[#F8FAFA] min-h-screen">
       {/* 1. HERO SECTION */}
-      <section 
+      <section
         className="px-4 py-4 md:px-8 md:py-6 bg-white relative overflow-visible"
         style={{ minHeight: window.innerWidth < 768 ? 'auto' : 'calc(92vh + 48px)' }}
       >
-            {/* Cinematic Black Background Overlay */}
-            <AnimatePresence>
-              {isFirstLoad && animationStep !== 'landing' && (
-                <motion.div
-                  initial={{ opacity: 1 }}
-                  animate={{ opacity: (animationStep === 'zoomOut' || animationStep === 'settled') ? 0 : 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-                  className={`fixed inset-0 bg-black z-[98] ${(animationStep === 'zoomOut' || animationStep === 'settled') ? 'pointer-events-none' : 'pointer-events-auto'}`}
-                />
-              )}
-            </AnimatePresence>
-
-            {/* Step 2: Energy Line Vertical */}
-            {isFirstLoad && (animationStep === 'vertical' || animationStep === 'horizontal') && (
-              <motion.div
-                initial={{ scaleY: 0 }}
-                animate={{ scaleY: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                className="energy-line-vertical h-[100vh]"
-                style={{ originY: 1 }}
-              />
-            )}
-
-            {/* Step 3: Horizontal Expansion */}
-            {isFirstLoad && animationStep === 'horizontal' && (
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="energy-line-horizontal w-[100vw]"
-                style={{ originX: 0.5 }}
-              />
-            )}
-
-            {/* Hero Section Container */}
+        {/* Cinematic Black Background Overlay */}
+        <AnimatePresence>
+          {isFirstLoad && animationStep !== 'landing' && (
             <motion.div
-              layout
-              style={{
-                ...getContainerStyles(),
-                overflow: (animationStep === 'settled' || animationStep === 'landing') ? 'visible' : 'hidden'
+              initial={{ opacity: 1 }}
+              animate={{ opacity: (animationStep === 'zoomOut' || animationStep === 'settled') ? 0 : 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+              className={`fixed inset-0 bg-black z-[98] ${(animationStep === 'zoomOut' || animationStep === 'settled') ? 'pointer-events-none' : 'pointer-events-auto'}`}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Step 2: Energy Line Vertical */}
+        {isFirstLoad && (animationStep === 'vertical' || animationStep === 'horizontal') && (
+          <motion.div
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="energy-line-vertical h-[100vh]"
+            style={{ originY: 1 }}
+          />
+        )}
+
+        {/* Step 3: Horizontal Expansion */}
+        {isFirstLoad && animationStep === 'horizontal' && (
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="energy-line-horizontal w-[100vw]"
+            style={{ originX: 0.5 }}
+          />
+        )}
+
+        {/* Hero Section Container */}
+        <motion.div
+          layout
+          style={{
+            ...getContainerStyles(),
+            overflow: (animationStep === 'settled' || animationStep === 'landing') ? 'visible' : 'hidden'
+          }}
+          transition={{
+            layout: { duration: 1.2, ease: [0.16, 1, 0.3, 1] },
+            borderRadius: { duration: 1.2, ease: [0.16, 1, 0.3, 1] },
+            opacity: { duration: 0.5 }
+          }}
+          className="relative min-h-[42vh] md:min-h-[92vh] bg-gradient-to-b from-[#A5C5E8] to-[#FFFFFF] shadow-md flex flex-col justify-center md:justify-between p-6 sm:p-8 md:p-12 lg:p-16 pb-6 md:pb-36 z-10"
+        >
+
+          {/* Clip container for background image and overlays */}
+          <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none rounded-[inherit]">
+            <motion.video
+              src={mainVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              animate={{
+                scale: (animationStep === 'frame' || animationStep === 'reveal') ? 1.6 : 1.0,
+                opacity: (animationStep === 'initial' || animationStep === 'vertical' || animationStep === 'horizontal' || animationStep === 'frame') ? 0 : 1
               }}
               transition={{
-                layout: { duration: 1.2, ease: [0.16, 1, 0.3, 1] },
-                borderRadius: { duration: 1.2, ease: [0.16, 1, 0.3, 1] },
-                opacity: { duration: 0.5 }
+                scale: { duration: 1.5, ease: [0.16, 1, 0.3, 1] },
+                opacity: { duration: 0.8, ease: "easeInOut" }
               }}
-              className="relative min-h-[42vh] md:min-h-[92vh] bg-gradient-to-b from-[#A5C5E8] to-[#FFFFFF] shadow-md flex flex-col justify-center md:justify-between p-6 sm:p-8 md:p-12 lg:p-16 pb-6 md:pb-36 z-10"
-            >
+              className="absolute inset-0 w-full h-full object-cover object-bottom mix-blend-normal z-0"
+            />
+            {/* Subtle gradient overlay to protect text readability */}
+            <motion.div
+              animate={{ opacity: (animationStep === 'settled' || animationStep === 'landing') ? 1 : 0 }}
+              transition={{ duration: 0.8 }}
+              className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-[#A5C5E8]/60 to-transparent pointer-events-none z-10"
+            />
+            <motion.div
+              animate={{ opacity: (animationStep === 'settled' || animationStep === 'landing') ? 0.05 : 0 }}
+              transition={{ duration: 0.8 }}
+              className="absolute inset-0 bg-black pointer-events-none z-10"
+            />
+          </div>
 
-              {/* Clip container for background image and overlays */}
-              <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none rounded-[inherit]">
-                <motion.video
-                  src={mainVideo}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
+          {/* Text Container */}
+          <div className="relative z-10 w-full pt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 w-full">
+              <div className="lg:col-span-8 overflow-hidden">
+                <motion.h1
+                  initial={{ y: "100%", opacity: 0 }}
                   animate={{
-                    scale: (animationStep === 'frame' || animationStep === 'reveal') ? 1.6 : 1.0,
-                    opacity: (animationStep === 'initial' || animationStep === 'vertical' || animationStep === 'horizontal' || animationStep === 'frame') ? 0 : 1
-                  }}
-                  transition={{
-                    scale: { duration: 1.5, ease: [0.16, 1, 0.3, 1] },
-                    opacity: { duration: 0.8, ease: "easeInOut" }
-                  }}
-                  className="absolute inset-0 w-full h-full object-cover object-bottom mix-blend-normal z-0"
-                />
-                {/* Subtle gradient overlay to protect text readability */}
-                <motion.div
-                  animate={{ opacity: (animationStep === 'settled' || animationStep === 'landing') ? 1 : 0 }}
-                  transition={{ duration: 0.8 }}
-                  className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-[#A5C5E8]/60 to-transparent pointer-events-none z-10"
-                />
-                <motion.div
-                  animate={{ opacity: (animationStep === 'settled' || animationStep === 'landing') ? 0.05 : 0 }}
-                  transition={{ duration: 0.8 }}
-                  className="absolute inset-0 bg-black pointer-events-none z-10"
-                />
-              </div>
-
-              {/* Text Container */}
-              <div className="relative z-10 w-full pt-6">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 w-full">
-                  <div className="lg:col-span-8 overflow-hidden">
-                    <motion.h1
-                      initial={{ y: "100%", opacity: 0 }}
-                      animate={{
-                        y: (animationStep === 'settled' || animationStep === 'landing') ? "0%" : "100%",
-                        opacity: (animationStep === 'settled' || animationStep === 'landing') ? 1 : 0
-                      }}
-                      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-                      className="text-white text-4xl sm:text-5xl md:text-7xl lg:text-[7.2rem] font-semibold tracking-tight leading-none"
-                    >
-                      {t('Stay with comfort', 'आराम के साथ रहें')}
-                    </motion.h1>
-                  </div>
-                  <div className="lg:col-span-4 lg:self-end lg:pt-12 overflow-hidden">
-                    <motion.p
-                      initial={{ y: 30, opacity: 0 }}
-                      animate={{
-                        y: (animationStep === 'settled' || animationStep === 'landing') ? 0 : 30,
-                        opacity: (animationStep === 'settled' || animationStep === 'landing') ? 1 : 0
-                      }}
-                      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-                      className="text-white text-xs sm:text-sm leading-relaxed max-w-sm lg:ml-auto mt-2 lg:mt-0"
-                    >
-                      {t(
-                        'Welcome — where comfort meets elegance and every guest feels at home. Our doors are always open to warmth, comfort, and unforgettable memories.',
-                        'स्वागत है - जहां आराम लालित्य से मिलता है और हर अतिथि घर जैसा महसूस करता है। हमारे दरवाजे गर्मी, आराम और अविस्मरणीय यादों के लिए हमेशा खुले हैं।'
-                      )}
-                    </motion.p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Search/Booking Widget Wrapper - responsive layout (relative/in-flow on mobile, absolute/overlay on desktop) */}
-            <div className="relative md:absolute md:bottom-0 md:left-1/2 md:-translate-x-1/2 md:translate-y-1/2 z-20 w-full md:w-[calc(100%-4rem)] max-w-[1080px] px-0 md:px-4 mt-6 md:mt-0">
-                <motion.div
-                  initial={{ y: 80, opacity: 0 }}
-                  animate={{
-                    y: (animationStep === 'settled' || animationStep === 'landing') ? 0 : 80,
+                    y: (animationStep === 'settled' || animationStep === 'landing') ? "0%" : "100%",
                     opacity: (animationStep === 'settled' || animationStep === 'landing') ? 1 : 0
                   }}
-                  transition={{
-                    delay: (animationStep === 'landing') ? 0 : 0.5,
-                    duration: 0.9,
-                    ease: [0.16, 1, 0.3, 1]
-                  }}
-                  className="flex flex-col items-center w-full"
+                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+                  className="text-white text-4xl sm:text-5xl md:text-7xl lg:text-[7.2rem] font-semibold tracking-tight leading-none"
                 >
-                  <div className="w-full bg-white p-5 rounded-[32px] md:rounded-[40px] shadow-[0_30px_100px_-24px_rgba(15,23,42,0.2)] border border-slate-100/50">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-
-                      {/* Check In */}
-                      <div
-                        onClick={handleCheckInClick}
-                        className="relative rounded-full border border-slate-200/80 bg-white px-5 py-3.5 flex items-center gap-3 shadow-sm hover:border-slate-350 hover:bg-slate-50 transition duration-150 cursor-pointer"
-                      >
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-600 border border-slate-100">
-                          <CalendarDays size={18} />
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{t('Check in', 'चेक-इन')}</span>
-                          <span className="text-sm font-semibold text-slate-800">{formatDisplayDate(checkIn)}</span>
-                        </div>
-                        <input
-                          ref={checkInRef}
-                          type="date"
-                          min={formatDate(today)}
-                          value={checkIn}
-                          onChange={(e) => {
-                            setCheckIn(e.target.value);
-                            if (checkOut && new Date(e.target.value) >= new Date(checkOut)) {
-                              const nextDay = new Date(e.target.value);
-                              nextDay.setDate(nextDay.getDate() + 1);
-                              setCheckOut(formatDate(nextDay));
-                            }
-                          }}
-                          className="absolute inset-0 opacity-0 w-full h-full pointer-events-none"
-                        />
-                      </div>
-
-                      {/* Check Out */}
-                      <div
-                        onClick={handleCheckOutClick}
-                        className="relative rounded-full border border-slate-200/80 bg-white px-5 py-3.5 flex items-center gap-3 shadow-sm hover:border-slate-350 hover:bg-slate-50 transition duration-150 cursor-pointer"
-                      >
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-600 border border-slate-100">
-                          <CalendarDays size={18} />
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{t('Check Out', 'चेक-आउट')}</span>
-                          <span className="text-sm font-semibold text-slate-800">{formatDisplayDate(checkOut)}</span>
-                        </div>
-                        <input
-                          ref={checkOutRef}
-                          type="date"
-                          min={checkIn ? formatDate(new Date(new Date(checkIn).getTime() + 86400000)) : formatDate(tomorrow)}
-                          value={checkOut}
-                          onChange={(e) => setCheckOut(e.target.value)}
-                          className="absolute inset-0 opacity-0 w-full h-full pointer-events-none"
-                        />
-                      </div>
-
-                      {/* Adult */}
-                      <div
-                        onClick={handleAdultClick}
-                        className="relative rounded-full border border-slate-200/80 bg-white px-5 py-3.5 flex items-center gap-3 shadow-sm hover:border-slate-350 focus-within:border-slate-400 focus-within:ring-1 focus-within:ring-slate-400 transition duration-150 cursor-pointer"
-                      >
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-600 border border-slate-100">
-                          <User size={18} />
-                        </div>
-                        <div className="flex flex-col flex-1">
-                          <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{t('Adult', 'वयस्क')}</span>
-                          <div className="flex items-center gap-1 mt-0.5">
-                            <input
-                              ref={adultRef}
-                              type="number"
-                              min="1"
-                              max="20"
-                              value={adults}
-                              onChange={(e) => setAdults(Math.max(1, Number(e.target.value)))}
-                              onClick={(e) => e.stopPropagation()}
-                              className="w-8 text-sm font-semibold text-slate-800 bg-transparent border-none p-0 focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            />
-                            <span className="text-sm font-semibold text-slate-800 pointer-events-none">
-                              {adults === 1 ? t('Adult', 'वयस्क') : t('Adults', 'वयस्क')}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Children */}
-                      <div
-                        onClick={handleChildrenClick}
-                        className="relative rounded-full border border-slate-200/80 bg-white px-5 py-3.5 flex items-center gap-3 shadow-sm hover:border-slate-350 focus-within:border-slate-400 focus-within:ring-1 focus-within:ring-slate-400 transition duration-150 cursor-pointer"
-                      >
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-600 border border-slate-100">
-                          <Baby size={18} />
-                        </div>
-                        <div className="flex flex-col flex-1">
-                          <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{t('Children', 'बच्चे')}</span>
-                          <div className="flex items-center gap-1 mt-0.5">
-                            <input
-                              ref={childrenRef}
-                              type="number"
-                              min="0"
-                              max="20"
-                              value={children}
-                              onChange={(e) => setChildren(Math.max(0, Number(e.target.value)))}
-                              onClick={(e) => e.stopPropagation()}
-                              className="w-8 text-sm font-semibold text-slate-800 bg-transparent border-none p-0 focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            />
-                            <span className="text-sm font-semibold text-slate-800 pointer-events-none">
-                              {children === 1 ? t('Child', 'बच्चാ') : t('Children', 'बच्चे')}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Rooms */}
-                      <div
-                        onClick={handleRoomsClick}
-                        className="relative rounded-full border border-slate-200/80 bg-white px-5 py-3.5 flex items-center gap-3 shadow-sm hover:border-slate-350 focus-within:border-slate-400 focus-within:ring-1 focus-within:ring-slate-400 transition duration-150 cursor-pointer col-span-1 sm:col-span-2 lg:col-span-1"
-                      >
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-600 border border-slate-100">
-                          <Key size={18} />
-                        </div>
-                        <div className="flex flex-col flex-1">
-                          <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{t('Rooms', 'कमरे')}</span>
-                          <div className="flex items-center gap-1 mt-0.5">
-                            <input
-                              ref={roomsRef}
-                              type="number"
-                              min="1"
-                              max="10"
-                              value={roomsCount}
-                              onChange={(e) => setRoomsCount(Math.max(1, Number(e.target.value)))}
-                              onClick={(e) => e.stopPropagation()}
-                              className="w-8 text-sm font-semibold text-slate-800 bg-transparent border-none p-0 focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            />
-                            <span className="text-sm font-semibold text-slate-800 pointer-events-none">
-                              {roomsCount === 1 ? t('Room', 'कमरा') : t('Rooms', 'कमरे')}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    {/* Check Availability button centered inside the card */}
-                    <div className="mt-6 flex justify-center w-full">
-                      <button
-                        onClick={handleBookingSubmit}
-                        className="btn-book-now w-full sm:w-auto px-8 sm:px-16 py-4 text-sm z-30 cursor-pointer"
-                      >
-                        {t('Check Availability', 'खालीपन जांचें')}
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
+                  {t('Stay with comfort', 'आराम के साथ रहें')}
+                </motion.h1>
               </div>
-          </section>
-
-          {/* 2. ROOM SECTION - REDUCED PADDING */}
-          <div className="max-w-[1400px] mx-auto px-4 pt-12 md:pt-36 pb-8">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6">
-              <div className="space-y-3">
-                <p className="text-[9px] font-semibold uppercase tracking-[0.4em] text-teal-600">{t('Our Sanctuaries', 'हमारे अभयारण्य')}</p>
-                <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight">{t('Curated Rooms', 'क्यूरेटेड कमरे')}</h2>
-              </div>
-
-              {/* Category Filter Tabs */}
-              <div className="flex gap-2 overflow-x-auto no-scrollbar py-2 max-w-full">
-                {['All', ...categories.map(c => c.title)].map((cat, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-5 py-2.5 rounded-full font-black uppercase text-[9px] tracking-widest transition-all duration-300 whitespace-nowrap cursor-pointer border ${selectedCategory === cat
-                      ? 'bg-[#0F4C4C] text-white border-[#0F4C4C] shadow-md shadow-[#0F4C4C]/10'
-                      : 'bg-white text-gray-800 border-gray-150 hover:bg-teal-50/50 hover:border-teal-150'
-                      }`}
-                  >
-                    {t(cat, cat)}
-                  </button>
-                ))}
+              <div className="lg:col-span-4 lg:self-end lg:pt-12 overflow-hidden">
+                <motion.p
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{
+                    y: (animationStep === 'settled' || animationStep === 'landing') ? 0 : 30,
+                    opacity: (animationStep === 'settled' || animationStep === 'landing') ? 1 : 0
+                  }}
+                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+                  className="text-white text-xs sm:text-sm leading-relaxed max-w-sm lg:ml-auto mt-2 lg:mt-0"
+                >
+                  {t(
+                    'Welcome — where comfort meets elegance and every guest feels at home. Our doors are always open to warmth, comfort, and unforgettable memories.',
+                    'स्वागत है - जहां आराम लालित्य से मिलता है और हर अतिथि घर जैसा महसूस करता है। हमारे दरवाजे गर्मी, आराम और अविस्मरणीय यादों के लिए हमेशा खुले हैं।'
+                  )}
+                </motion.p>
               </div>
             </div>
+          </div>
+        </motion.div>
 
-            {filteredRooms.length > 0 ? (
-              <Swiper
-                modules={[Autoplay]}
-                autoplay={{
-                  delay: 3000,
-                  disableOnInteraction: false,
-                  pauseOnMouseEnter: true,
-                }}
-                loop={!loading && filteredRooms.length > 3}
-                slidesPerView={1.4}
-                spaceBetween={16}
-                breakpoints={{
-                  640: {
-                    slidesPerView: 2.2,
-                    spaceBetween: 24,
-                  },
-                  1024: {
-                    slidesPerView: 3,
-                    spaceBetween: 32,
-                  }
-                }}
-                className="w-full pb-14"
-              >
-                {loading ? [1, 2, 3].map(i => (
-                  <SwiperSlide key={i} className="h-auto">
-                    <div className="w-full aspect-[4/5] bg-gray-100 rounded-[32px] animate-pulse h-full"></div>
-                  </SwiperSlide>
-                )) :
-                  filteredRooms.map((room, i) => (
-                    <SwiperSlide key={room._id || i} className="h-auto">
-                      <RoomCard
-                        room={room}
-                        index={i}
-                        onBookClick={handleBookClick}
-                        onViewClick={handleViewClick}
-                        t={t}
+        {/* Search/Booking Widget Wrapper - responsive layout (relative/in-flow on mobile, absolute/overlay on desktop) */}
+        <div className="relative md:absolute md:bottom-0 md:left-1/2 md:-translate-x-1/2 md:translate-y-1/2 z-20 w-full md:w-[calc(100%-4rem)] max-w-[1080px] px-0 md:px-4 mt-6 md:mt-0">
+          <motion.div
+            initial={{ y: 80, opacity: 0 }}
+            animate={{
+              y: (animationStep === 'settled' || animationStep === 'landing') ? 0 : 80,
+              opacity: (animationStep === 'settled' || animationStep === 'landing') ? 1 : 0
+            }}
+            transition={{
+              delay: (animationStep === 'landing') ? 0 : 0.5,
+              duration: 0.9,
+              ease: [0.16, 1, 0.3, 1]
+            }}
+            className="flex flex-col items-center w-full"
+          >
+            <div className="w-full bg-white p-5 rounded-[32px] md:rounded-[40px] shadow-[0_30px_100px_-24px_rgba(15,23,42,0.2)] border border-slate-100/50">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+
+                {/* Check In */}
+                <div
+                  onClick={handleCheckInClick}
+                  className="relative rounded-full border border-slate-200/80 bg-white px-5 py-3.5 flex items-center gap-3 shadow-sm hover:border-slate-350 hover:bg-slate-50 transition duration-150 cursor-pointer"
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-600 border border-slate-100">
+                    <CalendarDays size={18} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{t('Check in', 'चेक-इन')}</span>
+                    <span className="text-sm font-semibold text-slate-800">{formatDisplayDate(checkIn)}</span>
+                  </div>
+                  <input
+                    ref={checkInRef}
+                    type="date"
+                    min={formatDate(today)}
+                    value={checkIn}
+                    onChange={(e) => {
+                      setCheckIn(e.target.value);
+                      if (checkOut && new Date(e.target.value) >= new Date(checkOut)) {
+                        const nextDay = new Date(e.target.value);
+                        nextDay.setDate(nextDay.getDate() + 1);
+                        setCheckOut(formatDate(nextDay));
+                      }
+                    }}
+                    className="absolute inset-0 opacity-0 w-full h-full pointer-events-none"
+                  />
+                </div>
+
+                {/* Check Out */}
+                <div
+                  onClick={handleCheckOutClick}
+                  className="relative rounded-full border border-slate-200/80 bg-white px-5 py-3.5 flex items-center gap-3 shadow-sm hover:border-slate-350 hover:bg-slate-50 transition duration-150 cursor-pointer"
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-600 border border-slate-100">
+                    <CalendarDays size={18} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{t('Check Out', 'चेक-आउट')}</span>
+                    <span className="text-sm font-semibold text-slate-800">{formatDisplayDate(checkOut)}</span>
+                  </div>
+                  <input
+                    ref={checkOutRef}
+                    type="date"
+                    min={checkIn ? formatDate(new Date(new Date(checkIn).getTime() + 86400000)) : formatDate(tomorrow)}
+                    value={checkOut}
+                    onChange={(e) => setCheckOut(e.target.value)}
+                    className="absolute inset-0 opacity-0 w-full h-full pointer-events-none"
+                  />
+                </div>
+
+                {/* Adult */}
+                <div
+                  onClick={handleAdultClick}
+                  className="relative rounded-full border border-slate-200/80 bg-white px-5 py-3.5 flex items-center gap-3 shadow-sm hover:border-slate-350 focus-within:border-slate-400 focus-within:ring-1 focus-within:ring-slate-400 transition duration-150 cursor-pointer"
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-600 border border-slate-100">
+                    <User size={18} />
+                  </div>
+                  <div className="flex flex-col flex-1">
+                    <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{t('Adult', 'वयस्क')}</span>
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <input
+                        ref={adultRef}
+                        type="number"
+                        min="1"
+                        max="20"
+                        value={adults}
+                        onChange={(e) => setAdults(Math.max(1, Number(e.target.value)))}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-8 text-sm font-semibold text-slate-800 bg-transparent border-none p-0 focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
-                    </SwiperSlide>
-                  ))
-                }
-              </Swiper>
-            ) : !loading ? (
-              <div className="text-center py-20 bg-white rounded-[40px] border border-gray-100 shadow-sm max-w-full">
-                <p className="text-gray-400 text-sm font-semibold uppercase tracking-[0.2em]">{t('No suites available in this category', 'इस श्रेणी में कोई कमरा उपलब्ध नहीं है')}</p>
+                      <span className="text-sm font-semibold text-slate-800 pointer-events-none">
+                        {adults === 1 ? t('Adult', 'वयस्क') : t('Adults', 'वयस्क')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Children */}
+                <div
+                  onClick={handleChildrenClick}
+                  className="relative rounded-full border border-slate-200/80 bg-white px-5 py-3.5 flex items-center gap-3 shadow-sm hover:border-slate-350 focus-within:border-slate-400 focus-within:ring-1 focus-within:ring-slate-400 transition duration-150 cursor-pointer"
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-600 border border-slate-100">
+                    <Baby size={18} />
+                  </div>
+                  <div className="flex flex-col flex-1">
+                    <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{t('Children', 'बच्चे')}</span>
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <input
+                        ref={childrenRef}
+                        type="number"
+                        min="0"
+                        max="20"
+                        value={children}
+                        onChange={(e) => setChildren(Math.max(0, Number(e.target.value)))}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-8 text-sm font-semibold text-slate-800 bg-transparent border-none p-0 focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                      <span className="text-sm font-semibold text-slate-800 pointer-events-none">
+                        {children === 1 ? t('Child', 'बच्चാ') : t('Children', 'बच्चे')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Rooms */}
+                <div
+                  onClick={handleRoomsClick}
+                  className="relative rounded-full border border-slate-200/80 bg-white px-5 py-3.5 flex items-center gap-3 shadow-sm hover:border-slate-350 focus-within:border-slate-400 focus-within:ring-1 focus-within:ring-slate-400 transition duration-150 cursor-pointer col-span-1 sm:col-span-2 lg:col-span-1"
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-600 border border-slate-100">
+                    <Key size={18} />
+                  </div>
+                  <div className="flex flex-col flex-1">
+                    <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{t('Rooms', 'कमरे')}</span>
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <input
+                        ref={roomsRef}
+                        type="number"
+                        min="1"
+                        max="10"
+                        value={roomsCount}
+                        onChange={(e) => setRoomsCount(Math.max(1, Number(e.target.value)))}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-8 text-sm font-semibold text-slate-800 bg-transparent border-none p-0 focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                      <span className="text-sm font-semibold text-slate-800 pointer-events-none">
+                        {roomsCount === 1 ? t('Room', 'कमरा') : t('Rooms', 'कमरे')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-14">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="w-full aspect-[4/5] bg-gray-100 rounded-[32px] animate-pulse h-full"></div>
-                ))}
+
+              {/* Check Availability button centered inside the card */}
+              <div className="mt-6 flex justify-center w-full">
+                <button
+                  onClick={handleBookingSubmit}
+                  className="btn-book-now w-full sm:w-auto px-8 sm:px-16 py-4 text-sm z-30 cursor-pointer"
+                >
+                  {t('Check Availability', 'खालीपन जांचें')}
+                </button>
               </div>
-            )}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* 2. ROOM SECTION - REDUCED PADDING */}
+      <div className="max-w-[1400px] mx-auto px-4 pt-12 md:pt-36 pb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6">
+          <div className="space-y-3">
+            <p className="text-[9px] font-semibold uppercase tracking-[0.4em] text-teal-600">{t('Our Sanctuaries', 'हमारे अभयारण्य')}</p>
+            <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight">{t('Curated Rooms', 'क्यूरेटेड कमरे')}</h2>
           </div>
 
-          {/* 2.5 PROMOTIONAL BANNERS */ }
-          <div className="max-w-[1400px] mx-auto px-4 py-8 pb-16">
-            {(() => {
-              const activeBanners = banners.filter(b => b.isActive);
-              const mockBanner = {
-                title: t('Discover the Soul of Kerala Backwaters', 'केरल बैकवाटर की आत्मा की खोज करें'),
-                subtitle: t('Join our exclusive sunset cruises and traditional culinary workshops. Every moment at Lake Breeze is a story waiting to be told.', 'हमारे विशेष सूर्यास्त परिभ्रमण और पारंपरिक पाक कार्यशालाओं में शामिल हों। लेक ब्रीज पर हर पल एक कहानी है जो बताए जाने की प्रतीक्षा कर रही है।'),
-                image: null,
-                link: '#',
-                isActive: true
-              };
-              const displayBanners = activeBanners.length > 0
-                ? activeBanners
-                : (banners.length > 0 ? [banners[0]] : [mockBanner]);
+          {/* Category Filter Tabs */}
+          <div className="flex gap-2 overflow-x-auto no-scrollbar py-2 max-w-full">
+            {['All', ...categories.map(c => c.title)].map((cat, idx) => (
+              <button
+                key={idx}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-5 py-2.5 rounded-full font-black uppercase text-[9px] tracking-widest transition-all duration-300 whitespace-nowrap cursor-pointer border ${selectedCategory === cat
+                  ? 'bg-[#0F4C4C] text-white border-[#0F4C4C] shadow-md shadow-[#0F4C4C]/10'
+                  : 'bg-white text-gray-800 border-gray-150 hover:bg-teal-50/50 hover:border-teal-150'
+                  }`}
+              >
+                {t(cat, cat)}
+              </button>
+            ))}
+          </div>
+        </div>
 
-              return displayBanners.length === 1 ? (
+        {filteredRooms.length > 0 ? (
+          <Swiper
+            modules={[Autoplay]}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            loop={!loading && filteredRooms.length > 3}
+            slidesPerView={1.4}
+            spaceBetween={16}
+            breakpoints={{
+              640: {
+                slidesPerView: 2.2,
+                spaceBetween: 24,
+              },
+              1024: {
+                slidesPerView: 3,
+                spaceBetween: 32,
+              }
+            }}
+            className="w-full pb-14"
+          >
+            {loading ? [1, 2, 3].map(i => (
+              <SwiperSlide key={i} className="h-auto">
+                <div className="w-full aspect-[4/5] bg-gray-100 rounded-[32px] animate-pulse h-full"></div>
+              </SwiperSlide>
+            )) :
+              filteredRooms.map((room, i) => (
+                <SwiperSlide key={room._id || i} className="h-auto">
+                  <RoomCard
+                    room={room}
+                    index={i}
+                    onBookClick={handleBookClick}
+                    onViewClick={handleViewClick}
+                    t={t}
+                  />
+                </SwiperSlide>
+              ))
+            }
+          </Swiper>
+        ) : !loading ? (
+          <div className="text-center py-20 bg-white rounded-[40px] border border-gray-100 shadow-sm max-w-full">
+            <p className="text-gray-400 text-sm font-semibold uppercase tracking-[0.2em]">{t('No suites available in this category', 'इस श्रेणी में कोई कमरा उपलब्ध नहीं है')}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-14">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="w-full aspect-[4/5] bg-gray-100 rounded-[32px] animate-pulse h-full"></div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 2.5 PROMOTIONAL BANNERS */}
+      <div className="max-w-[1400px] mx-auto px-4 py-8 pb-16">
+        {(() => {
+          const activeBanners = banners.filter(b => b.isActive);
+          const mockBanner = {
+            title: t('Discover the Soul of Kerala Backwaters', 'केरल बैकवाटर की आत्मा की खोज करें'),
+            subtitle: t('Join our exclusive sunset cruises and traditional culinary workshops. Every moment at Lake Breeze is a story waiting to be told.', 'हमारे विशेष सूर्यास्त परिभ्रमण और पारंपरिक पाक कार्यशालाओं में शामिल हों। लेक ब्रीज पर हर पल एक कहानी है जो बताए जाने की प्रतीक्षा कर रही है।'),
+            image: null,
+            link: '#',
+            isActive: true
+          };
+          const displayBanners = activeBanners.length > 0
+            ? activeBanners
+            : (banners.length > 0 ? [banners[0]] : [mockBanner]);
+
+          return displayBanners.length === 1 ? (
+            <PromotionalBannerCard
+              banner={displayBanners[0]}
+              isHalfWidth={false}
+              t={t}
+            />
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+              {displayBanners.map((banner, i) => (
                 <PromotionalBannerCard
-                  banner={displayBanners[0]}
-                  isHalfWidth={false}
+                  key={banner._id || i}
+                  banner={banner}
+                  isHalfWidth={true}
                   t={t}
                 />
-              ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-                  {displayBanners.map((banner, i) => (
-                    <PromotionalBannerCard
-                      key={banner._id || i}
-                      banner={banner}
-                      isHalfWidth={true}
-                      t={t}
-                    />
-                  ))}
-                </div>
-              );
-            })()}
-          </div>
+              ))}
+            </div>
+          );
+        })()}
+      </div>
 
 
 
 
-          {/* PREMIUM MARQUEE - FULL WIDTH */ }
-          {/* <section className="luxury-marquee" aria-hidden="false">
+      {/* PREMIUM MARQUEE - FULL WIDTH */}
+      {/* <section className="luxury-marquee" aria-hidden="false">
         <div className="luxury-marquee__track" role="presentation">
           <div className="luxury-marquee__inner">
             {['Resort', 'Suites', 'Rooms', 'Hotels', 'Luxury', 'Comfort'].map((word, i) => (
@@ -1598,435 +1591,152 @@ const Home = () => {
         </div>
       </section> */}
 
-          {/* 3. FACILITIES SECTION - SIGNATURE EXPERIENCE */ }
-          <section id="facilities" className="bg-white py-20 overflow-hidden">
-            <div className="max-w-[1400px] mx-auto px-6">
-              
-              {/* Header: Title, Description, and View All Link */}
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 lg:mb-16 gap-6">
-                <div className="space-y-3 max-w-2xl">
-                  <p className="text-[9px] font-semibold uppercase tracking-[0.4em] text-teal-600">
-                    {t('Exclusive Amenities', 'विशेष सुविधाएं')}
-                  </p>
-                  <h2 className="text-4xl lg:text-5xl font-semibold text-[#0F4C4C] tracking-tight leading-tight">
-                    {t('Our Signature Experience', 'हमारा हस्ताक्षर अनुभव')}
-                  </h2>
-                  <p className="text-sm font-normal text-neutral-500 leading-relaxed mt-2">
-                    {t(
-                      'We combine technology, trust, and personalized service to redefine the hotel booking experience. With transparent pricing, verified reviews, and exclusive deals.',
-                      'हम होटल बुकिंग के अनुभव को फिर से परिभाषित करने के लिए प्रौद्योगिकी, विश्वास और व्यक्तिगत सेवा को जोड़ते हैं। पारदर्शी मूल्य निर्धारण, सत्यापित समीक्षाओं और विशेष सौदों के साथ।'
-                    )}
-                  </p>
-                </div>
-                <div className="shrink-0 pb-1">
-                  <Link to="/facilities" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all w-fit inline-block">
-                    {t('View All Facilities', 'सभी सुविधाएं देखें')}
-                  </Link>
-                </div>
-              </div>
+      {/* 3. FACILITIES SECTION - SIGNATURE EXPERIENCE */}
+      <section id="facilities" className="bg-white py-20 overflow-hidden">
+        <div className="max-w-[1400px] mx-auto px-6">
 
-              <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch w-full relative">
-
-                {/* Left Column: Vertical Image (Aspect ratio determines layout height on desktop/mobile) */}
-                <div className="w-full lg:w-[35%] aspect-[4/3] sm:aspect-[3/4] lg:aspect-[4/5] shrink-0">
-                  <div className="relative w-full h-full rounded-[32px] overflow-hidden shadow-lg border border-neutral-100">
-                    <img
-                      src={frontdesk}
-                      alt="Our Signature Experience"
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-
-                {/* Right Column: Facilities Grid (Height matched to image, scrollable if overflow) */}
-                <div className="w-full lg:w-[65%] shrink-0 lg:flex lg:flex-col">
-                  <div className="relative w-full lg:flex-1 lg:h-0 lg:min-h-full">
-                    {/* Top fade gradient overlay - only on desktop */}
-                    <div className="hidden lg:block absolute top-1.5 left-1.5 right-1.5 h-16 bg-gradient-to-b from-white via-white/80 to-transparent pointer-events-none z-10 rounded-t-[38px]" />
-
-                    {/* Scrollable container with height matched to left column on desktop, auto-height on mobile */}
-                    <div
-                      ref={scrollContainerRef}
-                      onScroll={handleScroll}
-                      className="bg-neutral-50/40 border border-neutral-100/70 rounded-[40px] p-6 sm:p-8 md:p-10 transition-all duration-300 w-full h-auto overflow-visible lg:absolute lg:inset-0 lg:overflow-y-auto no-scrollbar scroll-smooth"
-                    >
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-stretch w-full">
-                        {visibleFacilities.map((fac, i) => (
-                          <FacilityCard key={i} fac={fac} index={i} t={t} onHeightChange={handleScroll} />
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Bottom fade gradient overlay - only on desktop */}
-                    <div className="hidden lg:block absolute bottom-1.5 left-1.5 right-1.5 h-16 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-10 rounded-b-[38px]" />
-
-                    {/* Bouncing down indicator arrow */}
-                    {showArrow && (
-                      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center animate-fade">
-                        <div className="bg-white/95 backdrop-blur-sm border border-neutral-100 shadow-md rounded-full p-2.5 flex items-center justify-center text-[#0F4C4C] animate-bounce">
-                          <ChevronDown size={18} className="stroke-[2.5]" />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-              </div>
+          {/* Header: Title, Description, and View All Link */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 lg:mb-16 gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.4em] text-teal-600">
+                {t('Exclusive Amenities', 'विशेष सुविधाएं')}
+              </p>
+              <h2 className="text-4xl lg:text-5xl font-semibold text-[#0F4C4C] tracking-tight leading-tight">
+                {t('Our Signature Experience', 'हमारा हस्ताक्षर अनुभव')}
+              </h2>
+              <p className="text-sm font-normal text-neutral-500 leading-relaxed mt-2">
+                {t(
+                  'We combine technology, trust, and personalized service to redefine the hotel booking experience. With transparent pricing, verified reviews, and exclusive deals.',
+                  'हम होटल बुकिंग के अनुभव को फिर से परिभाषित करने के लिए प्रौद्योगिकी, विश्वास और व्यक्तिगत सेवा को जोड़ते हैं। पारदर्शी मूल्य निर्धारण, सत्यापित समीक्षाओं और विशेष सौदों के साथ।'
+                )}
+              </p>
             </div>
-          </section>
-
-          {/* 3.5 COMBO OFFERS SECTION (PRICING CARD STYLE) */ }
-          <section className="py-24 bg-[#F8FAFA] border-t border-b border-neutral-200/50">
-            <div className="max-w-[1400px] mx-auto px-6">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6">
-                <div className="space-y-3">
-                  <p className="text-[9px] font-semibold uppercase tracking-[0.4em] text-teal-600">{t('Exclusive Packages', 'विशेष पैकेज')}</p>
-                  <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight">{t('Combo Offers', 'कॉम्बो ऑफर')}</h2>
-                </div>
-                <div className="flex items-center gap-6 self-stretch md:self-auto justify-between md:justify-end">
-                  <Link to="/offers?tab=combos" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all">
-                    {t('View All Packages', 'सभी पैकेज देखें')}
-                  </Link>
-                  {/* Custom Swiper Controls */}
-                  <div className="flex items-center gap-3">
-                    <button className="combo-prev-btn p-2.5 bg-white hover:bg-[#0F4C4C] hover:text-white text-[#0F4C4C] border border-[#0F4C4C]/10 rounded-full transition-all shadow-sm active:scale-95 cursor-pointer disabled:opacity-40 disabled:pointer-events-none">
-                      <ChevronLeft size={16} />
-                    </button>
-                    <button className="combo-next-btn p-2.5 bg-white hover:bg-[#0F4C4C] hover:text-white text-[#0F4C4C] border border-[#0F4C4C]/10 rounded-full transition-all shadow-sm active:scale-95 cursor-pointer disabled:opacity-40 disabled:pointer-events-none">
-                      <ChevronRight size={16} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Category Filter Tabs */}
-              {comboCategories.length > 1 && (
-                <div className="flex items-center gap-3 overflow-x-auto pb-6 pt-2 no-scrollbar -mx-6 px-6 sm:-mx-0 sm:px-0 sm:flex-wrap mb-8">
-                  {comboCategories.map((cat, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setSelectedComboCategory(cat)}
-                      className={`px-5 py-2.5 rounded-full font-black uppercase text-[9px] tracking-widest transition-all duration-300 whitespace-nowrap cursor-pointer border ${
-                        selectedComboCategory === cat
-                          ? 'bg-[#0F4C4C] text-white border-[#0F4C4C] shadow-md shadow-[#0F4C4C]/10'
-                          : 'bg-white text-gray-800 border-gray-150 hover:bg-teal-50/50 hover:border-teal-150'
-                      }`}
-                    >
-                      {cat === 'All' ? t('All Experiences', 'सभी अनुभव') : t(cat, cat)}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={selectedComboCategory}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  className="w-full"
-                >
-                  {displayComboOffers.length > 0 ? (
-                    <Swiper
-                      modules={[Autoplay, Navigation]}
-                      autoplay={{
-                        delay: 4500,
-                        disableOnInteraction: false,
-                        pauseOnMouseEnter: true,
-                      }}
-                      navigation={{
-                        prevEl: '.combo-prev-btn',
-                        nextEl: '.combo-next-btn',
-                      }}
-                      loop={displayComboOffers.length > 3}
-                      slidesPerView={1.2}
-                      spaceBetween={16}
-                      breakpoints={{
-                        640: {
-                          slidesPerView: 2,
-                          spaceBetween: 24,
-                        },
-                        1024: {
-                          slidesPerView: 3,
-                          spaceBetween: 32,
-                        }
-                      }}
-                      className="w-full pt-6 pb-12 px-2 -mx-2 combo-offers-swiper"
-                    >
-                      {displayComboOffers.map((combo, i) => (
-                        <SwiperSlide key={combo._id || i} className="h-auto">
-                          <PricingComboCard
-                            combo={combo}
-                            isFeatured={i % 3 === 1} // Highlights the middle card in groups of 3
-                            onBookClick={handleComboBookClick}
-                            onViewClick={handleComboViewClick}
-                            t={t}
-                          />
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  ) : (
-                    <div className="text-center py-12 bg-white rounded-[40px] border border-gray-100 shadow-sm max-w-full">
-                      <p className="text-gray-400 text-sm font-semibold uppercase tracking-[0.2em]">
-                        {t('No combo offers available currently', 'वर्तमान में कोई कॉम्बो ऑफर उपलब्ध नहीं है')}
-                      </p>
-                    </div>
-                  )}
-                </motion.div>
-              </AnimatePresence>
+            <div className="shrink-0 pb-1">
+              <Link to="/facilities" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all w-fit inline-block">
+                {t('View All Facilities', 'सभी सुविधाएं देखें')}
+              </Link>
             </div>
-          </section>
+          </div>
 
-          {/* 4. GALLERY SECTION */ }
-          <section className="py-16 bg-white">
-            <div className="max-w-[1400px] mx-auto px-4">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12 md:mb-16">
-                <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight">{t('The Visual Journal', 'दृश्य पत्रिका')}</h2>
-                <Link to="/gallery" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all">
-                  {t('View All', 'सब देखें')}
-                </Link>
-              </div>
-              {galleryItems.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
-                  {galleryItems.map((item, i) => (
-                    <motion.div key={i} whileHover={{ scale: 1.02 }} className="aspect-square rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-xl relative group border border-white">
-                      <img src={getImageUrl(item.image)} alt="Gallery" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Sparkles className="text-white" size={24} />
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12 bg-neutral-50 rounded-[40px] border border-gray-100 shadow-sm max-w-full">
-                  <p className="text-gray-400 text-sm font-semibold uppercase tracking-[0.2em]">
-                    {t('No gallery images available', 'कोई गैलरी चित्र उपलब्ध नहीं हैं')}
-                  </p>
-                </div>
-              )}
-              <div className="mt-12 flex justify-center">
-                <Link
-                  to="/gallery"
-                  className="btn-book-now px-10 py-4 text-[10px] flex items-center gap-2 cursor-pointer"
-                >
-                  {t('View More Gallery', 'अधिक गैलरी देखें')}
-                </Link>
-              </div>
-            </div>
-          </section>
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch w-full relative">
 
-          {/* 5. VIDEO SECTION */ }
-          <section className="py-16 bg-white">
-            <div className="max-w-[1400px] mx-auto px-4">
-              <div className="relative overflow-hidden rounded-[36px] shadow-2xl h-[300px] md:h-[480px] bg-black group/video">
-                <video
-                  ref={videoRef}
-                  src={heroVideo}
-                  autoPlay
-                  loop
-                  muted={isVideoMuted}
-                  playsInline
+            {/* Left Column: Vertical Image (Aspect ratio determines layout height on desktop/mobile) */}
+            <div className="w-full lg:w-[35%] aspect-[4/3] sm:aspect-[3/4] lg:aspect-[4/5] shrink-0">
+              <div className="relative w-full h-full rounded-[32px] overflow-hidden shadow-lg border border-neutral-100">
+                <img
+                  src={frontdesk}
+                  alt="Our Signature Experience"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                {/* Subtle gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
-
-                {/* Custom Premium Controls Overlay */}
-                <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-8 opacity-0 group-hover/video:opacity-100 transition-opacity duration-300">
-
-                  {/* Top Bar: Title / Info */}
-                  <div className="flex justify-between items-start">
-                    <span className="px-4 py-2 bg-black/40 backdrop-blur-md text-white/95 rounded-full text-xs font-semibold tracking-wider flex items-center gap-2">
-                      <Sparkles size={14} className="text-teal-400 animate-pulse" />
-                      {t('Experience Luxury', 'लक्जरी का अनुभव करें')}
-                    </span>
-                  </div>
-
-                  {/* Center Play/Pause button for direct focus */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <button
-                      onClick={handlePlayPause}
-                      className="flex h-20 w-20 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white transition-all duration-300 hover:scale-110 hover:bg-white/25 active:scale-95 shadow-lg cursor-pointer"
-                      aria-label={isVideoPlaying ? 'Pause video' : 'Play video'}
-                    >
-                      {isVideoPlaying ? (
-                        <Pause size={32} className="fill-white text-white" />
-                      ) : (
-                        <Play size={32} className="fill-white text-white translate-x-0.5" />
-                      )}
-                    </button>
-                  </div>
-
-                  {/* Bottom Bar: Action buttons */}
-                  <div className="flex justify-end gap-3 z-10">
-                    <button
-                      onClick={handleMuteUnmute}
-                      className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/40 backdrop-blur-md text-white transition hover:scale-105 hover:bg-black/60 active:scale-95 cursor-pointer"
-                      aria-label={isVideoMuted ? 'Unmute video' : 'Mute video'}
-                    >
-                      {isVideoMuted ? (
-                        <VolumeX size={20} />
-                      ) : (
-                        <Volume2 size={20} />
-                      )}
-                    </button>
-                  </div>
-
-                </div>
               </div>
             </div>
-          </section>
 
-          {/* 5.5 WE SAID REELS SECTION */}
-          {videoTestimonials.length > 0 && (
-            <section className="py-16 bg-[#F8FAFA] relative overflow-hidden">
-              <div className="max-w-[1400px] mx-auto px-4 relative z-10">
-                <div className="flex flex-col items-center text-center space-y-3 mb-12">
-                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-teal-600">
-                    {t('Visual Guest Stories', 'दृश्य अतिथि कहानियां')}
-                  </p>
-                  <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight leading-tight">
-                    {t('What Our Clients Say', 'हमारे ग्राहक क्या कहते हैं')}
-                  </h2>
+            {/* Right Column: Facilities Grid (Height matched to image, scrollable if overflow) */}
+            <div className="w-full lg:w-[65%] shrink-0 lg:flex lg:flex-col">
+              <div className="relative w-full lg:flex-1 lg:h-0 lg:min-h-full">
+                {/* Top fade gradient overlay - only on desktop */}
+                <div className="hidden lg:block absolute top-1.5 left-1.5 right-1.5 h-16 bg-gradient-to-b from-white via-white/80 to-transparent pointer-events-none z-10 rounded-t-[38px]" />
+
+                {/* Scrollable container with height matched to left column on desktop, auto-height on mobile */}
+                <div
+                  ref={scrollContainerRef}
+                  onScroll={handleScroll}
+                  className="bg-neutral-50/40 border border-neutral-100/70 rounded-[40px] p-6 sm:p-8 md:p-10 transition-all duration-300 w-full h-auto overflow-visible lg:absolute lg:inset-0 lg:overflow-y-auto no-scrollbar scroll-smooth"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-stretch w-full">
+                    {visibleFacilities.map((fac, i) => (
+                      <FacilityCard key={i} fac={fac} index={i} t={t} onHeightChange={handleScroll} />
+                    ))}
+                  </div>
                 </div>
 
-                <Swiper
-                  modules={[Navigation]}
-                  navigation={true}
-                  loop={videoTestimonials.length > 4}
-                  slidesPerView={1.2}
-                  spaceBetween={20}
-                  breakpoints={{
-                    480: {
-                      slidesPerView: 1.8,
-                      spaceBetween: 20,
-                    },
-                    768: {
-                      slidesPerView: 2.8,
-                      spaceBetween: 24,
-                    },
-                    1024: {
-                      slidesPerView: 4,
-                      spaceBetween: 28,
-                    }
-                  }}
-                  className="w-full premium-reels-swiper pb-4"
-                >
-                  {videoTestimonials.map((reel) => (
-                    <SwiperSlide key={reel._id} className="h-auto">
-                      <div className="p-1">
-                        <ReelVideoPlayer videoSrc={getImageUrl(reel.video)} />
-                      </div>
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+                {/* Bottom fade gradient overlay - only on desktop */}
+                <div className="hidden lg:block absolute bottom-1.5 left-1.5 right-1.5 h-16 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-10 rounded-b-[38px]" />
+
+                {/* Bouncing down indicator arrow */}
+                {showArrow && (
+                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center animate-fade">
+                    <div className="bg-white/95 backdrop-blur-sm border border-neutral-100 shadow-md rounded-full p-2.5 flex items-center justify-center text-[#0F4C4C] animate-bounce">
+                      <ChevronDown size={18} className="stroke-[2.5]" />
+                    </div>
+                  </div>
+                )}
               </div>
-            </section>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 3.5 COMBO OFFERS SECTION (PRICING CARD STYLE) */}
+      <section className="py-24 bg-[#F8FAFA] border-t border-b border-neutral-200/50">
+        <div className="max-w-[1400px] mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6">
+            <div className="space-y-3">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.4em] text-teal-600">{t('Exclusive Packages', 'विशेष पैकेज')}</p>
+              <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight">{t('Combo Offers', 'कॉम्बो ऑफर')}</h2>
+            </div>
+            <div className="flex items-center gap-6 self-stretch md:self-auto justify-between md:justify-end">
+              <Link to="/offers?tab=combos" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all">
+                {t('View All Packages', 'सभी पैकेज देखें')}
+              </Link>
+              {/* Custom Swiper Controls */}
+              <div className="flex items-center gap-3">
+                <button className="combo-prev-btn p-2.5 bg-white hover:bg-[#0F4C4C] hover:text-white text-[#0F4C4C] border border-[#0F4C4C]/10 rounded-full transition-all shadow-sm active:scale-95 cursor-pointer disabled:opacity-40 disabled:pointer-events-none">
+                  <ChevronLeft size={16} />
+                </button>
+                <button className="combo-next-btn p-2.5 bg-white hover:bg-[#0F4C4C] hover:text-white text-[#0F4C4C] border border-[#0F4C4C]/10 rounded-full transition-all shadow-sm active:scale-95 cursor-pointer disabled:opacity-40 disabled:pointer-events-none">
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Category Filter Tabs */}
+          {comboCategories.length > 1 && (
+            <div className="flex items-center gap-3 overflow-x-auto pb-6 pt-2 no-scrollbar -mx-6 px-6 sm:-mx-0 sm:px-0 sm:flex-wrap mb-8">
+              {comboCategories.map((cat, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setSelectedComboCategory(cat)}
+                  className={`px-5 py-2.5 rounded-full font-black uppercase text-[9px] tracking-widest transition-all duration-300 whitespace-nowrap cursor-pointer border ${selectedComboCategory === cat
+                      ? 'bg-[#0F4C4C] text-white border-[#0F4C4C] shadow-md shadow-[#0F4C4C]/10'
+                      : 'bg-white text-gray-800 border-gray-150 hover:bg-teal-50/50 hover:border-teal-150'
+                    }`}
+                >
+                  {cat === 'All' ? t('All Experiences', 'सभी अनुभव') : t(cat, cat)}
+                </button>
+              ))}
+            </div>
           )}
 
-          {/* 5. TESTIMONIAL SECTION */ }
-          <section className="py-16 bg-white relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-teal-50 rounded-full translate-x-1/3 -translate-y-1/3 blur-3xl opacity-50"></div>
-            <div className="max-w-[1400px] mx-auto px-4 relative z-10">
-              <div className="flex flex-col items-center text-center space-y-8 mb-20">
-                <Quote size={40} className="text-teal-600 opacity-20" />
-                <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight leading-tight">{t('Echoes of Excellence', 'उत्कृष्टता की प्रतिध्वनि')}</h2>
-              </div>
-              <Swiper
-                modules={[Autoplay]}
-                autoplay={{
-                  delay: 3000,
-                  disableOnInteraction: false,
-                  pauseOnMouseEnter: true,
-                }}
-                loop={testimonials.length > 3}
-                slidesPerView={1.4}
-                spaceBetween={16}
-                breakpoints={{
-                  640: {
-                    slidesPerView: 2.2,
-                    spaceBetween: 24,
-                  },
-                  1024: {
-                    slidesPerView: 3,
-                    spaceBetween: 32,
-                  }
-                }}
-                className="w-full"
-              >
-                {testimonials.length > 0 ? testimonials.map((test, i) => (
-                  <SwiperSlide key={i} className="h-auto">
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      whileHover={{ y: -8 }}
-                      className="p-8 sm:p-10 bg-[#F8FAFA] hover:bg-white rounded-[32px] sm:rounded-[40px] border border-gray-100/80 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-xl relative transition-all duration-300 group flex flex-col justify-between h-full"
-                    >
-                      <div>
-                        <div className="flex gap-1 text-teal-600 mb-6">
-                          {[1, 2, 3, 4, 5].map(s => <Star key={s} size={12} fill="currentColor" />)}
-                        </div>
-                        <p className="text-sm font-medium text-[#0F4C4C] leading-relaxed mb-8 italic">"{test.content}"</p>
-                      </div>
-                      <div className="flex items-center gap-4 border-t border-gray-100 pt-6 mt-2">
-                        {test.image ? (
-                          <img src={getImageUrl(test.image)} alt={test.name} className="w-12 h-12 rounded-full object-cover shadow-md border border-white" />
-                        ) : (
-                          <div className="w-12 h-12 rounded-full bg-teal-50 border border-white flex items-center justify-center text-[#0F4C4C] font-bold text-sm">
-                            {test.name?.[0]}
-                          </div>
-                        )}
-                        <div>
-                          <p className="font-black text-xs uppercase tracking-widest text-[#0F4C4C]">{test.name}</p>
-                          <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">{test.role}</p>
-                        </div>
-                      </div>
-                      <div className="absolute top-8 right-8 text-gray-150 group-hover:text-teal-600/10 transition-colors pointer-events-none hidden sm:block">
-                        <Quote size={40} className="transform rotate-180" />
-                      </div>
-                    </motion.div>
-                  </SwiperSlide>
-                )) : (
-                  [1, 2, 3].map(i => (
-                    <SwiperSlide key={i} className="h-auto">
-                      <div className="h-64 bg-gray-50 rounded-[32px] animate-pulse h-full"></div>
-                    </SwiperSlide>
-                  ))
-                )}
-              </Swiper>
-            </div>
-          </section>
-
-
-          {/* 5.8 LATEST NEWS / BLOG PREVIEW SECTION */ }
-          <section className="py-12 sm:py-16 bg-[#F8FAFA]">
-            <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 sm:mb-16 gap-4 sm:gap-6">
-                <div className="space-y-2.5">
-                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-teal-600">{t('Stay Updated', 'अपडेटेड रहें')}</p>
-                  <h2 className="text-3xl sm:text-4xl font-black text-[#0F4C4C] tracking-tight">{t('Latest News', 'नवीनतम समाचार')}</h2>
-                </div>
-                <Link to="/blog" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all">
-                  {t('View All Posts', 'सभी पोस्ट देखें')}
-                </Link>
-              </div>
-
-              {displayBlogs.length > 0 ? (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selectedComboCategory}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="w-full"
+            >
+              {displayComboOffers.length > 0 ? (
                 <Swiper
-                  modules={[Autoplay]}
+                  modules={[Autoplay, Navigation]}
                   autoplay={{
-                    delay: 3000,
+                    delay: 4500,
                     disableOnInteraction: false,
                     pauseOnMouseEnter: true,
                   }}
-                  loop={displayBlogs.length > 3}
-                  slidesPerView={1.4}
+                  navigation={{
+                    prevEl: '.combo-prev-btn',
+                    nextEl: '.combo-next-btn',
+                  }}
+                  loop={displayComboOffers.length > 3}
+                  slidesPerView={1.2}
                   spaceBetween={16}
                   breakpoints={{
                     640: {
-                      slidesPerView: 2.2,
+                      slidesPerView: 2,
                       spaceBetween: 24,
                     },
                     1024: {
@@ -2034,66 +1744,348 @@ const Home = () => {
                       spaceBetween: 32,
                     }
                   }}
-                  className="w-full"
+                  className="w-full pt-6 pb-12 px-2 -mx-2 combo-offers-swiper"
                 >
-                  {displayBlogs.map((post, i) => (
-                    <SwiperSlide key={post.slug || post.id} className="h-auto">
-                      <motion.article
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.1, duration: 0.6 }}
-                        className="group flex flex-col justify-between h-full bg-white rounded-[24px] sm:rounded-[32px] p-5 sm:p-6 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 w-full"
-                      >
-                        <div>
-                          <Link to={`/blog/${post.slug || post.id}`}>
-                            <div className="relative aspect-[16/10] rounded-[18px] sm:rounded-[24px] overflow-hidden mb-5 sm:mb-6 bg-gray-50">
-                              <img
-                                src={post.image ? getImageUrl(post.image) : masterbedroomImg}
-                                alt={post.title}
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                              />
-                            </div>
-                          </Link>
-                          <div className="space-y-3">
-                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[10px] font-black uppercase tracking-wider text-gray-400">
-                              <span className="flex items-center gap-1.5"><User size={12} className="text-teal-600" /> By {post.author}</span>
-                              <span className="flex items-center gap-1.5"><CalendarDays size={12} className="text-teal-600" /> {post.date}</span>
-                            </div>
-                            <Link to={`/blog/${post.slug || post.id}`}>
-                              <h3 className="text-base sm:text-lg font-bold text-[#0F4C4C] leading-snug group-hover:text-teal-700 transition-colors line-clamp-2">
-                                {post.title}
-                              </h3>
-                            </Link>
-                            <p className="text-gray-500 text-sm leading-relaxed line-clamp-3">
-                              {post.desc}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="pt-5 sm:pt-6 mt-5 sm:mt-6 border-t border-gray-50">
-                          <Link
-                            to={`/blog/${post.slug || post.id}`}
-                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0f4c4c] text-white hover:bg-neutral-900 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md transition-all active:scale-95 group/btn"
-                          >
-                            <span>{t('Read More', 'और पढ़ें')}</span>
-                            <ArrowRight size={12} className="transform group-hover/btn:translate-x-1 transition-transform" />
-                          </Link>
-                        </div>
-                      </motion.article>
+                  {displayComboOffers.map((combo, i) => (
+                    <SwiperSlide key={combo._id || i} className="h-auto">
+                      <PricingComboCard
+                        combo={combo}
+                        isFeatured={i % 3 === 1} // Highlights the middle card in groups of 3
+                        onBookClick={handleComboBookClick}
+                        onViewClick={handleComboViewClick}
+                        t={t}
+                      />
                     </SwiperSlide>
                   ))}
                 </Swiper>
               ) : (
                 <div className="text-center py-12 bg-white rounded-[40px] border border-gray-100 shadow-sm max-w-full">
                   <p className="text-gray-400 text-sm font-semibold uppercase tracking-[0.2em]">
-                    {t('No news posts available', 'कोई समाचार पोस्ट उपलब्ध नहीं हैं')}
+                    {t('No combo offers available currently', 'वर्तमान में कोई कॉम्बो ऑफर उपलब्ध नहीं है')}
                   </p>
                 </div>
               )}
-            </div>
-          </section>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </section>
 
-          {/* 6. CTA SECTION - MORE COMPACT */ }
+      {/* 4. GALLERY SECTION */}
+      <section className="py-16 bg-white">
+        <div className="max-w-[1400px] mx-auto px-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12 md:mb-16">
+            <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight">{t('The Visual Journal', 'दृश्य पत्रिका')}</h2>
+            <Link to="/gallery" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all">
+              {t('View All', 'सब देखें')}
+            </Link>
+          </div>
+          {galleryItems.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+              {galleryItems.map((item, i) => (
+                <motion.div key={i} whileHover={{ scale: 1.02 }} className="aspect-square rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-xl relative group border border-white">
+                  <img src={getImageUrl(item.image)} alt="Gallery" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <Sparkles className="text-white" size={24} />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-neutral-50 rounded-[40px] border border-gray-100 shadow-sm max-w-full">
+              <p className="text-gray-400 text-sm font-semibold uppercase tracking-[0.2em]">
+                {t('No gallery images available', 'कोई गैलरी चित्र उपलब्ध नहीं हैं')}
+              </p>
+            </div>
+          )}
+          <div className="mt-12 flex justify-center">
+            <Link
+              to="/gallery"
+              className="btn-book-now px-10 py-4 text-[10px] flex items-center gap-2 cursor-pointer"
+            >
+              {t('View More Gallery', 'अधिक गैलरी देखें')}
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. VIDEO SECTION */}
+      <section className="py-16 bg-white">
+        <div className="max-w-[1400px] mx-auto px-4">
+          <div className="relative overflow-hidden rounded-[36px] shadow-2xl h-[300px] md:h-[480px] bg-black group/video">
+            <video
+              ref={videoRef}
+              src={heroVideo}
+              autoPlay
+              loop
+              muted={isVideoMuted}
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            {/* Subtle gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
+
+            {/* Custom Premium Controls Overlay */}
+            <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-8 opacity-0 group-hover/video:opacity-100 transition-opacity duration-300">
+
+              {/* Top Bar: Title / Info */}
+              <div className="flex justify-between items-start">
+                <span className="px-4 py-2 bg-black/40 backdrop-blur-md text-white/95 rounded-full text-xs font-semibold tracking-wider flex items-center gap-2">
+                  <Sparkles size={14} className="text-teal-400 animate-pulse" />
+                  {t('Experience Luxury', 'लक्जरी का अनुभव करें')}
+                </span>
+              </div>
+
+              {/* Center Play/Pause button for direct focus */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <button
+                  onClick={handlePlayPause}
+                  className="flex h-20 w-20 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-white transition-all duration-300 hover:scale-110 hover:bg-white/25 active:scale-95 shadow-lg cursor-pointer"
+                  aria-label={isVideoPlaying ? 'Pause video' : 'Play video'}
+                >
+                  {isVideoPlaying ? (
+                    <Pause size={32} className="fill-white text-white" />
+                  ) : (
+                    <Play size={32} className="fill-white text-white translate-x-0.5" />
+                  )}
+                </button>
+              </div>
+
+              {/* Bottom Bar: Action buttons */}
+              <div className="flex justify-end gap-3 z-10">
+                <button
+                  onClick={handleMuteUnmute}
+                  className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/40 backdrop-blur-md text-white transition hover:scale-105 hover:bg-black/60 active:scale-95 cursor-pointer"
+                  aria-label={isVideoMuted ? 'Unmute video' : 'Mute video'}
+                >
+                  {isVideoMuted ? (
+                    <VolumeX size={20} />
+                  ) : (
+                    <Volume2 size={20} />
+                  )}
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5.5 WE SAID REELS SECTION */}
+      {videoTestimonials.length > 0 && (
+        <section className="py-16 bg-[#F8FAFA] relative overflow-hidden">
+          <div className="max-w-[1400px] mx-auto px-4 relative z-10">
+            <div className="flex flex-col items-center text-center space-y-3 mb-12">
+              <p className="text-[9px] font-black uppercase tracking-[0.4em] text-teal-600">
+                {t('Visual Guest Stories', 'दृश्य अतिथि कहानियां')}
+              </p>
+              <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight leading-tight">
+                {t('What Our Clients Say', 'हमारे ग्राहक क्या कहते हैं')}
+              </h2>
+            </div>
+
+            <Swiper
+              modules={[Navigation]}
+              navigation={true}
+              loop={videoTestimonials.length > 4}
+              slidesPerView={1.2}
+              spaceBetween={20}
+              breakpoints={{
+                480: {
+                  slidesPerView: 1.8,
+                  spaceBetween: 20,
+                },
+                768: {
+                  slidesPerView: 2.8,
+                  spaceBetween: 24,
+                },
+                1024: {
+                  slidesPerView: 4,
+                  spaceBetween: 28,
+                }
+              }}
+              className="w-full premium-reels-swiper pb-4"
+            >
+              {videoTestimonials.map((reel) => (
+                <SwiperSlide key={reel._id} className="h-auto">
+                  <div className="p-1">
+                    <ReelVideoPlayer videoSrc={getImageUrl(reel.video)} />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </section>
+      )}
+
+      {/* 5. TESTIMONIAL SECTION */}
+      <section className="py-16 bg-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-teal-50 rounded-full translate-x-1/3 -translate-y-1/3 blur-3xl opacity-50"></div>
+        <div className="max-w-[1400px] mx-auto px-4 relative z-10">
+          <div className="flex flex-col items-center text-center space-y-8 mb-20">
+            <Quote size={40} className="text-teal-600 opacity-20" />
+            <h2 className="text-4xl font-semibold text-[#0F4C4C] tracking-tight leading-tight">{t('Echoes of Excellence', 'उत्कृष्टता की प्रतिध्वनि')}</h2>
+          </div>
+          <Swiper
+            modules={[Autoplay]}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            loop={testimonials.length > 3}
+            slidesPerView={1.4}
+            spaceBetween={16}
+            breakpoints={{
+              640: {
+                slidesPerView: 2.2,
+                spaceBetween: 24,
+              },
+              1024: {
+                slidesPerView: 3,
+                spaceBetween: 32,
+              }
+            }}
+            className="w-full"
+          >
+            {testimonials.length > 0 ? testimonials.map((test, i) => (
+              <SwiperSlide key={i} className="h-auto">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  whileHover={{ y: -8 }}
+                  className="p-8 sm:p-10 bg-[#F8FAFA] hover:bg-white rounded-[32px] sm:rounded-[40px] border border-gray-100/80 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-xl relative transition-all duration-300 group flex flex-col justify-between h-full"
+                >
+                  <div>
+                    <div className="flex gap-1 text-teal-600 mb-6">
+                      {[1, 2, 3, 4, 5].map(s => <Star key={s} size={12} fill="currentColor" />)}
+                    </div>
+                    <p className="text-sm font-medium text-[#0F4C4C] leading-relaxed mb-8 italic">"{test.content}"</p>
+                  </div>
+                  <div className="flex items-center gap-4 border-t border-gray-100 pt-6 mt-2">
+                    {test.image ? (
+                      <img src={getImageUrl(test.image)} alt={test.name} className="w-12 h-12 rounded-full object-cover shadow-md border border-white" />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-teal-50 border border-white flex items-center justify-center text-[#0F4C4C] font-bold text-sm">
+                        {test.name?.[0]}
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-black text-xs uppercase tracking-widest text-[#0F4C4C]">{test.name}</p>
+                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">{test.role}</p>
+                    </div>
+                  </div>
+                  <div className="absolute top-8 right-8 text-gray-150 group-hover:text-teal-600/10 transition-colors pointer-events-none hidden sm:block">
+                    <Quote size={40} className="transform rotate-180" />
+                  </div>
+                </motion.div>
+              </SwiperSlide>
+            )) : (
+              [1, 2, 3].map(i => (
+                <SwiperSlide key={i} className="h-auto">
+                  <div className="h-64 bg-gray-50 rounded-[32px] animate-pulse h-full"></div>
+                </SwiperSlide>
+              ))
+            )}
+          </Swiper>
+        </div>
+      </section>
+
+
+      {/* 5.8 LATEST NEWS / BLOG PREVIEW SECTION */}
+      <section className="py-12 sm:py-16 bg-[#F8FAFA]">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 sm:mb-16 gap-4 sm:gap-6">
+            <div className="space-y-2.5">
+              <p className="text-[9px] font-black uppercase tracking-[0.4em] text-teal-600">{t('Stay Updated', 'अपडेटेड रहें')}</p>
+              <h2 className="text-3xl sm:text-4xl font-black text-[#0F4C4C] tracking-tight">{t('Latest News', 'नवीनतम समाचार')}</h2>
+            </div>
+            <Link to="/blog" className="text-[9px] font-black uppercase tracking-[0.3em] text-[#0F4C4C] border-b-2 border-[#0F4C4C] pb-1 hover:text-teal-600 hover:border-teal-600 transition-all">
+              {t('View All Posts', 'सभी पोस्ट देखें')}
+            </Link>
+          </div>
+
+          {displayBlogs.length > 0 ? (
+            <Swiper
+              modules={[Autoplay]}
+              autoplay={{
+                delay: 3000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+              }}
+              loop={displayBlogs.length > 3}
+              slidesPerView={1.4}
+              spaceBetween={16}
+              breakpoints={{
+                640: {
+                  slidesPerView: 2.2,
+                  spaceBetween: 24,
+                },
+                1024: {
+                  slidesPerView: 3,
+                  spaceBetween: 32,
+                }
+              }}
+              className="w-full"
+            >
+              {displayBlogs.map((post, i) => (
+                <SwiperSlide key={post.slug || post.id} className="h-auto">
+                  <motion.article
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1, duration: 0.6 }}
+                    className="group flex flex-col justify-between h-full bg-white rounded-[24px] sm:rounded-[32px] p-5 sm:p-6 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 w-full"
+                  >
+                    <div>
+                      <Link to={`/blog/${post.slug || post.id}`}>
+                        <div className="relative aspect-[16/10] rounded-[18px] sm:rounded-[24px] overflow-hidden mb-5 sm:mb-6 bg-gray-50">
+                          <img
+                            src={post.image ? getImageUrl(post.image) : masterbedroomImg}
+                            alt={post.title}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          />
+                        </div>
+                      </Link>
+                      <div className="space-y-3">
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[10px] font-black uppercase tracking-wider text-gray-400">
+                          <span className="flex items-center gap-1.5"><User size={12} className="text-teal-600" /> By {post.author}</span>
+                          <span className="flex items-center gap-1.5"><CalendarDays size={12} className="text-teal-600" /> {post.date}</span>
+                        </div>
+                        <Link to={`/blog/${post.slug || post.id}`}>
+                          <h3 className="text-base sm:text-lg font-bold text-[#0F4C4C] leading-snug group-hover:text-teal-700 transition-colors line-clamp-2">
+                            {post.title}
+                          </h3>
+                        </Link>
+                        <p className="text-gray-500 text-sm leading-relaxed line-clamp-3">
+                          {post.desc}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="pt-5 sm:pt-6 mt-5 sm:mt-6 border-t border-gray-50">
+                      <Link
+                        to={`/blog/${post.slug || post.id}`}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0f4c4c] text-white hover:bg-neutral-900 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md transition-all active:scale-95 group/btn"
+                      >
+                        <span>{t('Read More', 'और पढ़ें')}</span>
+                        <ArrowRight size={12} className="transform group-hover/btn:translate-x-1 transition-transform" />
+                      </Link>
+                    </div>
+                  </motion.article>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <div className="text-center py-12 bg-white rounded-[40px] border border-gray-100 shadow-sm max-w-full">
+              <p className="text-gray-400 text-sm font-semibold uppercase tracking-[0.2em]">
+                {t('No news posts available', 'कोई समाचार पोस्ट उपलब्ध नहीं हैं')}
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* 6. CTA SECTION - MORE COMPACT */}
       <section className="py-16 px-4">
         <div className="max-w-[1400px] mx-auto bg-[#0F4C4C] rounded-[48px] p-12 md:p-20 text-center text-white relative overflow-hidden shadow-xl">
           {/* Background Image and Overlay */}

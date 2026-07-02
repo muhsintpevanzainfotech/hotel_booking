@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  MessageSquare, Send, X, Calendar, Users, CheckCircle, 
-  AlertCircle, Phone, Mail, FileText, Sparkles, MapPin, 
+import {
+  MessageSquare, Send, X, Calendar, Users, CheckCircle,
+  AlertCircle, Phone, Mail, FileText, Sparkles, MapPin,
   ArrowLeft, RefreshCw, HelpCircle, ChevronRight, Check
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -16,7 +16,7 @@ const Chatbot = () => {
   const [loadingRooms, setLoadingRooms] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  
+
   // Guided flow states
   const [flowState, setFlowState] = useState({
     type: 'idle', // 'idle', 'booking', 'status', 'enquiry'
@@ -77,7 +77,7 @@ const Chatbot = () => {
       {
         id: 'welcome',
         sender: 'bot',
-        text: 'Namaste! Welcome to Lake Breeze Resorts, Kumarakom. 🌿 I am your AI Concierge. How can I assist you with your paradise experience today?',
+        text: 'Namaste! Welcome to Lake Breeze Resorts, Mavoor. 🌿 I am your AI Concierge. How can I assist you with your paradise experience today?',
         timestamp: new Date(),
         showOptions: true
       }
@@ -129,7 +129,7 @@ const Chatbot = () => {
         resetChat();
         return;
       }
-      
+
       // Let the flow handler handle the text input if applicable, else show fallback
       handleFlowTextInput(text);
     } else {
@@ -154,7 +154,7 @@ const Chatbot = () => {
   // FAQ Keyword Matcher
   const handleFAQResponse = (query) => {
     const text = query.toLowerCase();
-    
+
     if (text.includes('book') || text.includes('reserve') || text.includes('stay') || text.includes('room') || text.includes('rent')) {
       startBookingFlow();
       return;
@@ -270,7 +270,7 @@ const Chatbot = () => {
     const start = new Date(checkIn);
     const end = new Date(checkOut);
     const today = new Date();
-    today.setHours(0,0,0,0);
+    today.setHours(0, 0, 0, 0);
 
     if (start < today) {
       toast.error('Check-in date cannot be in the past');
@@ -289,12 +289,12 @@ const Chatbot = () => {
     setFlowState(prev => ({
       ...prev,
       step: 3, // Step 3: Guests select
-      data: { 
-        ...prev.data, 
-        checkIn, 
+      data: {
+        ...prev.data,
+        checkIn,
         checkOut,
         days: diffDays,
-        totalPrice 
+        totalPrice
       }
     }));
 
@@ -378,7 +378,7 @@ const Chatbot = () => {
 
       if (res.ok && data) {
         setFlowState({ type: 'idle', step: 0, data: {} });
-        
+
         const formatHelper = (d) => {
           if (!d) return '';
           const date = new Date(d);
@@ -392,10 +392,9 @@ const Chatbot = () => {
           <div className="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm text-xs space-y-3 font-poppins mt-2">
             <div className="flex justify-between items-center border-b border-gray-100 pb-2">
               <span className="font-black text-[#0F4C4C] uppercase tracking-wider">Booking Status</span>
-              <span className={`px-2 py-1 rounded-full text-[9px] font-black uppercase ${
-                data.status === 'confirmed' ? 'bg-green-50 text-green-600' :
+              <span className={`px-2 py-1 rounded-full text-[9px] font-black uppercase ${data.status === 'confirmed' ? 'bg-green-50 text-green-600' :
                 data.status === 'cancelled' ? 'bg-red-50 text-red-600' : 'bg-yellow-50 text-yellow-600'
-              }`}>
+                }`}>
                 {data.status}
               </span>
             </div>
@@ -512,13 +511,13 @@ const Chatbot = () => {
               <div className="text-xs text-gray-400 italic p-3">Loading available sanctuaries...</div>
             ) : (
               rooms.map((room) => (
-                <div 
-                  key={room._id} 
+                <div
+                  key={room._id}
                   className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden min-w-[200px] max-w-[200px] flex flex-col flex-shrink-0"
                 >
-                  <img 
-                    src={room.images?.[0]?.url ? getImageUrl(room.images[0].url) : '/room_deluxe.png'} 
-                    alt={room.name} 
+                  <img
+                    src={room.images?.[0]?.url ? getImageUrl(room.images[0].url) : '/room_deluxe.png'}
+                    alt={room.name}
                     className="w-full h-24 object-cover"
                   />
                   <div className="p-3 flex-1 flex flex-col justify-between space-y-2">
@@ -535,7 +534,7 @@ const Chatbot = () => {
                       )}
                       <p className="text-[8px] text-gray-400 font-medium">Cap: {room.capacity} Guests</p>
                     </div>
-                    <button 
+                    <button
                       onClick={() => handleRoomSelect(room)}
                       className="w-full bg-primary text-white py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider hover:bg-secondary transition-all active:scale-95"
                     >
@@ -576,7 +575,7 @@ const Chatbot = () => {
     <>
       {/* Floating Toggle Button */}
       <div id="chatbot-trigger" className="fixed bottom-6 right-8 z-[9999]">
-        <button 
+        <button
           onClick={() => setIsOpen(!isOpen)}
           className={`w-14 h-14 bg-gradient-to-tr from-[#0F4C4C] to-[#2E7D7D] text-white rounded-full shadow-[0_15px_30px_-5px_rgba(15,76,76,0.5)] hover:shadow-[0_20px_40px_-5px_rgba(15,76,76,0.7)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all group relative border border-white/10`}
           title="AI Assistant"
@@ -625,15 +624,15 @@ const Chatbot = () => {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button 
-                  onClick={resetChat} 
+                <button
+                  onClick={resetChat}
                   className="p-1.5 bg-white/5 hover:bg-white/10 text-white rounded-lg transition-all"
                   title="Reset conversation"
                 >
                   <RefreshCw size={14} />
                 </button>
-                <button 
-                  onClick={() => setIsOpen(false)} 
+                <button
+                  onClick={() => setIsOpen(false)}
                   className="p-1.5 bg-white/5 hover:bg-white/10 text-white rounded-lg transition-all"
                 >
                   <X size={14} />
@@ -646,17 +645,16 @@ const Chatbot = () => {
               {messages.map((msg) => (
                 <div key={msg.id} className="space-y-1">
                   <div className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div 
-                      className={`max-w-[85%] px-4 py-3 rounded-2xl text-xs leading-relaxed font-poppins shadow-xs whitespace-pre-wrap ${
-                        msg.sender === 'user' 
-                          ? 'bg-primary text-white rounded-tr-none' 
-                          : 'bg-white text-gray-700 rounded-tl-none border border-gray-100'
-                      }`}
+                    <div
+                      className={`max-w-[85%] px-4 py-3 rounded-2xl text-xs leading-relaxed font-poppins shadow-xs whitespace-pre-wrap ${msg.sender === 'user'
+                        ? 'bg-primary text-white rounded-tr-none'
+                        : 'bg-white text-gray-700 rounded-tl-none border border-gray-100'
+                        }`}
                     >
                       {msg.text}
                     </div>
                   </div>
-                  
+
                   {/* Option Button shortcuts */}
                   {msg.sender === 'bot' && msg.showOptions && msg.options && (
                     <div className="flex flex-wrap gap-2 pt-1 pl-1">
@@ -686,31 +684,31 @@ const Chatbot = () => {
             {/* Quick Actions Footer - Default menu */}
             {flowState.type === 'idle' && (
               <div className="px-4 py-2 bg-gray-50 border-t border-gray-100 overflow-x-auto no-scrollbar flex gap-2">
-                <button 
+                <button
                   onClick={() => handleOptionClick('book', '🏨 Book a Room')}
                   className="px-3 py-1.5 bg-teal-50 hover:bg-[#0F4C4C] hover:text-white border border-teal-100 text-[#0F4C4C] text-[9px] font-black uppercase tracking-wider rounded-lg transition-all whitespace-nowrap"
                 >
                   Book 🏨
                 </button>
-                <button 
+                <button
                   onClick={() => handleOptionClick('status', '🔑 Booking Status')}
                   className="px-3 py-1.5 bg-teal-50 hover:bg-[#0F4C4C] hover:text-white border border-teal-100 text-[#0F4C4C] text-[9px] font-black uppercase tracking-wider rounded-lg transition-all whitespace-nowrap"
                 >
                   Status 🔑
                 </button>
-                <button 
+                <button
                   onClick={() => handleOptionClick('enquiry', '✉️ Contact Us')}
                   className="px-3 py-1.5 bg-teal-50 hover:bg-[#0F4C4C] hover:text-white border border-teal-100 text-[#0F4C4C] text-[9px] font-black uppercase tracking-wider rounded-lg transition-all whitespace-nowrap"
                 >
                   Enquire ✉️
                 </button>
-                <button 
+                <button
                   onClick={() => handleOptionClick('facilities', '🌿 Facilities')}
                   className="px-3 py-1.5 bg-teal-50 hover:bg-[#0F4C4C] hover:text-white border border-teal-100 text-[#0F4C4C] text-[9px] font-black uppercase tracking-wider rounded-lg transition-all whitespace-nowrap"
                 >
                   Facilities 🌿
                 </button>
-                <button 
+                <button
                   onClick={() => handleOptionClick('faq', '💬 FAQ / Info')}
                   className="px-3 py-1.5 bg-teal-50 hover:bg-[#0F4C4C] hover:text-white border border-teal-100 text-[#0F4C4C] text-[9px] font-black uppercase tracking-wider rounded-lg transition-all whitespace-nowrap"
                 >
@@ -732,7 +730,7 @@ const Chatbot = () => {
                 }
                 className="flex-grow bg-gray-50 border-none rounded-xl px-4 py-2.5 text-xs font-medium text-gray-800 focus:ring-1 focus:ring-primary outline-none transition-all"
               />
-              <button 
+              <button
                 type="submit"
                 disabled={!inputValue.trim()}
                 className="w-10 h-10 bg-primary disabled:bg-gray-100 text-white disabled:text-gray-300 rounded-xl flex items-center justify-center transition-all hover:scale-105 active:scale-95"
@@ -774,7 +772,7 @@ const DateSelectForm = ({ onSubmit }) => {
     <form onSubmit={handleDatesSubmit} className="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm text-xs space-y-3 font-poppins mt-2">
       <div className="space-y-1">
         <label className="text-[9px] font-black uppercase text-gray-500">Check-in Date</label>
-        <input 
+        <input
           type="date"
           min={getTodayString()}
           required
@@ -785,7 +783,7 @@ const DateSelectForm = ({ onSubmit }) => {
       </div>
       <div className="space-y-1">
         <label className="text-[9px] font-black uppercase text-gray-500">Check-out Date</label>
-        <input 
+        <input
           type="date"
           min={dates.checkIn || getTodayString()}
           required
@@ -794,7 +792,7 @@ const DateSelectForm = ({ onSubmit }) => {
           className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-[#0F4C4C]"
         />
       </div>
-      <button 
+      <button
         type="submit"
         className="w-full bg-[#0F4C4C] hover:bg-[#2E7D7D] text-white py-2 rounded-lg font-black uppercase text-[9px] tracking-wider flex items-center justify-center gap-2 mt-2 transition-colors"
       >
@@ -819,7 +817,7 @@ const GuestsSelectForm = ({ onSubmit }) => {
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
           <label className="text-[9px] font-black uppercase text-gray-500">Adults</label>
-          <select 
+          <select
             value={adults}
             onChange={(e) => setAdults(parseInt(e.target.value))}
             className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-[#0F4C4C] bg-white"
@@ -829,7 +827,7 @@ const GuestsSelectForm = ({ onSubmit }) => {
         </div>
         <div className="space-y-1">
           <label className="text-[9px] font-black uppercase text-gray-500">Children</label>
-          <select 
+          <select
             value={children}
             onChange={(e) => setChildren(parseInt(e.target.value))}
             className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-[#0F4C4C] bg-white"
@@ -838,7 +836,7 @@ const GuestsSelectForm = ({ onSubmit }) => {
           </select>
         </div>
       </div>
-      <button 
+      <button
         type="submit"
         className="w-full bg-[#0F4C4C] hover:bg-[#2E7D7D] text-white py-2 rounded-lg font-black uppercase text-[9px] tracking-wider flex items-center justify-center gap-2 mt-2 transition-colors"
       >
@@ -877,8 +875,8 @@ const ContactSelectForm = ({ onSubmit, roomPrice, checkIn, checkOut }) => {
     <form onSubmit={handleSubmit} className="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm text-xs space-y-3 font-poppins mt-2">
       <div className="space-y-1">
         <label className="text-[9px] font-black uppercase text-gray-500">Full Name *</label>
-        <input 
-          type="text" 
+        <input
+          type="text"
           required
           placeholder="Jane Doe"
           value={form.guestName}
@@ -889,8 +887,8 @@ const ContactSelectForm = ({ onSubmit, roomPrice, checkIn, checkOut }) => {
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
           <label className="text-[9px] font-black uppercase text-gray-500">Email *</label>
-          <input 
-            type="email" 
+          <input
+            type="email"
             required
             placeholder="jane@example.com"
             value={form.email}
@@ -900,8 +898,8 @@ const ContactSelectForm = ({ onSubmit, roomPrice, checkIn, checkOut }) => {
         </div>
         <div className="space-y-1">
           <label className="text-[9px] font-black uppercase text-gray-500">Phone *</label>
-          <input 
-            type="tel" 
+          <input
+            type="tel"
             required
             placeholder="+91..."
             value={form.phone}
@@ -912,7 +910,7 @@ const ContactSelectForm = ({ onSubmit, roomPrice, checkIn, checkOut }) => {
       </div>
       <div className="space-y-1">
         <label className="text-[9px] font-black uppercase text-gray-500">Special Request</label>
-        <textarea 
+        <textarea
           placeholder="Extra bed, late check-in, etc."
           rows="1.5"
           value={form.specialRequests}
@@ -920,7 +918,7 @@ const ContactSelectForm = ({ onSubmit, roomPrice, checkIn, checkOut }) => {
           className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 font-medium text-gray-800 outline-none focus:ring-1 focus:ring-[#0F4C4C] resize-none"
         />
       </div>
-      
+
       {/* Total pricing details */}
       <div className="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex justify-between items-center text-[10px]">
         <div>
@@ -929,7 +927,7 @@ const ContactSelectForm = ({ onSubmit, roomPrice, checkIn, checkOut }) => {
         <span className="font-black text-[#0F4C4C] text-xs">₹{totalPrice.toLocaleString()}</span>
       </div>
 
-      <button 
+      <button
         type="submit"
         className="w-full bg-[#0F4C4C] text-white py-2 rounded-lg font-black uppercase text-[9px] tracking-wider flex items-center justify-center gap-2 mt-2 hover:bg-[#2E7D7D] transition-colors"
       >
@@ -951,15 +949,15 @@ const StatusInputForm = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit} className="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm text-xs flex gap-2 font-poppins mt-2">
-      <input 
-        type="text" 
+      <input
+        type="text"
         required
         placeholder="Enter Reference (e.g. LBR-12345)"
         value={refCode}
         onChange={(e) => setRefCode(e.target.value)}
         className="flex-grow bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-[#0F4C4C]"
       />
-      <button 
+      <button
         type="submit"
         className="bg-[#0F4C4C] hover:bg-[#2E7D7D] text-white px-4 py-2 rounded-lg font-black uppercase text-[9px] tracking-wider flex items-center justify-center transition-colors"
       >
@@ -987,8 +985,8 @@ const EnquiryForm = ({ onSubmit }) => {
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
           <label className="text-[9px] font-black uppercase text-gray-500">Name *</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             required
             placeholder="John Doe"
             value={form.name}
@@ -998,8 +996,8 @@ const EnquiryForm = ({ onSubmit }) => {
         </div>
         <div className="space-y-1">
           <label className="text-[9px] font-black uppercase text-gray-500">Email *</label>
-          <input 
-            type="email" 
+          <input
+            type="email"
             required
             placeholder="john@example.com"
             value={form.email}
@@ -1010,7 +1008,7 @@ const EnquiryForm = ({ onSubmit }) => {
       </div>
       <div className="space-y-1">
         <label className="text-[9px] font-black uppercase text-gray-500">Message *</label>
-        <textarea 
+        <textarea
           required
           placeholder="How can we help you plan your stay?"
           rows="3"
@@ -1019,7 +1017,7 @@ const EnquiryForm = ({ onSubmit }) => {
           className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 font-medium text-gray-800 outline-none focus:ring-1 focus:ring-[#0F4C4C] resize-none"
         />
       </div>
-      <button 
+      <button
         type="submit"
         className="w-full bg-[#0F4C4C] hover:bg-[#2E7D7D] text-white py-2 rounded-lg font-black uppercase text-[9px] tracking-wider flex items-center justify-center gap-2 mt-1 transition-colors"
       >
