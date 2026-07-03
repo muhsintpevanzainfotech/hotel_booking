@@ -14,7 +14,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import heroVideo from '../assets/images/hero.mp4';
 import bathroomImg from '../assets/images/bathroom.jpeg';
-import mainVideo from '../assets/images/hero-main-video.mp4';
+import mainVideo from '../assets/images/lakebreeze.mp4';
 import coupleImg from '../assets/images/couple.jpeg';
 import frontdesk from '../assets/images/frontdesk.png';
 import familyImg from '../assets/images/family.jpeg';
@@ -287,8 +287,8 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
             {/* Row 3: Guests, Capacity & Star Rating */}
             <div className="flex items-center gap-3">
               <span className={`text-[8px] sm:text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border transition-colors duration-350 ${isHovered
-                  ? 'bg-slate-100 border-slate-200/60 text-slate-600'
-                  : 'bg-white/10 border-white/10 text-white'
+                ? 'bg-slate-100 border-slate-200/60 text-slate-600'
+                : 'bg-white/10 border-white/10 text-white'
                 }`}>
                 {room.capacity || 2} Guests
               </span>
@@ -312,8 +312,8 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
                 onViewClick(room);
               }}
               className={`flex-1 py-2.5 rounded-full border text-[9px] font-black uppercase tracking-widest transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center ${isHovered
-                  ? 'bg-white border-neutral-300 text-neutral-600 hover:text-[#0F4C4C] hover:border-[#0F4C4C] hover:shadow-sm'
-                  : 'bg-white/10 border-white/25 text-white hover:bg-white/20'
+                ? 'bg-white border-neutral-300 text-neutral-600 hover:text-[#0F4C4C] hover:border-[#0F4C4C] hover:shadow-sm'
+                : 'bg-white/10 border-white/25 text-white hover:bg-white/20'
                 }`}
             >
               {t('View Details', 'विवरण देखें')}
@@ -324,8 +324,8 @@ const RoomCard = ({ room, index, onBookClick, onViewClick, t }) => {
                 onBookClick(room);
               }}
               className={`flex-1 py-2.5 rounded-full border text-[9px] font-black uppercase tracking-widest transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center ${isHovered
-                  ? 'bg-[#0F4C4C] border-[#0F4C4C] text-white hover:bg-[#2E7D7D] hover:border-[#2E7D7D] hover:shadow-md'
-                  : 'bg-white/20 border-white/40 text-white hover:bg-white/30'
+                ? 'bg-[#0F4C4C] border-[#0F4C4C] text-white hover:bg-[#2E7D7D] hover:border-[#2E7D7D] hover:shadow-md'
+                : 'bg-white/20 border-white/40 text-white hover:bg-white/30'
                 }`}
             >
               {t('Book Now', 'अभी बुक करें')}
@@ -409,8 +409,8 @@ const PricingComboCard = ({ combo, isFeatured, onBookClick, onViewClick, t }) =>
               onBookClick(combo);
             }}
             className={`w-full h-12 rounded-full font-black uppercase text-[10px] tracking-[0.2em] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md cursor-pointer flex items-center justify-center ${isFeatured
-                ? 'bg-[#A3E635] text-neutral-900 hover:bg-[#92cf2e] shadow-sm'
-                : 'bg-[#0F4C4C] text-white hover:bg-[#093030] shadow-sm'
+              ? 'bg-[#A3E635] text-neutral-900 hover:bg-[#92cf2e] shadow-sm'
+              : 'bg-[#0F4C4C] text-white hover:bg-[#093030] shadow-sm'
               }`}
           >
             {t('Book Package Now', 'पैकेज अभी बुक करें', 'ഇപ്പോൾ ബുക്ക് ചെയ്യുക')}
@@ -1700,8 +1700,8 @@ const Home = () => {
                   key={idx}
                   onClick={() => setSelectedComboCategory(cat)}
                   className={`px-5 py-2.5 rounded-full font-black uppercase text-[9px] tracking-widest transition-all duration-300 whitespace-nowrap cursor-pointer border ${selectedComboCategory === cat
-                      ? 'bg-[#0F4C4C] text-white border-[#0F4C4C] shadow-md shadow-[#0F4C4C]/10'
-                      : 'bg-white text-gray-800 border-gray-150 hover:bg-teal-50/50 hover:border-teal-150'
+                    ? 'bg-[#0F4C4C] text-white border-[#0F4C4C] shadow-md shadow-[#0F4C4C]/10'
+                    : 'bg-white text-gray-800 border-gray-150 hover:bg-teal-50/50 hover:border-teal-150'
                     }`}
                 >
                   {cat === 'All' ? t('All Experiences', 'सभी अनुभव') : t(cat, cat)}
