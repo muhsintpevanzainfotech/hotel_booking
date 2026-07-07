@@ -438,7 +438,7 @@ const RoomDetails = () => {
                                 </h2>
 
                                 <div className="flex flex-wrap gap-4 text-[10px] font-black text-gray-400 uppercase tracking-widest pt-1">
-                                    <span className="flex items-center gap-1.5"><MapPin size={12} className="text-[#2E7D7D]" /> Kumarakom, Kerala</span>
+                                    <span className="flex items-center gap-1.5"><MapPin size={12} className="text-[#2E7D7D]" /> Mavoor, Kerala</span>
                                     <span className="flex items-center gap-1.5"><Users size={12} className="text-[#2E7D7D]" /> {room.capacity} {t('Guests max', 'अधिकतम अतिथि')}</span>
                                     <span className="flex items-center gap-1.5"><BedDouble size={12} className="text-[#2E7D7D]" /> {room.type}</span>
                                 </div>

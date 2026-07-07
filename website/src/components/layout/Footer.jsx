@@ -99,12 +99,12 @@ const Footer = () => {
                   <MapPin size={18} />
                 </div>
                 <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact?.address || 'Lake Breeze Resort Kumarakom Kerala')}`}
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact?.address || 'Lake Breeze Resort Mavoor Kerala')}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-teal-100/80 text-sm font-medium leading-relaxed hover:text-white transition-colors"
                 >
-                  {contact?.address || 'Kumarakom, Kottayam, Kerala - 686563'}
+                  {contact?.address || 'Mavoor, Kottayam, Kerala - 686563'}
                 </a>
               </li>
               <li className="flex items-center gap-4 group">

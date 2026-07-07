@@ -70,7 +70,7 @@ const Facilities = () => {
         },
         { 
             title: t('Photography', 'फोटोग्राफी'), 
-            description: t('Capture the beauty of Kumarakom.', 'कुमारकोम की सुंदरता को कैद करें।'),
+            description: t('Capture the beauty of Mavoor.', 'कुमारकोम की सुंदरता को कैद करें।'),
             image: bathroomImg
         }
     ];

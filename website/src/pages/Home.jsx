@@ -908,7 +908,7 @@ const Home = () => {
     },
     {
       title: t('Travel Desk', 'यात्रा डेस्क'),
-      description: t('Explore Kumarakom with our curated local sightseeing tours, houseboat cruises, and transport arrangements.', 'हमारे क्यूरेटेड स्थानीय दर्शनीय स्थलों की यात्रा, हाउसबोट परिभ्रमण और परिवहन व्यवस्था के साथ कुमारकोम का अन्वेषण करें।'),
+      description: t('Explore Mavoor with our curated local sightseeing tours, houseboat cruises, and transport arrangements.', 'हमारे क्यूरेटेड स्थानीय दर्शनीय स्थलों की यात्रा, हाउसबोट परिभ्रमण और परिवहन व्यवस्था के साथ कुमारकोम का अन्वेषण करें।'),
       icon: 'car'
     },
     {

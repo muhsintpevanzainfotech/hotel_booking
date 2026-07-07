@@ -179,7 +179,7 @@ const Chatbot = () => {
     } else if (text.includes('checkin') || text.includes('check-in') || text.includes('checkout') || text.includes('check-out') || text.includes('time')) {
       reply = "Our standard check-in time is 2:00 PM, and check-out time is 11:00 AM. Early check-in or late check-out is subject to availability and may incur additional charges.";
     } else if (text.includes('location') || text.includes('address') || text.includes('where') || text.includes('directions')) {
-      reply = "Lake Breeze Resorts is located on the serene banks of Vembanad Lake in Kumarakom, Kottayam, Kerala - 686563. Click the 'Map' option on our contact page to see routes!";
+      reply = "Lake Breeze Resorts is located on the serene banks of Vembanad Lake in Mavoor, Kottayam, Kerala - 686563. Click the 'Map' option on our contact page to see routes!";
     } else if (text.includes('breakfast') || text.includes('food') || text.includes('restaurant') || text.includes('dining') || text.includes('meal')) {
       reply = "Our lakeside restaurant serves authentic Kerala dishes as well as continental and North Indian cuisines. Complimentary breakfast is included with most bookings!";
     } else if (text.includes('pool') || text.includes('swimming')) {

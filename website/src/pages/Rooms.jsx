@@ -475,7 +475,7 @@ const Rooms = () => {
                                                 {/* Header info */}
                                                 <div className="flex justify-between items-start gap-2">
                                                     <div className="space-y-1 min-w-0">
-                                                        <p className="text-[9px] font-bold text-[#C5A880] uppercase tracking-widest flex items-center gap-1"><MapPin size={9} /> Kumarakom, Kerala</p>
+                                                        <p className="text-[9px] font-bold text-[#C5A880] uppercase tracking-widest flex items-center gap-1"><MapPin size={9} /> Mavoor, Kerala</p>
                                                         <h3 className="text-lg md:text-xl font-bold text-[#0F4C4C] tracking-tight leading-snug cursor-pointer hover:text-[#C5A880] transition-colors truncate font-headings" onClick={() => handleViewClick(item)}>{item.displayName}</h3>
                                                     </div>
                                                     <div className="flex items-center gap-1 px-2 py-0.5 bg-[#FAF6F0] rounded-lg border border-[#C5A880]/20 shrink-0">

@@ -59,8 +59,8 @@ const Contact = () => {
     { 
       icon: <MapPin size={24} />, 
       title: t('Our Address', 'हमारा पता'), 
-      content: contact?.address || 'Kumarakom, Kottayam, Kerala - 686563',
-      link: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact?.address || 'Lake Breeze Resort Kumarakom Kerala')}`
+      content: contact?.address || 'Mavoor, Kottayam, Kerala - 686563',
+      link: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact?.address || 'Lake Breeze Resort Mavoor Kerala')}`
     },
     { 
       icon: <PhoneCall size={24} />, 
@@ -225,7 +225,7 @@ const Contact = () => {
         {/* Map Section */}
         <div className="mt-20 h-[500px] w-full rounded-[48px] overflow-hidden shadow-2xl border-8 border-white relative group">
           <iframe 
-            src={`https://maps.google.com/maps?q=${encodeURIComponent(contact?.address || 'Lake Breeze Resort Kumarakom Kerala')}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
+            src={`https://maps.google.com/maps?q=${encodeURIComponent(contact?.address || 'Lake Breeze Resort Mavoor Kerala')}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
             width="100%" 
             height="100%" 
             style={{ border: 0 }} 
